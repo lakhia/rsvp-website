@@ -1,0 +1,23 @@
+<div class="container" ng-init="init()">
+
+<h3>Filling Printout</h3>
+<br>
+<br>
+<table class="table-striped table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Thaali</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="item in printout">
+      <td>{{ item["name"] }}</td>
+      <td>{{ item["thaali"] }}</td>
+      <td>{{ item["notes"] }}</td>
+    </tr>
+  </tbody>
+</table>
+
+</div>

@@ -1,0 +1,45 @@
+<!-- Logged in -->
+<div ng-show="selected == 0" class="container" ng-init="init()">
+
+<h3>RSVP for {{ name }}</h3>
+<br>
+<br>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Day</th>
+      <th>Details</th>
+      <th>RSVP</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="(key, value) in details.data">
+      <td>{{ getDisplayDate(key) }}</td>
+      <td>{{ getDetails(key) }}</td>
+      <td>
+        <button class="btn rsvpBtn" ng-disabled="disabledRSVP(key)"
+                ng-class="getRsvp(key)" ng-click="editRSVP(key)">
+          <span class="glyphicon glyphicon-pencil"></span>  {{ getRsvp(key) }}
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="msg">&nbsp;{{ details.message }}</div>
+<br>
+<div class="text-center">
+  <button class="btn btn-default" ng-click="prevWeek()">
+    <span class="glyphicon glyphicon-chevron-left"></span>  Prev Week
+  </button>&nbsp;&nbsp;
+  <button class="btn btn-primary" ng-disabled="!changed" ng-click="submit()">
+    <span class="glyphicon glyphicon-save"></span>  Save Changes
+  </button>&nbsp;&nbsp;
+  <button class="btn btn-default" ng-click="nextWeek()">
+    Next Week  <span class="glyphicon glyphicon-chevron-right"></span>
+  </button>
+</div>
+
+</div>
+

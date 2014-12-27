@@ -1,12 +1,137 @@
-var app = angular.module("rsvp", ['ngCookies']);
+var app = angular.module("rsvp", ['ngRoute', 'ngCookies']);
+app.config(['$routeProvider', '$locationProvider',
+  function($routeProvider, $locationProvider) {
+    $routeProvider
+      .when('/', {
+        templateUrl: 'rsvp.html',
+        controller: 'rsvpController',
+        resolve: {
+          isLogged: app.isLoggedIn
+        }
+      })
+      .when('/login', {
+        templateUrl: 'login.html',
+        controller: 'loginController',
+      })
+      .when('/login/:out', {
+        templateUrl: 'login.html',
+        controller: 'loginController',
+      })
+      .when('/print', {
+        templateUrl: 'print.html',
+        controller: 'printController',
+        resolve: {
+          isLogged: app.isLoggedIn
+        }
+      })
+      .when('/ni', {
+        templateUrl: 'ni.html',
+        controller: 'rsvpController',
+      })
+      .otherwise({
+        redirectTo: '/ni'
+      });
+}])
+
+
+/* Menu tab management */
+var appCtrl = app.controller("menuController", ["$scope", "$http", "$cookies",
+function($scope, $http, $cookies) {
+
+    $scope.selectTab = function(num) {
+        if ($cookies.token) {
+            $scope.selected = num;
+        }
+    }
+    $scope.classTab = function(num) {
+        if (!$cookies.token) {
+            return "disbld disabled";
+        }
+        if ($scope.selected == num) {
+            return "active";
+        }
+        return "";
+    }
+}]);
+
+appCtrl.isLoggedIn = function ($q, $timeout, $cookies, $location) {
+    var defer = $q.defer();
+    $timeout(function () {
+        if ($cookies.token) {
+            defer.resolve("loadData");
+        } else {
+            defer.reject("not logged in");
+            $location.path("/login");
+            $location.replace();
+        }
+    }, 1000);
+    return defer.promise;
+};
+
+app.controller("loginController", ["$scope", "$http", "$cookies",
+                                   "$routeParams", "$location",
+function($scope, $http, $cookies, $routeParams, $location) {
+
+    $scope.init = function() {
+        if ($routeParams) {
+            logout();
+        } else {
+            $scope.message = "";
+        }
+        $scope.cookies = $cookies;
+        $scope.selected = 10;
+    }
+
+    $scope.login = function() {
+        var request = $http({
+            url: "login.php",
+            method: "GET",
+            params: {thaali: $cookies.thaali, email: $cookies.email}
+        });
+        request.success(
+            function(response)
+            {
+                $scope.details = response;
+
+                if (!$scope.details.message) {
+                    $scope.name = response;
+                    $location.path("/");
+                }
+                $scope.login = 0;
+            });
+    }
+    function logout() {
+        $scope.message = "You have been logged out";
+        $scope.selected = 10;
+        delete $cookies.admin;
+        delete $cookies.token;
+        delete $cookies.name;
+        delete $cookies.thaali;
+    }
+}]);
+
+
+/* Printout controller */
+app.controller("printController", ["$scope", "$http",
+function($scope, $http) {
+
+    $scope.init = function() {
+        $http.get("printout.php").success(
+            function(response)
+            {
+                $scope.printout = response;
+            });
+    }
+}]);
+
+/* RSVP controller */
 app.controller("rsvpController", ["$scope", "$http", "$cookies", 
 function($scope, $http, $cookies) {
     $scope.changed = false;
     $scope.toggleCount = 0;
     $scope.details = {};
-    $scope.cookies = $cookies;
     $scope.fdate;
-    $scope.selected = 10;
+    $scope.selected = 10;        // TODO: Fix default
 
     $scope.init = function() {
         // Saturday is cutoff to show next week
@@ -22,36 +147,6 @@ function($scope, $http, $cookies) {
         }
 
         postLogin($cookies.token);
-    }
- 
-    /*
-      Login related methods
-     */
-    $scope.login = function() {
-        var request = $http({
-            url: "login.php",
-            method: "GET",
-            params: {thaali: $cookies.thaali, email: $cookies.email}
-        });
-        request.success(
-            function(response)
-            {
-                $scope.details = response;
-
-                if (!$scope.details.message) {
-                    $scope.name = response;
-                    postLogin("1");
-                }
-            });
-    }
-
-    $scope.logout = function() {
-        $scope.details.message = "You have been logged out";
-        $scope.selected = 10;
-        delete $cookies.admin;
-        delete $cookies.token;
-        delete $cookies.name;
-        delete $cookies.thaali;
     }
 
    function postLogin(loggedIn) {
@@ -175,39 +270,5 @@ function($scope, $http, $cookies) {
             $scope.toggleCount = 0;
 
         })
-    }
-
-    /*
-      filling printout related methods
-     */
-    function fetchPrintout() {
-        $http.get("printout.php").success(
-            function(response)
-            {
-                $scope.printout = response;
-            });
-    }
-
-    /*
-      Tab management
-     */
-    $scope.selectTab = function(num) {
-        if ($cookies.token) {
-            $scope.selected = num;
-            if (num == 0) {
-                fetchDetails();
-            } else if (num == 1) {
-                fetchPrintout();
-            }
-        }
-    }
-    $scope.classTab = function(num) {
-        if (!$cookies.token) {
-            return "disbld disabled";
-        }
-        if ($scope.selected == num) {
-            return "active";
-        }
-        return "";
     }
 }]);
