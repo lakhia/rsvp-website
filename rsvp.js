@@ -78,7 +78,7 @@ function($scope, $http, $cookies, $routeParams, $location) {
         } else {
             $scope.message = "";
         }
-        $scope.cookies = $cookies;
+        $scope.email = $cookies.email;
         $scope.selected = 10;
     }
 
@@ -86,7 +86,7 @@ function($scope, $http, $cookies, $routeParams, $location) {
         var request = $http({
             url: "login.php",
             method: "GET",
-            params: {thaali: $cookies.thaali, email: $cookies.email}
+            params: {thaali: $scope.thaali, email: $scope.email}
         });
         request.success(
             function(response)
