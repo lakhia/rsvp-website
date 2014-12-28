@@ -27,6 +27,6 @@ if (is_admin()) {
 }
 
 // Returns true value to indicate successful login
-echo "$name";
+echo "$name"; // not convert_array_to_json?
 
 ?>

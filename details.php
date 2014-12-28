@@ -10,7 +10,7 @@ if (!verify_token($email, $thaali)) {
 if (strcmp($method, "POST") == 0) {
     details_post($conn, $thaali);
 } else {
-    details_get($conn, $thaali, "");
+    details_get($conn, $thaali, ""); 
 }
 
 // Get details for specific dates
@@ -69,7 +69,7 @@ function details_post($conn, $thaali) {
                                "values(\"$k\", $thaali, $response) " .
                                "on duplicate KEY update rsvp=$response");
         if (!$result) {
-            $msg =  mysqli_error($conn);
+            $msg =  $conn->error; // using object-oriented style
         } else {
             $msg = "Thank you, changes have been saved!";
         }
