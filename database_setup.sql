@@ -1,8 +1,8 @@
-CREATE USER 'xxxxxx'@'localhost' IDENTIFIED BY 'xxxxxx';
-GRANT ALL ON *.* TO xxxxxx@localhost;
+CREATE USER 'sffaiz'@'localhost' IDENTIFIED BY 'sffaiz-pass';
+GRANT ALL ON *.* TO sffaiz@localhost;
 
-create database xxxxxx;
-use xxxxxx;
+create database sffaiz;
+use sffaiz;
 
 ---------------
 -- TABLE schema

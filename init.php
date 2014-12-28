@@ -5,10 +5,10 @@ $email = $_COOKIE['email'];
 $method = $_SERVER['REQUEST_METHOD'];
 
 // Create connection
-$conn = new mysqli("127.0.0.1",  /* server */
-                   "xxxxxx",     /* username */
-                   "xxxxxx",     /* pass */
-                   "xxxxxx"      /* db */
+$conn = new mysqli("127.0.0.1",   /* server */
+                   "sffaiz",      /* username */
+                   "sffaiz-pass", /* pass */
+                   "sffaiz"       /* db */
                    );
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
