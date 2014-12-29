@@ -13,10 +13,17 @@
   * [Angular](https://angularjs.org/) 1.2.x or higher
   * [Angular ui-router](https://github.com/angular-ui/ui-router/wiki)
 
-On the backend, it currently requires:
+  On the backend, it currently requires:
 
   * PHP 5.5
   * MySQL
+  * Web server
+
+  Optionally, use build system by installing:
+  * [npm](https://docs.npmjs.com/getting-started/installing-node)
+  * [grunt](http://gruntjs.com/getting-started#working-with-an-existing-grunt-project)
+  * Run `grunt` and output will be saved in `build` directory
+  * Run `grunt clean` to clean output directory
 
 # Files
 
