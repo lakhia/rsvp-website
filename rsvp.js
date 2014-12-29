@@ -1,85 +1,66 @@
-var app = angular.module("rsvp", ['ngRoute', 'ngCookies']);
-app.config(['$routeProvider', '$locationProvider',
-  function($routeProvider, $locationProvider) {
-    $routeProvider
-      .when('/', {
+var app = angular.module("rsvp", ['ui.router', 'ngCookies']);
+
+/* Route configuration */
+app.config(['$stateProvider','$urlRouterProvider',
+  function($stateProvider, $urlRouterProvider) {
+    $stateProvider
+      .state("home", {
+        url: "/",
         templateUrl: 'rsvp.html',
         controller: 'rsvpController',
-        resolve: {
-          isLogged: app.isLoggedIn
-        }
       })
-      .when('/login', {
+      .state('login', {
+        url: "/login",
         templateUrl: 'login.html',
         controller: 'loginController',
       })
-      .when('/login/:out', {
+      .state('login.out', {
+        params: ['out'],
         templateUrl: 'login.html',
         controller: 'loginController',
       })
-      .when('/print', {
+      .state('print', {
+        url: "/print",
         templateUrl: 'print.html',
         controller: 'printController',
-        resolve: {
-          isLogged: app.isLoggedIn
-        }
       })
-      .when('/ni', {
+      .state('help', {
+        url: "/help",
         templateUrl: 'ni.html',
         controller: 'rsvpController',
-      })
-      .otherwise({
-        redirectTo: '/ni'
       });
+
+      $urlRouterProvider.otherwise('/');
 }])
 
-
 /* Menu tab management */
-var appCtrl = app.controller("menuController", ["$scope", "$http", "$cookies",
+app.controller("menuController", ["$scope", "$http", "$cookies",
 function($scope, $http, $cookies) {
-
-    $scope.selectTab = function(num) {
-        if ($cookies.token) {
-            $scope.selected = num;
-        }
-    }
-    $scope.classTab = function(num) {
+    $scope.menuClass = function() {
         if (!$cookies.token) {
-            return "disbld disabled";
+            return "disbld";
         }
-        if ($scope.selected == num) {
-            return "active";
-        }
-        return "";
     }
-}]);
+}])
 
-appCtrl.isLoggedIn = function ($q, $timeout, $cookies, $location) {
-    var defer = $q.defer();
-    $timeout(function () {
-        if ($cookies.token) {
-            defer.resolve("loadData");
-        } else {
-            defer.reject("not logged in");
-            $location.path("/login");
-            $location.replace();
-        }
-    }, 1000);
-    return defer.promise;
-};
+/* Add references to rootScope so that you can access them from any scope */
+app.run(['$rootScope', '$state', '$stateParams',
+    function ($rootScope, $state, $stateParams) {
+        $rootScope.$state = $state;
+        $rootScope.$stateParams = $stateParams;
+    }
+])
 
+/* Login controller */
 app.controller("loginController", ["$scope", "$http", "$cookies",
-                                   "$routeParams", "$location",
-function($scope, $http, $cookies, $routeParams, $location) {
+                                   '$state', '$rootScope',
+function($scope, $http, $cookies, $state, $rootScope) {
 
     $scope.init = function() {
-        if ($routeParams) {
+        if ($rootScope.$stateParams.out) {
             logout();
-        } else {
-            $scope.message = "";
         }
         $scope.email = $cookies.email;
-        $scope.selected = 10;
     }
 
     $scope.login = function() {
@@ -93,16 +74,17 @@ function($scope, $http, $cookies, $routeParams, $location) {
             {
                 $scope.details = response;
 
-                if (!$scope.details.message) {
+                if (!$scope.message) {
                     $scope.name = response;
-                    $location.path("/");
+                    $rootScope.name = response;
+                    $state.go("home");
                 }
                 $scope.login = 0;
             });
     }
     function logout() {
         $scope.message = "You have been logged out";
-        $scope.selected = 10;
+        delete $rootScope.name;
         delete $cookies.admin;
         delete $cookies.token;
         delete $cookies.name;
@@ -125,15 +107,21 @@ function($scope, $http) {
 }]);
 
 /* RSVP controller */
-app.controller("rsvpController", ["$scope", "$http", "$cookies", 
-function($scope, $http, $cookies) {
+app.controller("rsvpController", ["$scope", "$http", "$cookies", '$state',
+                                  "$rootScope",
+function($scope, $http, $cookies, $state, $rootScope) {
     $scope.changed = false;
     $scope.toggleCount = 0;
     $scope.details = {};
     $scope.fdate;
-    $scope.selected = 10;        // TODO: Fix default
 
     $scope.init = function() {
+        // Logged in?
+        if (!$cookies.token && !$rootScope.name) {
+            $state.go("login");
+            return;
+        }
+
         // Saturday is cutoff to show next week
         $scope.fdate = new Date();
         var day = $scope.fdate.getDay();
@@ -146,16 +134,7 @@ function($scope, $http, $cookies) {
             $scope.name = $cookies.name.replace(/\+/g, " ");
         }
 
-        postLogin($cookies.token);
-    }
-
-   function postLogin(loggedIn) {
-        if (loggedIn) {
-            $scope.selected = 0;
-            fetchDetails();
-        } else {
-            $scope.selected = 10;
-        }
+        fetchDetails();
     }
 
     function addDaysToDate(date, days) {
@@ -221,7 +200,7 @@ function($scope, $http, $cookies) {
 
     $scope.editRSVP = function(id) {
         // Clear message
-        $scope.details.message = '\u00A0';
+        $scope.message = '\u00A0';
 
         // Create a "No" default entry
         if (!$scope.details.data[id]) {

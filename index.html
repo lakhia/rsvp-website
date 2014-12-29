@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=0.67, maximum-scale=1" />
 <link rel="stylesheet" href = "http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 <script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular.min.js"></script>
-<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular-route.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
 <script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular-cookies.min.js"></script>
 <style type="text/css">
   h3 { text-align: center; font-family: "Arial Black" }
@@ -25,26 +25,28 @@
 <!-- Menu bar -->
 <div class="noPrnt" class="container" ng-controller="menuController" ng-init="init()" >
 <br>
-<ul class="nav nav-tabs">
-  <li ng-class="classTab(0)">
-    <a href="#" ng-click="selectTab(0)"><span class="glyphicon glyphicon-home"></span>  RSVP</a></li>
-  <li ng-class="classTab(1)">
-    <a href="#/print" ng-click="selectTab(1)"><span class="glyphicon glyphicon-print"></span>  Filling</a></li>
-  <li ng-class="classTab(2)">
-    <a href="#/ni" ng-click="selectTab(2)"><span class="glyphicon glyphicon-heart"></span>  Help Out</a></li>
-  <li ng-class="classTab(3)">
-    <a href="#" ng-show="cookies.admin" ng-click="selectTab(3)"><span class="glyphicon glyphicon-stats"></span>  Stats</a></li>
-  <li ng-class="classTab(4)">
-    <a href="#/ni" ng-click="selectTab(4)"><span class="glyphicon glyphicon-cog"></span>  Settings</a></li>
-  <li ng-class="classTab(5)">
-    <a href="#" ng-show="cookies.admin" ng-click="selectTab(5)"><span class="glyphicon glyphicon-tower"></span>  Administer</a></li>
-  <li ng-class="classTab(10)">
-    <a href="#/login/out" ng-click="selectTab(10)"><span class="glyphicon glyphicon-remove"></span>  Logout</a></li>
+<ul ng-class="menuClass()" class="nav nav-tabs">
+  <li ui-sref-active="active">
+    <a ui-sref="home"><span class="glyphicon glyphicon-home"></span>  RSVP</a></li>
+  <li ui-sref-active="active">
+    <a ui-sref="print"><span class="glyphicon glyphicon-print"></span>  Filling</a></li>
+  <li ui-sref-active="active">
+    <a ui-sref="help"><span class="glyphicon glyphicon-heart"></span>  Help Out</a></li>
+  <li ui-sref-active="active">
+    <a ui-sref="stats" ng-show="cookies.admin"><span class="glyphicon glyphicon-stats"></span>  Stats</a></li>
+  <li ui-sref-active="active">
+    <a ui-sref="settings"><span class="glyphicon glyphicon-cog"></span>  Settings</a></li>
+  <li ui-sref-active="active">
+    <a ui-sref="admin" ng-show="cookies.admin"><span class="glyphicon glyphicon-tower"></span>  Administer</a></li>
+  <li ng-class="{active: $state.includes('login')}">
+    <a ui-sref="login.out({out:1})"><span class="glyphicon glyphicon-remove"></span>  Logout</a></li>
 </ul>
 <div class="msg">&nbsp;{{ message }}</div><br>
 
 <!-- Select tab using view -->
-<div ng-view></div>
+<ui-view>
+  <h3>Loading, please wait ...</h3>
+</ui-view>
 
 <!-- Done with tabs, show footer -->
 <footer class="noPrnt container">
