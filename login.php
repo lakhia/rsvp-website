@@ -6,8 +6,8 @@ include 'init.php';
 $thaali = $_GET['thaali'];
 $email = $_GET['email'];
 
-// Respond in plain text
-header("Content-Type: text/plain");
+// Respond in JSON
+header("Content-Type: application/json; charset=UTF-8");
 
 // Get name from credentials
 $name = get_name($conn, $email, $thaali);
@@ -27,6 +27,6 @@ if (is_admin()) {
 }
 
 // Returns true value to indicate successful login
-echo "$name"; // not convert_array_to_json?
+echo convert_array_to_json($name, "");
 
 ?>

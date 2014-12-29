@@ -23,6 +23,5 @@ On the backend, it currently requires:
   * database_setup.sql used to setup database
   * index.html is the single web page
   * rsvp.js has the angular controller
-  * several php files serve JSON to angular (with one login.php exception that
-    serves text)
+  * several php files serve JSON to angular
   * Uses bootstrap to style buttons, tables, etc.
