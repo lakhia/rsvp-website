@@ -2,9 +2,23 @@
 
 module.exports = function(grunt) {
 
+    require('load-grunt-tasks')(grunt);
+
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+
+        // Serve files
+        php: {
+            server: {
+                options: {
+                    port: 9000,
+                    hostname: 'localhost',
+                    keepalive: true,
+                    base: 'build'
+                }
+            }
+        },
 
         // Minify JS
         uglify: {
@@ -67,4 +81,10 @@ module.exports = function(grunt) {
 
     // Default task plus other tasks
     grunt.registerTask('default', ['uglify', 'htmlmin', 'copy']);
+    grunt.registerTask('serve', 'Compile, then start a web server', function (target) {
+        grunt.task.run([
+            'default',
+            'php'
+        ]);
+    });
 };
