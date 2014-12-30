@@ -8,6 +8,25 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
+        watch: {
+            html: {
+                files: ['*.html'],
+                tasks: ['htmlmin'],
+                options: {
+                    spawn: false,
+                    livereload: 35729
+                }
+            },
+            scripts: {
+                files: ['rsvp.js'],
+                tasks: ['uglify'],
+                options: {
+                    spawn: false,
+                    livereload: 35729
+                }
+            }
+        },
+
         // Serve files
         php: {
             server: {
@@ -15,7 +34,8 @@ module.exports = function(grunt) {
                     port: 9000,
                     hostname: 'localhost',
                     keepalive: true,
-                    base: 'build'
+                    base: 'build',
+                    livereload: 35729
                 }
             }
         },
@@ -78,6 +98,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-htmlmin');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-watch');
 
     // Default task plus other tasks
     grunt.registerTask('default', ['uglify', 'htmlmin', 'copy']);
