@@ -72,14 +72,14 @@ function($scope, $http, $cookies, $state, $rootScope) {
         request.success(
             function(response)
             {
-                $scope.details = response;
-
-                if (!$scope.message) {
-                    $scope.name = response;
-                    $rootScope.name = response;
+                // Display error or redirect to home
+                if (response.message) {
+                    $scope.message = response.message;
+                } else {
+                    $scope.name = response.data;
+                    $rootScope.name = response.data;
                     $state.go("home");
                 }
-                $scope.login = 0;
             });
     }
     function logout() {
@@ -200,7 +200,7 @@ function($scope, $http, $cookies, $state, $rootScope) {
 
     $scope.editRSVP = function(id) {
         // Clear message
-        $scope.message = '\u00A0';
+        $scope.message = '';
 
         // Create a "No" default entry
         if (!$scope.details.data[id]) {
