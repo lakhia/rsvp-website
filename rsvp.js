@@ -156,15 +156,15 @@ function($scope, $http, $cookies, $state, $rootScope) {
         }).success(
             function(response)
             {
-                $scope.details = response;
+                $scope.details = response.data;
             });
     }
 
     $scope.getDisplayDate = function(input) {
-        input = $scope.details.data[input].date;
+        input = $scope.details[input].date;
         var parts = input.split('-');
         var d = new Date(parts[0], parts[1]-1, parts[2]);
-        input = input.replace(new Date().getFullYear() + "-", "");
+        input = input.replace(/^\d+-/, "").replace(/0/g, "");
         var output = ["Sun","Mon","Tue","Wed","Thr","Fri","Sat"][d.getDay()]
         return output + ", " + input;
     }
@@ -183,43 +183,28 @@ function($scope, $http, $cookies, $state, $rootScope) {
         fetchDetails();
     }
 
-    $scope.disabledRSVP = function(id) {
-        return !$scope.details.data[id].enabled;
-    }
-
-    $scope.getDetails = function(id) {
-        return $scope.details.data[id].details;
-    }
-
-    $scope.getRsvp = function(id) {
-        if ($scope.details.data[id]) {
-            return $scope.details.data[id].rsvp;
-        }
-        return "No";
-    }
-
     $scope.editRSVP = function(id) {
         // Clear message
         $scope.message = '';
 
         // Create a "No" default entry
-        if (!$scope.details.data[id]) {
-            $scope.details.data[id] = { rsvp:"No" };
+        if (!$scope.details[id]) {
+            $scope.details[id] = { rsvp:"No" };
         }
 
         // Toggle response to RSVP
-        if ($scope.details.data[id].rsvp == "Yes") {
-            $scope.details.data[id].rsvp = "No";
+        if ($scope.details[id].rsvp == "Yes") {
+            $scope.details[id].rsvp = "No";
         } else {
-            $scope.details.data[id].rsvp = "Yes";
+            $scope.details[id].rsvp = "Yes";
         }
 
         // Keep track of toggle count to enable button
-        if ($scope.details.data[id].toggled) {
-            $scope.details.data[id].toggled = 0;
+        if ($scope.details[id].toggled) {
+            $scope.details[id].toggled = 0;
             $scope.toggleCount--;
         } else {
-            $scope.details.data[id].toggled = 1;
+            $scope.details[id].toggled = 1;
             $scope.toggleCount++;
         }
         $scope.changed = ($scope.toggleCount > 0);
@@ -227,10 +212,10 @@ function($scope, $http, $cookies, $state, $rootScope) {
 
     $scope.submit = function() {
         var toggles = {};
-        for (var id in $scope.details.data) {
-            if ($scope.details.data.hasOwnProperty(id)) {
-                if ($scope.details.data[id].toggled !== undefined) {
-                    toggles[$scope.details.data[id].date] = $scope.details.data[id].rsvp;
+        for (var id in $scope.details) {
+            if ($scope.details.hasOwnProperty(id)) {
+                if ($scope.details[id].toggled !== undefined) {
+                    toggles[$scope.details[id].date] = $scope.details[id].rsvp;
                 }
             }
         }
@@ -244,7 +229,7 @@ function($scope, $http, $cookies, $state, $rootScope) {
                    toggles).success(
         function(response)
         {
-            $scope.details = response;
+            $scope.details = response.data;
             $scope.changed = false;
             $scope.toggleCount = 0;
 

@@ -14,13 +14,13 @@
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="(key, value) in details.data">
+    <tr ng-repeat="(key, value) in details">
       <td>{{ getDisplayDate(key) }}</td>
-      <td>{{ getDetails(key) }}</td>
+      <td>{{ value.details }}</td>
       <td>
-        <button class="btn rsvpBtn" ng-disabled="disabledRSVP(key)"
-                ng-class="getRsvp(key)" ng-click="editRSVP(key)">
-          <span class="glyphicon glyphicon-pencil"></span>  {{ getRsvp(key) }}
+        <button class="btn rsvpBtn" ng-disabled="! value.enabled"
+                ng-class="value.rsvp" ng-click="editRSVP(key)">
+          <span class="glyphicon glyphicon-pencil"></span>  {{ value.rsvp }}
         </button>
       </td>
     </tr>
