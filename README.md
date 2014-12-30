@@ -19,11 +19,14 @@
   * MySQL
   * Web server
 
-  Optionally, use build system by installing:
-  * [npm](https://docs.npmjs.com/getting-started/installing-node)
-  * [grunt](http://gruntjs.com/getting-started#working-with-an-existing-grunt-project)
-  * Run `grunt` and output will be saved in `build` directory
-  * Run `grunt clean` to clean output directory
+  Use build system (optional):
+
+  * Install [npm](https://docs.npmjs.com/getting-started/installing-node)
+  * Install [grunt](http://gruntjs.com/getting-started#working-with-an-existing-grunt-project)
+  * Install [live-reload plugin](http://feedback.livereload.com/knowledgebase/articles/86242-how-do-i-install-and-use-the-browser-extensions-)
+  * Run `grunt watch &` and output will be generated in `build` directory each
+    time any changes are detected and send reload event to browser plugin
+  * Run `grunt serve &` which will run a webserver and open main page in browser
 
 # Files
 
