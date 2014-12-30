@@ -1,14 +1,18 @@
 <?php
 
+date_default_timezone_set('America/Los_Angeles'); 
+// should be set before the MySQL connection is made
+// TZ problems sometimes occur otherwise
+
 $thaali = $_COOKIE['thaali'];
 $email = $_COOKIE['email'];
 $method = $_SERVER['REQUEST_METHOD'];
 
 // Create connection
-$conn = new mysqli("127.0.0.1",  /* server */
-                   "xxxxxx",     /* username */
-                   "xxxxxx",     /* pass */
-                   "xxxxxx"      /* db */
+$conn = new mysqli("127.0.0.1",   /* server */
+                   "sffaiz",      /* username */
+                   "sffaiz-pass", /* pass */
+                   "sffaiz"       /* db */
                    );
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -31,11 +35,11 @@ function verify_token($email, $thaali) {
 function get_name($conn, $email, $thaali) {
     // If admin, get name. Otherwise, verify.
     if ($email == "admin@sfjamaat.org") {
-        $result = $conn->query("SELECT * FROM family where thaali = "
+        $result = $conn->query("SELECT * FROM `family` where `thaali` = "
                                . $thaali . " LIMIT 1");
     } else {
-        $result = $conn->query("SELECT * FROM family where thaali = "
-                               . $thaali . " and email = \"" . $email . "\"");
+        $result = $conn->query("SELECT * FROM `family` where `thaali` = "
+                               . $thaali . " AND `email` = \"" . $email . "\"");
     }
     if ($result->num_rows != 1) {
         return;
@@ -53,9 +57,9 @@ function is_admin() {
 }
 
 // Convert array to JSON string
-function convert_array_to_json($array, $msg)
+function convert_array_to_json($array, $msg) // can use default args
 {
-    $wrapper = [];
+    $wrapper = array();
     if ($msg) {
         $wrapper["message"] = $msg;
     }
@@ -71,7 +75,7 @@ function rsvp_disabled() {
     if ($_COOKIE['email'] == "admin@sfjamaat.org") {
         return '1970-1-1';
     }
-    date_default_timezone_set('America/Los_Angeles');
+    // date_default_timezone_set('America/Los_Angeles');
     $cutoff = strtotime('today 7pm');
     $now = time();
     if ($now > $cutoff) {

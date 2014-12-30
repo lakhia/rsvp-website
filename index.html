@@ -3,8 +3,10 @@
 <head>
 <title>RSVP System</title>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=0.67, maximum-scale=1" />
 <link rel="stylesheet" href = "http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 <script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.min.js"></script>
 <script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular-cookies.min.js"></script>
 <style type="text/css">
   h3 { text-align: center; font-family: "Arial Black" }
@@ -18,139 +20,33 @@
 </style>
 </head>
 
-<body ng-app="rsvp" ng-init="init()" ng-controller="rsvpController">
+<body ng-app="rsvp">
 
 <!-- Menu bar -->
-<div class="noPrnt">
+<div class="small noPrnt container" ng-controller="menuController" ng-init="init()" >
 <br>
-<ul class="container nav nav-tabs">
-  <li ng-class="classTab(0)">
-    <a href="#" ng-click="selectTab(0)"><span class="glyphicon glyphicon-home"></span>  RSVP</a></li>
-  <li ng-class="classTab(1)">
-    <a href="#" ng-click="selectTab(1)"><span class="glyphicon glyphicon-print"></span>  Filling</a></li>
-  <li ng-class="classTab(2)">
-    <a href="#" ng-click="selectTab(2)"><span class="glyphicon glyphicon-heart"></span>  Help Out</a></li>
-  <li ng-class="classTab(3)">
-    <a href="#" ng-show="cookies.admin" ng-click="selectTab(3)"><span class="glyphicon glyphicon-stats"></span>  Stats</a></li>
-  <li ng-class="classTab(4)">
-    <a href="#" ng-click="selectTab(4)"><span class="glyphicon glyphicon-cog"></span>  Settings</a></li>
-  <li ng-class="classTab(5)">
-    <a href="#" ng-show="cookies.admin" ng-click="selectTab(5)"><span class="glyphicon glyphicon-tower"></span>  Administer</a></li>
-  <li ng-class="classTab(10)">
-    <a href="#" ng-click="logout()"><span class="glyphicon glyphicon-remove"></span>  Logout</a></li>
+<ul ng-class="menuClass()" class="nav nav-tabs">
+  <li ui-sref-active="active">
+    <a ui-sref="home"><span class="glyphicon glyphicon-home"></span>  RSVP</a></li>
+  <li ui-sref-active="active">
+    <a ui-sref="print"><span class="glyphicon glyphicon-print"></span>  Filling</a></li>
+  <li ui-sref-active="active">
+    <a ui-sref="help"><span class="glyphicon glyphicon-heart"></span>  Help Out</a></li>
+  <li ui-sref-active="active">
+    <a ui-sref="stats" ng-show="cookies.admin"><span class="glyphicon glyphicon-stats"></span>  Stats</a></li>
+  <li ui-sref-active="active">
+    <a ui-sref="settings"><span class="glyphicon glyphicon-cog"></span>  Settings</a></li>
+  <li ui-sref-active="active">
+    <a ui-sref="admin" ng-show="cookies.admin"><span class="glyphicon glyphicon-tower"></span>  Administer</a></li>
+  <li ng-class="{active: $state.includes('login')}">
+    <a ui-sref="login.out({out:1})"><span class="glyphicon glyphicon-remove"></span>  Logout</a></li>
 </ul>
-<br><br>
-</div>
+<div class="msg">&nbsp;{{ message }}</div><br>
 
-<!-- Show tab number 0 -->
-<div ng-show="selected == 0" class="container">
-
-<h3>RSVP for {{ name }}</h3>
-<br>
-<br>
-
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Day</th>
-      <th>Details</th>
-      <th>RSVP</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr ng-repeat="(key, value) in details.data">
-      <td>{{ getDisplayDate(key) }}</td>
-      <td>{{ getDetails(key) }}</td>
-      <td>
-        <button class="btn rsvpBtn" ng-disabled="disabledRSVP(key)"
-                ng-class="getRsvp(key)" ng-click="editRSVP(key)">
-          <span class="glyphicon glyphicon-pencil"></span>  {{ getRsvp(key) }}
-        </button>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<div class="msg">&nbsp;{{ details.message }}</div>
-<br>
-<div class="text-center">
-  <button class="btn btn-default" ng-click="prevWeek()">
-    <span class="glyphicon glyphicon-chevron-left"></span>  Prev Week
-  </button>&nbsp;&nbsp;
-  <button class="btn btn-primary" ng-disabled="!changed" ng-click="submit()">
-    <span class="glyphicon glyphicon-save"></span>  Save Changes
-  </button>&nbsp;&nbsp;
-  <button class="btn btn-default" ng-click="nextWeek()">
-    Next Week  <span class="glyphicon glyphicon-chevron-right"></span>
-  </button>
-</div>
-
-</div>
-
-<!-- Show tab number 1 -->
-<div ng-show="selected == 1" class="container">
-
-<h3>Filling Printout</h3>
-<br>
-<br>
-<table class="table-striped table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Thaali</th>
-      <th>Notes</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr ng-repeat="item in printout">
-      <td>{{ item["name"] }}</td>
-      <td>{{ item["thaali"] }}</td>
-      <td>{{ item["notes"] }}</td>
-    </tr>
-  </tbody>
-</table>
-
-</div>
-
-<!-- Show tab number 2-9 -->
-<div ng-show="selected > 1 && selected < 10" class="container">
-
-<h3>Not done, please try later!</h3>
-</div>
-
-<!-- Show tab number 5 -->
-<div ng-show="selected == 10" class="container">
-
-<h3>Enter your credentials</h3>
-<br>
-<br>
-<form class="form-horizontal" role="form">
-  <div class="form-group">
-    <label class="control-label col-sm-2" for="email">Email:</label>
-    <div class="col-sm-10">
-      <input ng-model="cookies.email" type="email" class="form-control" id="email"
-             placeholder="Enter email">
-    </div>
-  </div>
-  <div class="form-group">
-    <label class="control-label col-sm-2" for="pwd">Thaali:</label>
-    <div class="col-sm-10">
-      <input ng-model="cookies.thaali" type="password" class="form-control" id="pwd"
-             placeholder="Enter thaali number">
-    </div>
-  </div>
-
-  <br><div class="msg">&nbsp;{{ details.message }}</div>
-  <br>
-
-  <div class="form-group" novalidate>
-    <div class="text-center">
-      <button class="btn btn-primary" ng-click="login()">Next
-        <span class="glyphicon glyphicon-chevron-right"></span></button>
-    </div>
-  </div>
-</form>
-</div>
+<!-- Select tab using view -->
+<ui-view>
+  <h3>Loading, please wait ...</h3>
+</ui-view>
 
 <!-- Done with tabs, show footer -->
 <footer class="noPrnt container">
