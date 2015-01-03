@@ -12,11 +12,11 @@ header("Content-Type: application/json; charset=UTF-8");
 if (strcmp($method, "POST") == 0) {
     // Not implemented
 } else {
-    printout_get($conn);
+    printout_get();
 }
 
 // Get details for today
-function printout_get($conn) {
+function printout_get() {
 
     header("Content-Type: application/json; charset=UTF-8");
 

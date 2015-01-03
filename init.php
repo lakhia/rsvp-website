@@ -35,10 +35,10 @@ function verify_token($email, $thaali) {
 function get_name($conn, $email, $thaali) {
     // If admin, get name. Otherwise, verify.
     if ($email == "admin@sfjamaat.org") {
-        $result = $conn->query("SELECT * FROM `family` where `thaali` = "
+        $result = $conn->query("SELECT * FROM `family` WHERE `thaali` = "
                                . $thaali . " LIMIT 1");
     } else {
-        $result = $conn->query("SELECT * FROM `family` where `thaali` = "
+        $result = $conn->query("SELECT * FROM `family` WHERE `thaali` = "
                                . $thaali . " AND `email` = \"" . $email . "\"");
     }
     if ($result->num_rows != 1) {
