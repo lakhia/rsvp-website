@@ -24,6 +24,14 @@ module.exports = function(grunt) {
                     spawn: false,
                     livereload: 35729
                 }
+            },
+            php: {
+                files: ['*.php'],
+                tasks: ['copy'],
+                options: {
+                    spawn: false,
+                    livereload: 35729
+                }
             }
         },
 
