@@ -1,6 +1,6 @@
 <?php
 
-include 'init.php';
+require_once("init.php");
 
 if (!verify_token($email, $thaali)) {
     return;
@@ -12,11 +12,11 @@ header("Content-Type: application/json; charset=UTF-8");
 if (strcmp($method, "POST") == 0) {
     // Not implemented
 } else {
-    printout_get();
+    printout_get($conn);
 }
 
 // Get details for today
-function printout_get() {
+function printout_get($conn) {
 
     header("Content-Type: application/json; charset=UTF-8");
 

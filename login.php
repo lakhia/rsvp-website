@@ -1,6 +1,6 @@
 <?php
 
-include 'init.php';
+require_once("init.php");
 
 // User query params instead of cookie
 $thaali = $_GET['thaali'];

@@ -1,6 +1,6 @@
 <?php
 
-include 'init.php';
+require_once("init.php");
 
 if (!verify_token($email, $thaali)) {
     return;
