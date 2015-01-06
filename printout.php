@@ -1,22 +1,20 @@
 <?php
 
-require_once("init.php");
+require_once("aux.php");
 
-if (!verify_token($email, $thaali)) {
+if (!Helper::verify_token($email, $thaali)) {
     return;
 }
-
-header("Content-Type: application/json; charset=UTF-8");
 
 // POST or GET?
 if (strcmp($method, "POST") == 0) {
     // Not implemented
 } else {
-    printout_get($conn);
+    printout_get($db);
 }
 
 // Get details for today
-function printout_get($conn) {
+function printout_get($db) {
 
     header("Content-Type: application/json; charset=UTF-8");
 
@@ -24,7 +22,7 @@ function printout_get($conn) {
     $query = "SELECT thaali, lastName, firstName from rsvps " .
         "left join family on family.thaali = rsvps.thaali_id " .
         "where rsvp = 1 and date = date_format(CURRENT_TIMESTAMP(),'%Y-%m-%d')";
-    $result = $conn->query($query) or die(mysql_error());
+    $result = $db->query($query) or die(mysql_error());
 
     // Output JSON
     $first = 1;
@@ -47,7 +45,7 @@ function printout_get($conn) {
 }
 
 // Post update to details
-function details_post($conn) {
+function details_post($db) {
 }
 
 ?>

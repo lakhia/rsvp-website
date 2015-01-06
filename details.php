@@ -1,38 +1,43 @@
 <?php
 
-require_once("init.php");
+require_once("aux.php");
 
-if (!verify_token($email, $thaali)) {
+if (!Helper::verify_token($email, $thaali)) {
     return;
 }
 
 // POST or GET?
 if (strcmp($method, "POST") == 0) {
-    details_post($conn, $thaali);
+    details_post($db, $thaali);
 } else {
-    details_get($conn, $thaali, ""); 
+    details_get($db, $thaali, ""); 
 }
 
 // Get details for specific dates
-function details_get($conn, $thaali, $msg) {
+function details_get($db, $thaali, $msg) {
 
-    header("Content-Type: application/json; charset=UTF-8");
+   // header("Content-Type: application/json; charset=UTF-8");
 
     $from = $_GET['from'];
     $to = $_GET['to'];
 
     // Make query
-    $query = "SELECT week.date,details,rsvp FROM week " .
+    $query = "SELECT week.date, details, rsvp FROM week " .
         "LEFT JOIN rsvps ON rsvps.date = week.date " .
-        "AND rsvps.thaali_id =  " . $thaali;
-    if ($from) {
-        $query = $query . " where week.date >= \""
-            . $from . "\" and week.date < \"" . $to . "\"";
+        "AND rsvps.thaali_id = " . $thaali . "";
+    if ($from) 
+    {
+        $query .= " WHERE week.date >= '"
+            . $from . "' AND week.date < '" . $to . "';";
     }
-    $result = $conn->query($query);
+    else
+    {
+        $query .= ";";
+    }
+    $result = $db->query($query);
 
     // Get cutoff time for disabling entry
-    $cutoff = rsvp_disabled();
+    $cutoff = Helper::rsvp_disabled();
 
     // Convert rows
     // TODO: Check if $result is non-object
@@ -52,11 +57,11 @@ function details_get($conn, $thaali, $msg) {
 
         $rows[] = $row;
     }
-    echo convert_array_to_json($rows, $msg);
+    echo Helper::convert_array_to_json($rows, $msg);
 }
 
 // Post update to details
-function details_post($conn, $thaali) {
+function details_post($db, $thaali) {
     $data = json_decode(file_get_contents('php://input'), true);
     foreach ($data as $k => $v) {
 
@@ -65,17 +70,17 @@ function details_post($conn, $thaali) {
         if ($v == "Yes") {
             $response = 1;
         }
-        $result = $conn->query("insert into rsvps(date, thaali_id, rsvp) " .
+        $result = $db->query("insert into rsvps(date, thaali_id, rsvp) " .
                                "values(\"$k\", $thaali, $response) " .
                                "on duplicate KEY update rsvp=$response");
         if (!$result) {
-            $msg =  $conn->error; // using object-oriented style
+            $msg =  $db->error; // using object-oriented style
         } else {
             $msg = "Thank you, changes have been saved!";
         }
     }
 
-    details_get($conn, $thaali, $msg);
+    details_get($db, $thaali, $msg);
 }
 
 ?>
