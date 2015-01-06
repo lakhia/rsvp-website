@@ -1,47 +1,61 @@
 <?php
 
-require_once("aux.php");
+require_once('aux.php');
 
 if (!Helper::verify_token($email, $thaali)) {
     return;
 }
 
 // POST or GET?
-if (strcmp($method, "POST") == 0) {
+if ($method == "POST") // because $method is set by the $_SERVER[] superglobal, strcmp() is unnecessary security, $method can only ever by POST or GET
+{
     // Not implemented
-} else {
+}
+else 
+{
     printout_get($db);
 }
 
 // Get details for today
 function printout_get($db) {
 
-    header("Content-Type: application/json; charset=UTF-8");
-
     // Make query
     $query = "SELECT thaali, lastName, firstName from rsvps " .
-        "left join family on family.thaali = rsvps.thaali_id " .
-        "where rsvp = 1 and date = date_format(CURRENT_TIMESTAMP(),'%Y-%m-%d')";
-    $result = $db->query($query) or die(mysql_error());
+        "LEFT JOIN family on family.thaali = rsvps.thaali_id " .
+        "WHERE rsvp = 1 and date = CURDATE();";
 
-    // Output JSON
-    $first = 1;
-    echo "[\n";
+    $result = $db->query($query);
 
-    // Output each row
-    while($row = $result->fetch_assoc()) {
-        if ($first) {
-            $first = 0;
-        } else {
-            print ",\n";
-        }
-        echo '{"thaali":' . $row["thaali"] . ',"name":"' . $row["firstName"]
-            . " " . $row["lastName"] . '", "notes":""';
-        echo '}';
+    $output = array();
+
+    // // Output JSON
+    // $first = 1;
+    // echo "[\n";
+
+    // // Output each row
+    // while($row = $result->fetch_assoc()) {
+    //     if ($first) {
+    //         $first = 0;
+    //     } else {
+    //         print ",\n";
+    //     }
+    //     echo '{"thaali":' . $row["thaali"] . ',"name":"' . $row["firstName"]
+    //         . " " . $row["lastName"] . '", "notes":""';
+    //     echo '}';
+    // }
+
+    while( $row = $result->fetch_assoc())
+    {
+        $temp = array();
+            $temp['name'] = $row['firstName'] . " " . $row['lastName'];
+            $temp['thaali'] = $row['thaali'];
+        //    $temp['notes'] = $row['notes'];
+        $output[] = $temp;
     }
 
+    echo Helper::convert_array_to_json($output, "");
     // Done
-    echo "\n]\n";
+    // echo "\n]\n";
 }
 
 // Post update to details

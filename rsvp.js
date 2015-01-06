@@ -101,7 +101,7 @@ function($scope, $http) {
         $http.get("printout.php").success(
             function(response)
             {
-                $scope.printout = response;
+                $scope.printout = response.data;
             });
     }
 }]);
