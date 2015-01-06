@@ -9,6 +9,7 @@ $email = $_COOKIE['email'];
 $method = $_SERVER['REQUEST_METHOD'];
 
 // Create connection
+
 $conn = new mysqli("127.0.0.1",   /* server */
                    "sffaiz",      /* username */
                    "sffaiz-pass", /* pass */
