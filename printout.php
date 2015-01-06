@@ -20,29 +20,13 @@ else
 function printout_get($db) {
 
     // Make query
-    $query = "SELECT thaali, lastName, firstName from rsvps " .
-        "LEFT JOIN family on family.thaali = rsvps.thaali_id " .
-        "WHERE rsvp = 1 and date = CURDATE();";
+    $query = "SELECT `thaali`, `lastName`, `firstName` FROM `rsvps` " .
+        "LEFT JOIN `family` on family.thaali = rsvps.thaali_id " .
+        "WHERE `rsvp` = 1 AND `date` = CURDATE();";
 
     $result = $db->query($query);
 
     $output = array();
-
-    // // Output JSON
-    // $first = 1;
-    // echo "[\n";
-
-    // // Output each row
-    // while($row = $result->fetch_assoc()) {
-    //     if ($first) {
-    //         $first = 0;
-    //     } else {
-    //         print ",\n";
-    //     }
-    //     echo '{"thaali":' . $row["thaali"] . ',"name":"' . $row["firstName"]
-    //         . " " . $row["lastName"] . '", "notes":""';
-    //     echo '}';
-    // }
 
     while( $row = $result->fetch_assoc())
     {
@@ -54,8 +38,6 @@ function printout_get($db) {
     }
 
     echo Helper::convert_array_to_json($output, "");
-    // Done
-    // echo "\n]\n";
 }
 
 // Post update to details
