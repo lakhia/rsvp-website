@@ -4,10 +4,6 @@
 // report all warnings, errors as errors
 date_default_timezone_set('America/Los_Angeles');
 
-$thaali = $_COOKIE['thaali'];
-$email = $_COOKIE['email'];
-$method = $_SERVER['REQUEST_METHOD'];
-
 class DB {
 
 	private $mysqli;
