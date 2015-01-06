@@ -19,7 +19,7 @@ require_once('admin.php');
 // echo "\n";
 // echo Helper::get_name($db, 'lakhia@gmail.com', 36);
 	  
-
+// create testing data
 // for ( $i = 0; $i <= 30; $i++ )
 // {
 // 	insert_week($db, date('Y-m-d', strtotime( "+" . $i . " day" )), "testing" . $i);

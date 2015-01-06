@@ -39,7 +39,6 @@ class DB {
 		
 		if( $this->mysqli->errno == 0 ) // if the query succeeded
 		{
-		
 			return $result; // can potentially log all queries as well
 		} 
 		else // the query failed.
