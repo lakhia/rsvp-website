@@ -26,9 +26,25 @@ app.config(['$stateProvider','$urlRouterProvider',
       })
       .state('help', {
         url: "/help",
-        templateUrl: 'ni.html',
-        controller: 'rsvpController',
+        templateUrl: 'admin.html',
+        controller: 'adminController',
       });
+      // .state('stats', {
+      //   url: "/stats",
+      //   templateUrl: 'stats.html',
+      //   controller: 'statsController',
+      // }),
+      // .state('admin', {
+      //   url: "/admin",
+      //   templateUrl: 'admin.html',
+      //   controller: 'adminController',
+      // })
+      // .state('settings', {
+      //   url: "/settings",
+      //   templateUrl: 'settings.html',
+      //   controller: 'settingsControler',
+      // });
+
 
       $urlRouterProvider.otherwise('/');
 }])
@@ -105,6 +121,7 @@ function($scope, $http) {
             });
     }
 }]);
+
 
 /* RSVP controller */
 app.controller("rsvpController", ["$scope", "$http", "$cookies", '$state',
@@ -234,5 +251,31 @@ function($scope, $http, $cookies, $state, $rootScope) {
             $scope.toggleCount = 0;
 
         })
+    }
+}]);
+
+app.controller("adminController", ["$scope", "$http", "$cookies", "$state",
+function($scope, $http, $cookies, $state)
+{
+    $scope.init = function()
+    {
+        if ( !$cookies.admin && !$scope.name )
+        {
+            $scope.message = 'You are not admin';
+           // $state.go('login');
+        }
+    }
+
+    $scope.insert_week = function()
+    {
+        var newdate = $scope.newMealDate; console.log(newdate);
+        var newdetails = $scope.newMealDetails; console.log(newdetails);
+
+        $http.post("admin.php",
+                   {'date': newdate, 'details': newdetails}).success(
+            function(response)
+            {
+                $scope.message = response.message;
+            });
     }
 }]);

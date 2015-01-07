@@ -1,0 +1,31 @@
+<div class="container" ng-init="init()">
+
+<h3>Administration Panel</h3>
+<br>
+<br>
+
+<h5>Add new meal</h5>
+<h3>{{ message }}</h3>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Details</th>
+      <th>Submit</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><input type="date" ng-model="newMealDate" class="form-control" id="newmealdate" placeholder="Date" /></td>
+      <td><input type="text" ng-model="newMealDetails" class="form-control" id="newmealdetails" placeholder="Details" /></td>
+      <td>
+        <button class="btn btn-primary" ng-click="insert_week()">
+        <span class="glyphicon glyphicon-save"></span>  Add
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+ 
+
+</div>

@@ -2,6 +2,14 @@
 
 require_once('aux.php');
 
+$data = json_decode(file_get_contents('php://input'), true);
+
+if ( $method ) //== "POST" )
+{
+	insert_week($db, $data['date'], $data['details']);
+}
+
+
 function insert_week($db, $date, $details)
 {
 	//$edate = $db->real_escape_string($date);
