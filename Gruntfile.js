@@ -8,20 +8,30 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
+        htmlbuild: {
+            dist: {
+                src: 'index.html',
+                dest: 'build/',
+                options: {
+                    scripts: {
+                        main: 'tmp/rsvp.js'
+                    }
+                }
+            }
+        },
+
         watch: {
             html: {
                 files: ['*.html'],
-                tasks: ['htmlmin'],
+                tasks: ['default'],
                 options: {
-                    spawn: false,
                     livereload: 35729
                 }
             },
             scripts: {
-                files: ['rsvp.js'],
-                tasks: ['uglify'],
+                files: ['*.js'],
+                tasks: ['default'],
                 options: {
-                    spawn: false,
                     livereload: 35729
                 }
             },
@@ -29,7 +39,6 @@ module.exports = function(grunt) {
                 files: ['*.php'],
                 tasks: ['copy'],
                 options: {
-                    spawn: false,
                     livereload: 35729
                 }
             }
@@ -51,12 +60,9 @@ module.exports = function(grunt) {
 
         // Minify JS
         uglify: {
-            options: {
-                banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
-            },
             build: {
-                src: 'rsvp.js',
-                dest: 'build/rsvp.js'
+                src: ['main.js', 'rsvp.js', 'login.js', 'print.js', 'tmp/tmpl.js'],
+                dest: 'tmp/rsvp.js'
             }
         },
 
@@ -71,7 +77,7 @@ module.exports = function(grunt) {
                     expand: true,
                     cwd: './',                           // Project root
                     src: '*.html',
-                    dest: 'build/'
+                    dest: 'tmp/'
                 }]
             }
         },
@@ -89,13 +95,21 @@ module.exports = function(grunt) {
             }
         },
 
+        ngtemplates: {
+            rsvp: {
+                cwd: 'tmp/',
+                src: '[a-hj-z]*.html',
+                dest: 'tmp/tmpl.js'
+            }
+        },
+
         // Clean
         clean: {
             build: {
                 files: [{
                     dot: true,
                     src: [
-                        'build/'
+                        'build/', 'tmp'
                     ]
                 }]
             }
@@ -108,9 +122,14 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-angular-templates');
+    grunt.loadNpmTasks('grunt-html-build');
 
-    // Default task plus other tasks
-    grunt.registerTask('default', ['uglify', 'htmlmin', 'copy']);
+    // Default build task and serve task
+    grunt.registerTask('default',
+                       ['htmlmin', 'ngtemplates',
+                        'uglify', 'copy', 'htmlbuild']
+                      );
     grunt.registerTask('serve', 'Compile, then start a web server', function (target) {
         grunt.task.run([
             'default',
