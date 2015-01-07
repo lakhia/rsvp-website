@@ -76,10 +76,7 @@ class DB {
 			$file = $backtrace[$offset]['file'];
 		
 		$text = <<< TEXT
-{$date} [{$this->errno}] {$this->error} ({$this->exception_message})
-{$query}
-{$file}: {$class}->{$function}[{$line}]
-\n
+{$date} {$file}: {$class}->{$function}[{$line}] [{$this->errno}] {$this->error} ({$this->exception_message}) {$query}\n
 TEXT;
 // not a very good layout at the moment
 
