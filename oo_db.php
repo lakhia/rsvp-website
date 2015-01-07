@@ -49,7 +49,8 @@ class DB {
 			
 			$this->log_error($query_string);
 	
-			throw new Exception($exception_message);	
+			return false;
+			//throw new Exception($exception_message);	
 			// This should be the lowest level Exception that can be thrown.
 		}
 	}
