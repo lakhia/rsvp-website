@@ -120,7 +120,7 @@ module.exports = function(grunt) {
         ngtemplates: {
             rsvp: {
                 cwd: 'tmp/',
-                src: '*.html',
+                src: ['*.html','!index.html'],
                 dest: 'tmp/tmpl.js'
             }
         },
