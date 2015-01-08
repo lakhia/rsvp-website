@@ -10,11 +10,14 @@ module.exports = function(grunt) {
 
         htmlbuild: {
             dist: {
-                src: 'index.html',
+                src: 'app/index.html',
                 dest: 'build/',
                 options: {
                     scripts: {
                         main: 'tmp/rsvp.js'
+                    },
+                    styles: {
+                        main: 'app/css/app.css'
                     }
                 }
             }
@@ -22,21 +25,21 @@ module.exports = function(grunt) {
 
         watch: {
             html: {
-                files: ['*.html'],
+                files: ['app/*.html'],
                 tasks: ['default'],
                 options: {
                     livereload: 35729
                 }
             },
             scripts: {
-                files: ['*.js'],
+                files: ['app/js/*.js'],
                 tasks: ['default'],
                 options: {
                     livereload: 35729
                 }
             },
             php: {
-                files: ['*.php'],
+                files: ['app/*.php'],
                 tasks: ['copy'],
                 options: {
                     livereload: 35729
@@ -61,7 +64,7 @@ module.exports = function(grunt) {
         // Minify JS
         uglify: {
             build: {
-                src: ['main.js', 'rsvp.js', 'login.js', 'print.js', 'tmp/tmpl.js'],
+                src: ['app/js/main.js', 'app/js/*.js', 'tmp/tmpl.js'],
                 dest: 'tmp/rsvp.js'
             }
         },
@@ -75,7 +78,7 @@ module.exports = function(grunt) {
                 },
                 files: [{
                     expand: true,
-                    cwd: './',                           // Project root
+                    cwd: 'app',
                     src: '*.html',
                     dest: 'tmp/'
                 }]
@@ -86,11 +89,10 @@ module.exports = function(grunt) {
         copy: {
             build: {
                 files: [{
-                    // includes files within path
                     expand: true,
+                    cwd: 'app',
                     src: ['*.php'],
-                    dest: 'build/',
-                    filter: 'isFile'
+                    dest: 'build/'
                 }]
             }
         },
@@ -109,7 +111,7 @@ module.exports = function(grunt) {
                 files: [{
                     dot: true,
                     src: [
-                        'build/', 'tmp'
+                        'build', 'tmp'
                     ]
                 }]
             }

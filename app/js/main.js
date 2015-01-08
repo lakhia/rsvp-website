@@ -28,21 +28,21 @@ app.config(['$stateProvider','$urlRouterProvider',
         url: "/help",
         templateUrl: 'admin.html',
         controller: 'adminController',
+      })
+      .state('admin', {
+         url: "/admin",
+         templateUrl: 'admin.html',
+         controller: 'adminController',
       });
       // .state('stats', {
       //   url: "/stats",
       //   templateUrl: 'stats.html',
       //   controller: 'statsController',
       // }),
-      // .state('admin', {
-      //   url: "/admin",
-      //   templateUrl: 'admin.html',
-      //   controller: 'adminController',
-      // })
       // .state('settings', {
-      //   url: "/settings",
-      //   templateUrl: 'settings.html',
-      //   controller: 'settingsControler',
+      //    url: "/settings",
+      //    templateUrl: 'settings.html',
+      //    controller: 'settingsControler',
       // });
 
       $urlRouterProvider.otherwise('/');
