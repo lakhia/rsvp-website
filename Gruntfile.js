@@ -15,6 +15,9 @@ module.exports = function(grunt) {
                 options: {
                     scripts: {
                         main: 'tmp/rsvp.js'
+                    },
+                    styles: {
+                        main: 'app/css/app.css'
                     }
                 }
             }
