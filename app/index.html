@@ -12,6 +12,7 @@
 <!-- build:style inline main -->
 <link rel="stylesheet" href = "css/app.css">
 <!-- /build -->
+</head>
 
 <body ng-app="rsvp">
 
@@ -34,7 +35,8 @@
   <li ng-class="{active: $state.includes('login')}">
     <a ui-sref="login.out({out:1})"><span class="glyphicon glyphicon-remove"></span>  Logout</a></li>
 </ul>
-<div class="msg">&nbsp;{{ message }}</div><br>
+</div>
+<br>
 
 <!-- Select tab using view -->
 <ui-view>
