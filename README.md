@@ -19,19 +19,19 @@
   * MySQL
   * Web server
 
-  Use build system (optional):
+  Use build system:
 
   * Install [npm](https://docs.npmjs.com/getting-started/installing-node)
   * Install [grunt](http://gruntjs.com/getting-started#working-with-an-existing-grunt-project)
-  * Install [live-reload plugin](http://feedback.livereload.com/knowledgebase/articles/86242-how-do-i-install-and-use-the-browser-extensions-)
   * Run `grunt watch &` and output will be generated in `build` directory each
-    time any changes are detected and send reload event to browser plugin
+    time any changes are detected and send reload event to browser
   * Run `grunt serve &` which will run a webserver and open main page in browser
 
 # Files
 
   * database_setup.sql used to setup database
   * index.html is the single web page
-  * rsvp.js has the angular controller
+  * main.js has the main angular controller
+  * other javascript files contain view-specific controllers
   * several php files serve JSON to angular
   * Uses bootstrap to style buttons, tables, etc.
