@@ -15,6 +15,7 @@ class DB {
 	private $dbname = 		"sffaiz";
 
     public  $connected =    false;
+    public  $error =        "";
 
 	public function __construct() {
 
@@ -67,6 +68,9 @@ class DB {
         $text .= "{$error}:";
         $text .= "{$query}:";
         $text .= "{$file}:{$line}";
+
+        // Keep last error for caller
+        $this->error = $error;
 
 		error_log($text);
 	}
