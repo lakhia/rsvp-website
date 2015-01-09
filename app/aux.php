@@ -27,14 +27,10 @@ class Helper
 
 	public static function get_name($db, $email, $thaali) 
 	{
-	    // If admin, get name. Otherwise, verify.
-	    if (self::is_admin()) 
-	    {
+	    if ($email == "admin@sfjamaat.org") {
 	        $result = $db->query("SELECT * FROM `family` WHERE `thaali` = "
 	                               . $thaali . " LIMIT 1");
-	    } 
-	    else
-	    {
+	    } else {
 	        $result = $db->query("SELECT * FROM `family` WHERE `thaali` = "
 	                               . $thaali . " AND `email` = \"" . $email . "\"");
 	    }
