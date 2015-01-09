@@ -2,6 +2,8 @@
 
 date_default_timezone_set('America/Los_Angeles');
 
+error_reporting(E_ERROR & E_NOTICE);
+
 class DB {
 
 	private $mysqli;
@@ -52,6 +54,8 @@ class DB {
         // Determine if called by query() or directly to determine file and
         // line number
 		$backtrace = debug_backtrace();
+
+		$offset = ( isset($backtrace[1]) ) ? 1 : 0;
 
         $line = $backtrace[$offset]['line'];
         $file = $backtrace[$offset]['file'];
