@@ -32,26 +32,16 @@ module.exports = function(grunt) {
         },
 
         watch: {
-            html: {
-                files: ['app/*.html', 'app/css/*'],
+            client: {
+                files: ['app/*.html', 'app/css/*', 'app/js/*.js'],
                 tasks: ['default'],
                 options: {
                     livereload: 35729
                 }
             },
-            scripts: {
-                files: ['app/js/*.js'],
-                tasks: ['default'],
-                options: {
-                    livereload: 35729
-                }
-            },
-            php: {
+            server: {
                 files: ['app/*.php'],
-                tasks: ['copy'],
-                options: {
-                    livereload: 35729
-                }
+                tasks: ['copy']
             }
         },
 
