@@ -56,7 +56,7 @@ function($scope, $http, $cookies, $state, $rootScope) {
         input = $scope.details[input].date;
         var parts = input.split('-');
         var d = new Date(parts[0], parts[1]-1, parts[2]);
-        input = input.replace(/^\d+-/, "").replace(/0/g, "");
+        input = input.replace(/^\d+-/, "");
         var output = ["Sun","Mon","Tue","Wed","Thr","Fri","Sat"][d.getDay()]
         return output + ", " + input;
     }
@@ -126,31 +126,5 @@ function($scope, $http, $cookies, $state, $rootScope) {
             $scope.toggleCount = 0;
 
         })
-    }
-}]);
-
-app.controller("adminController", ["$scope", "$http", "$cookies", "$state",
-function($scope, $http, $cookies, $state)
-{
-    $scope.init = function()
-    {
-        if ( !$cookies.admin && !$scope.name )
-        {
-            $scope.message = 'You are not admin';
-           // $state.go('login');
-        }
-    }
-
-    $scope.insert_week = function()
-    {
-        var newdate = $scope.newMealDate; console.log(newdate);
-        var newdetails = $scope.newMealDetails; console.log(newdetails);
-
-        $http.post("admin.php",
-                   {'date': newdate, 'details': newdetails}).success(
-            function(response)
-            {
-                $scope.message = response.message;
-            });
     }
 }]);

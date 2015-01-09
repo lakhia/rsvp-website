@@ -26,7 +26,7 @@ app.config(['$stateProvider','$urlRouterProvider',
       })
       .state('help', {
         url: "/help",
-        templateUrl: 'admin.html',
+        templateUrl: 'ni.html',
         controller: 'adminController',
       })
       .state('admin', {
