@@ -1,19 +1,18 @@
 /* Admin controller */
 app.controller("adminController", ["$scope", "$http", "$cookies", "$state",
-function($scope, $http, $cookies, $state)
+                                   "$rootScope",
+function($scope, $http, $cookies, $state, $rootScope)
 {
     $scope.init = function() {
-        if ( !$cookies.admin || !$scope.name ) {
+        if (!$cookies.admin && !$rootScope.name ) {
             $state.go('login');
         }
     }
 
     $scope.insert_week = function() {
-        var newdate = $scope.newMealDate; console.log(newdate);
-        var newdetails = $scope.newMealDetails; console.log(newdetails);
 
-        $http.post("admin.php",
-                   {'date': newdate, 'details': newdetails}).success(
+        $http.post("admin.php", {'date': $scope.date,
+                                 'details': $scope.details}).success(
             function(response)
             {
                 $scope.message = response.message;
