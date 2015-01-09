@@ -6,8 +6,8 @@ require_once 'oo_db.php';
 
 $db = new DB();
 
-$thaali_cookie = $_COOKIE['thaali'];
-$email_cookie = $_COOKIE['email'];
+$thaali_cookie = isset($_COOKIE['thaali']) ? $_COOKIE['thaali'] : '';
+$email_cookie = isset($_COOKIE['email']) ? $_COOKIE['email'] : '';
 $method_server = $_SERVER['REQUEST_METHOD'];
 
 class Helper

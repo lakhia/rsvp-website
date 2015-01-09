@@ -2,7 +2,7 @@
 
 require_once('aux.php');
 
-if (!Helper::verify_token($email, $thaali_cookie)) {
+if (!Helper::verify_token($email_cookie, $thaali_cookie)) {
     return;
 }
 
