@@ -4,7 +4,7 @@ require_once('aux.php');
 
 $data = json_decode(file_get_contents('php://input'), true);
 
-if ( $method ) //== "POST" )
+if ( $method_server ) //== "POST" )
 {
 	insert_week($db, $data['date'], $data['details']);
 }

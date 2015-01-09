@@ -2,12 +2,12 @@
 
 require_once('aux.php');
 
-if (!Helper::verify_token($email, $thaali)) {
+if (!Helper::verify_token($email, $thaali_cookie)) {
     return;
 }
 
 // POST or GET?
-if ($method == "POST") // because $method is set by the $_SERVER[] superglobal, strcmp() is unnecessary security, $method can only ever by POST or GET
+if ($method_server == "POST") // because $method is set by the $_SERVER[] superglobal, strcmp() is unnecessary security, $method can only ever by POST or GET
 {
     // Not implemented
 }

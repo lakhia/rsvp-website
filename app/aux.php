@@ -6,9 +6,9 @@ require_once 'oo_db.php';
 
 $db = new DB();
 
-$thaali = $_COOKIE['thaali'];
-$email = $_COOKIE['email'];
-$method = $_SERVER['REQUEST_METHOD'];
+$thaali_cookie = $_COOKIE['thaali'];
+$email_cookie = $_COOKIE['email'];
+$method_server = $_SERVER['REQUEST_METHOD'];
 
 class Helper
 {
@@ -27,7 +27,7 @@ class Helper
 
 	public static function get_name($db, $email, $thaali) 
 	{
-	    if ($email == "admin@sfjamaat.org") {
+	    if ($email == "admin@sfjamaat.org") { // not $_COOKIE
 	        $result = $db->query("SELECT * FROM `family` WHERE `thaali` = "
 	                               . $thaali . " LIMIT 1");
 	    } else {

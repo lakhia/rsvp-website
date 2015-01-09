@@ -2,15 +2,15 @@
 
 require_once("aux.php");
 
-if (!Helper::verify_token($email, $thaali)) {
+if (!Helper::verify_token($email_cookie, $thaali_cookie)) {
     return;
 }
 
 // POST or GET?
-if (strcmp($method, "POST") == 0) {
-    details_post($db, $thaali);
+if (strcmp($method_server, "POST") == 0) {
+    details_post($db, $thaali_cookie);
 } else {
-    details_get($db, $thaali, ""); 
+    details_get($db, $thaali_cookie, ""); 
 }
 
 // Get details for specific dates
