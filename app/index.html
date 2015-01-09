@@ -5,16 +5,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=0.67, maximum-scale=1" />
 <link rel="stylesheet" href = "http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.min.js"></script>
-<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular-cookies.min.js"></script>
 
 <!-- build:style inline main -->
 <link rel="stylesheet" href = "css/app.css">
 <!-- /build -->
 </head>
 
-<body ng-app="rsvp">
+<body ng-app="rsvp" ng-cloak>
+
+<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.min.js"></script>
+<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular-cookies.min.js"></script>
 
 <!-- Menu bar -->
 <div class="small noPrnt container" ng-controller="menuController" ng-init="init()" >
