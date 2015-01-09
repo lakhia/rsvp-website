@@ -55,7 +55,10 @@ class DB {
         // line number
 		$backtrace = debug_backtrace();
 
-		$offset = ( isset($backtrace[1]) ) ? 1 : 0;
+        $offset = 0;
+        if ($backtrace[1]['function'] == "query" && isset($backtrace[1])) {
+            $offset = 1;
+        }
 
         $line = $backtrace[$offset]['line'];
         $file = $backtrace[$offset]['file'];
