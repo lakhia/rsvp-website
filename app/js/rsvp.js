@@ -121,6 +121,7 @@ function($scope, $http, $cookies, $state, $rootScope) {
                    toggles).success(
         function(response)
         {
+            $scope.message = response.message;
             $scope.details = response.data;
             $scope.changed = false;
             $scope.toggleCount = 0;
