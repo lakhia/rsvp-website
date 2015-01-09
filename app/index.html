@@ -31,7 +31,7 @@
   <li ui-sref-active="active">
     <a ui-sref="settings"><span class="glyphicon glyphicon-cog"></span>  Settings</a></li>
   <li ui-sref-active="active">
-    <a ui-sref="admin" ng-show="cookies.admin"><span class="glyphicon glyphicon-tower"></span>  Administer</a></li>
+    <a ui-sref="admin" ng-hide="cookies.admin"><span class="glyphicon glyphicon-tower"></span>  Administer</a></li>
   <li ng-class="{active: $state.includes('login')}">
     <a ui-sref="login.out({out:1})"><span class="glyphicon glyphicon-remove"></span>  Logout</a></li>
 </ul>
