@@ -13,7 +13,28 @@ function($scope, $http, $cookies, $state)
         var newdetails = $scope.newMealDetails; console.log(newdetails);
 
         $http.post("admin.php",
-                   {'date': newdate, 'details': newdetails}).success(
+                   {'date': newdate, 'details': newdetails, 'action': 'new'}).success(
+            function(response)
+            {
+                $scope.message = response.message;
+            });
+    }
+
+    $scope.causeDelete = function(key) {
+        $http.post("admin.php", 
+            {'date': $scope.editDetails[key], 'action': 'delete'}).success(
+        function(response)
+        {
+            $scope.message = response.message();
+        });
+    }
+
+    $scope.causeEdit = function(key) {
+        var editedDate = key;
+        var editedDetails = $scope.editDetails[key].details;
+
+        $http.post("admin.php",
+                   {'date': editedDate, 'details': editedDetails, 'action': 'edit'}).success(
             function(response)
             {
                 $scope.message = response.message;
