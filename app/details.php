@@ -34,6 +34,7 @@ function details_get($db, $thaali, $msg) {
     {
         $query .= ";";
     }
+    
     $result = $db->query($query);
 
     // Get cutoff time for disabling entry
