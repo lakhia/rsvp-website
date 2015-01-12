@@ -2,7 +2,7 @@
 
 date_default_timezone_set('America/Los_Angeles');
 
-error_reporting(E_ERROR & E_NOTICE);
+error_reporting(E_ERROR & E_WARNING);
 
 class DB {
 
