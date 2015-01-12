@@ -62,12 +62,6 @@ function($scope, $http, $cookies, $rootScope, $state) {
         $scope.cookies = $cookies;
     }
 
-    $scope.menuClass = function() {
-        if (!$cookies.token) {
-            return "disbld";
-        }
-    }
-
     $scope.login = function() {
         var request = $http({
             url: "login.php",

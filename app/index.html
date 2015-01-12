@@ -20,17 +20,17 @@
 <!-- Menu bar -->
 <div class="small noPrnt container" ng-controller="mainController" ng-init="init()" >
 <br>
-<ul ng-class="menuClass()" class="nav nav-tabs">
+<ul class="nav nav-tabs">
   <li ui-sref-active="active">
-    <a ui-sref="home"><span class="glyphicon glyphicon-home"></span>  RSVP</a></li>
+    <a ui-sref="home" ng-show="cookies.token"><span class="glyphicon glyphicon-home"></span>  RSVP</a></li>
   <li ui-sref-active="active">
-    <a ui-sref="print"><span class="glyphicon glyphicon-print"></span>  Filling</a></li>
+    <a ui-sref="print" ng-show="cookies.token"><span class="glyphicon glyphicon-print"></span>  Filling</a></li>
   <li ui-sref-active="active">
-    <a ui-sref="help"><span class="glyphicon glyphicon-heart"></span>  Help Out</a></li>
+    <a ui-sref="help" ng-show="cookies.token"><span class="glyphicon glyphicon-heart"></span>  Help Out</a></li>
   <li ui-sref-active="active">
     <a ui-sref="stats" ng-show="cookies.adv"><span class="glyphicon glyphicon-stats"></span>  Stats</a></li>
   <li ui-sref-active="active">
-    <a ui-sref="settings"><span class="glyphicon glyphicon-cog"></span>  Settings</a></li>
+    <a ui-sref="settings" ng-show="cookies.token"><span class="glyphicon glyphicon-cog"></span>  Settings</a></li>
   <li ui-sref-active="active">
     <a ui-sref="admin" ng-show="cookies.adv"><span class="glyphicon glyphicon-tower"></span>  Administer</a></li>
   <li ng-class="{active: $state.includes('login')}">
