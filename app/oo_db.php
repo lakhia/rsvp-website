@@ -2,7 +2,7 @@
 
 date_default_timezone_set('America/Los_Angeles');
 
-error_reporting(E_ERROR & E_WARNING);
+error_reporting(E_ALL);
 
 class DB {
 
@@ -16,6 +16,7 @@ class DB {
 
     public  $connected =    false;
     public  $error =        "";
+    public $error_data =    null;
 
 	public function __construct() {
 
@@ -24,8 +25,8 @@ class DB {
                                    $this->dbpassword, $this->dbname);
 
         if ($this->mysqli->connect_errno) {
-            // the query failed, log it
-            $this->log_error("{$this->mysqli->connect_error}");
+            $this->log_error($this->mysqli->connect_error);
+            throw new Exception($this->mysqli->connect_error);
         } else {
             $this->connected = true;
         }
@@ -64,13 +65,14 @@ class DB {
         $line = $backtrace[$offset]['line'];
         $file = $backtrace[$offset]['file'];
 
-        $text = date("Y-m-d G.i.s:");
-        $text .= "{$error}:";
-        $text .= "{$query}:";
-        $text .= "{$file}:{$line}";
+        // date not necessary because error_log already does it
+        
+        $error_data = array($error, $query, $file, $line);
+        $text = implode(":", $error_data);
 
         // Keep last error for caller
         $this->error = $error;
+        $this->error_data = $error_data;
 
 		error_log($text);
 	}
