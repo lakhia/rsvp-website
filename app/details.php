@@ -2,22 +2,21 @@
 
 require_once("aux.php");
 
+// If token is invalid, return an empty response
 if (!Helper::verify_token($email_cookie, $thaali_cookie)) {
     return;
 }
 
 // POST or GET?
-if (strcmp($method_server, "POST") == 0) {
+if ($method_server == "POST") {
     details_post($db, $thaali_cookie);
 } else {
     details_get($db, $thaali_cookie, ""); 
 }
 
 // Get details for specific dates
-function details_get($db, $thaali, $msg) {
-
-   // header("Content-Type: application/json; charset=UTF-8");
-
+function details_get($db, $thaali, $msg)
+{
     $from = $_GET['from'];
     $to = $_GET['to'];
 
@@ -61,10 +60,11 @@ function details_get($db, $thaali, $msg) {
 }
 
 // Post update to details
-function details_post($db, $thaali) {
+function details_post($db, $thaali)
+{
     $data = json_decode(file_get_contents('php://input'), true);
-    foreach ($data as $k => $v) {
 
+    foreach ($data as $k => $v) {
         // Convert "Yes" back to boolean
         $response = 0;
         if ($v == "Yes") {
@@ -74,7 +74,7 @@ function details_post($db, $thaali) {
                                "values(\"$k\", $thaali, $response) " .
                                "on duplicate KEY update rsvp=$response");
         if (!$result) {
-            $msg =  $db->error; // using object-oriented style
+            $msg =  $db->error;
         } else {
             $msg = "Thank you, changes have been saved!";
         }
