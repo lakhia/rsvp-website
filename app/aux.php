@@ -27,15 +27,19 @@ class Helper
 
     public static function get_name($db, $email, $thaali) 
     {
-        if (self::is_admin($email)) {
-            $result = $db->query("SELECT * FROM `family` WHERE `thaali` = "
-                                 . $thaali . " LIMIT 1");
-	    } else {
-	        $result = $db->query("SELECT * FROM `family` WHERE `thaali` = "
-                                 . $thaali . " AND `email` = \"" . $email . "\"");
+
+	    $sql = "SELECT * FROM `family` WHERE `thaali` = '$thaali'";
+
+	    if (!self::is_admin($email))
+	    {
+	    	$sql .= " AND `email` = '$email'";
 	    }
 
-	    if ($result->num_rows != 1) 
+	    $sql .= " LIMIT 1;";
+
+	    $result = $db->query($sql) or die("{ message: 'DB query failed.' }");
+
+	    if (!$result || $result->num_rows != 1) 
 	    {
 	        return;
 	    }
