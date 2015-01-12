@@ -16,7 +16,7 @@ function insert_week($db, $date, $details)
 	$sql = "INSERT INTO `week` (`date`, `details`) " .
         "VALUES ('$date', '$details') " .
         "on duplicate KEY update details='$details'";
-	$msg = !$db->query($sql) ? $db->error : "Successfully added for $date";
+	$msg = !$db->query($sql) ? $db->error : "Successfully added '$details' on $date";
 	echo Helper::convert_array_to_json("", $msg);
 }
 
