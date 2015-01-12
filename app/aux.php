@@ -25,14 +25,14 @@ class Helper
 	    return ($token == $received_token);
 	}
 
-	public static function get_name($db, $email, $thaali) 
-	{
-	    if ($email == "admin@sfjamaat.org") { // not $_COOKIE
-	        $result = $db->query("SELECT * FROM `family` WHERE `thaali` = "
-	                               . $thaali . " LIMIT 1");
+    public static function get_name($db, $email, $thaali) 
+    {
+        if (self::is_admin($email)) {
+            $result = $db->query("SELECT * FROM `family` WHERE `thaali` = "
+                                 . $thaali . " LIMIT 1");
 	    } else {
 	        $result = $db->query("SELECT * FROM `family` WHERE `thaali` = "
-	                               . $thaali . " AND `email` = \"" . $email . "\"");
+                                 . $thaali . " AND `email` = \"" . $email . "\"");
 	    }
 
 	    if ($result->num_rows != 1) 
@@ -44,10 +44,12 @@ class Helper
 	    return $row['firstName'] . " " . $row['lastName'];
 	}
 
-	public static function is_admin() 
-	{
-	    if ($_COOKIE['email'] == "admin@sfjamaat.org")
-	    {
+    // Does not use cookie's email address because that assumes that login was
+    // successful and limits usage only after login. Instead, the email needs
+    // to always be passed in.
+    public static function is_admin($email)
+    {
+        if ($email == "admin@sfjamaat.org") {
 	        return true;
     	}
     	return false;
@@ -69,9 +71,8 @@ class Helper
 
 	public static function rsvp_disabled() 
 	{
-	    // Admin can do anything
-	    if (self::is_admin()) 
-	    {
+        // Admin can change RSVP even if disabled for others
+        if (self::is_admin($_COOKIE['email'])) {
 	        return '1970-1-1';
 	    }
 

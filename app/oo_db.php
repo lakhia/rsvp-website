@@ -15,6 +15,7 @@ class DB {
 	private $dbname = 		"sffaiz";
 
     public  $connected =    false;
+    public  $error =        "";
 
 	public function __construct() {
 
@@ -55,7 +56,10 @@ class DB {
         // line number
 		$backtrace = debug_backtrace();
 
-		$offset = ( isset($backtrace[1]) ) ? 1 : 0;
+        $offset = 0;
+        if ($backtrace[1]['function'] == "query" && isset($backtrace[1])) {
+            $offset = 1;
+        }
 
         $line = $backtrace[$offset]['line'];
         $file = $backtrace[$offset]['file'];
@@ -64,6 +68,9 @@ class DB {
         $text .= "{$error}:";
         $text .= "{$query}:";
         $text .= "{$file}:{$line}";
+
+        // Keep last error for caller
+        $this->error = $error;
 
 		error_log($text);
 	}

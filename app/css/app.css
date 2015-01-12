@@ -2,7 +2,6 @@ h3 { text-align: center; font-family: "Arial Black" }
 body { font-family: "Arial"; font-size: 13pt }
 .rsvpBtn { width:80px; text-align: left }
 .msg { color:#b22; text-align: center; font-size: 8pt }
-.disbld { opacity: 0.25; }
 .No  { background: #b88 }
 .Yes { background: #8b8 }
 @media print { .noPrnt { display: none !important; } }
