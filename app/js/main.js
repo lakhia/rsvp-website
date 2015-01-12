@@ -12,12 +12,12 @@ app.config(['$stateProvider','$urlRouterProvider',
       .state('login', {
         url: "/login",
         templateUrl: 'login.html',
-        controller: 'loginController',
+        controller: 'mainController',
       })
       .state('login.out', {
         params: ['out'],
         templateUrl: 'login.html',
-        controller: 'loginController',
+        controller: 'mainController',
       })
       .state('print', {
         url: "/print",
@@ -48,13 +48,52 @@ app.config(['$stateProvider','$urlRouterProvider',
       $urlRouterProvider.otherwise('/');
 }])
 
-/* Menu tab management */
-app.controller("menuController", ["$scope", "$http", "$cookies",
-function($scope, $http, $cookies) {
+/* Menu and login management */
+app.controller("mainController", ["$scope", "$http", "$cookies", "$rootScope",
+                                  "$state",
+function($scope, $http, $cookies, $rootScope, $state) {
+
+    $scope.init = function() {
+        // Logout param present?
+        if ($rootScope.$stateParams.out) {
+            logout();
+            return;
+        }
+        $scope.cookies = $cookies;
+    }
+
     $scope.menuClass = function() {
         if (!$cookies.token) {
             return "disbld";
         }
+    }
+
+    $scope.login = function() {
+        var request = $http({
+            url: "login.php",
+            method: "GET",
+            params: {thaali: $scope.thaali, email: $scope.email}
+        });
+        request.success(
+            function(response)
+            {
+                // Display error or redirect to home
+                if (response.message) {
+                    $scope.message = response.message;
+                } else {
+                    $scope.name = response.data;
+                    $rootScope.name = response.data;
+                    $state.go("home");
+                }
+            });
+    }
+    function logout() {
+        delete $rootScope.name;
+        delete $cookies.adv;
+        delete $cookies.token;
+        delete $cookies.name;
+        delete $cookies.thaali;
+        $scope.message = "You have been logged out";
     }
 }])
 

@@ -18,7 +18,7 @@
 <script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular-cookies.min.js"></script>
 
 <!-- Menu bar -->
-<div class="small noPrnt container" ng-controller="menuController" ng-init="init()" >
+<div class="small noPrnt container" ng-controller="mainController" ng-init="init()" >
 <br>
 <ul ng-class="menuClass()" class="nav nav-tabs">
   <li ui-sref-active="active">
@@ -28,11 +28,11 @@
   <li ui-sref-active="active">
     <a ui-sref="help"><span class="glyphicon glyphicon-heart"></span>  Help Out</a></li>
   <li ui-sref-active="active">
-    <a ui-sref="stats" ng-show="cookies.admin"><span class="glyphicon glyphicon-stats"></span>  Stats</a></li>
+    <a ui-sref="stats" ng-show="cookies.adv"><span class="glyphicon glyphicon-stats"></span>  Stats</a></li>
   <li ui-sref-active="active">
     <a ui-sref="settings"><span class="glyphicon glyphicon-cog"></span>  Settings</a></li>
   <li ui-sref-active="active">
-    <a ui-sref="admin" ng-hide="cookies.admin"><span class="glyphicon glyphicon-tower"></span>  Administer</a></li>
+    <a ui-sref="admin" ng-show="cookies.adv"><span class="glyphicon glyphicon-tower"></span>  Administer</a></li>
   <li ng-class="{active: $state.includes('login')}">
     <a ui-sref="login.out({out:1})"><span class="glyphicon glyphicon-remove"></span>  Logout</a></li>
 </ul>
@@ -56,7 +56,6 @@
 <script src="js/main.js"></script>
 <script src="js/rsvp.js"></script>
 <script src="js/print.js"></script>
-<script src="js/login.js"></script>
 <script src="js/admin.js"></script>
 <!-- /build -->
 

@@ -19,8 +19,8 @@ setcookie("token", Helper::create_token($email, $thaali), $expires);
 setcookie("thaali", $thaali, $expires);
 setcookie("email", $email, $expires);
 setcookie("name", $name, $expires);
-if (Helper::is_admin()) {
-    setcookie("admin", "1", $expires);
+if (Helper::is_admin($email)) {
+    setcookie("adv", "1", $expires);
 }
 
 // Returns true value to indicate successful login
