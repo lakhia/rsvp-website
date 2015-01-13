@@ -4,7 +4,7 @@ app.controller("adminController", ["$scope", "$http", "$cookies", "$state",
 function($scope, $http, $cookies, $state, $rootScope)
 {
     $scope.init = function() {
-        if (!$cookies.admin && !$rootScope.name ) {
+        if (!$cookies.adv && !$rootScope.name ) {
             $state.go('login');
         }
     }
