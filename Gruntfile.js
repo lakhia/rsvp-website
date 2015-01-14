@@ -22,7 +22,7 @@ module.exports = function(grunt) {
                 dest: 'tmp/',
                 options: {
                     scripts: {
-                        main: 'tmp/rsvp.js'
+                        main: 'tmp/app.js'
                     },
                     styles: {
                         main: 'tmp/app.css'
@@ -62,8 +62,9 @@ module.exports = function(grunt) {
         // Minify JS
         uglify: {
             build: {
-                src: ['app/js/main.js', 'app/js/*.js', 'tmp/tmpl.js'],
-                dest: 'tmp/rsvp.js'
+                src: ['app/js/main.js', 'app/lib/*.js', 'app/js/*.js',
+                      'tmp/tmpl.js'],
+                dest: 'tmp/app.js'
             }
         },
 

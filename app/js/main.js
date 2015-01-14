@@ -1,4 +1,5 @@
-var app = angular.module("rsvp", ['ui.router', 'ngCookies']);
+var app = angular.module("rsvp", ['ui.router', 'ngCookies',
+                                  'angular-loading-bar']);
 
 /* Route configuration */
 app.config(['$stateProvider','$urlRouterProvider',
