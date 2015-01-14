@@ -6,9 +6,9 @@ require_once 'oo_db.php';
 
 $db = new DB();
 
-$thaali = $_COOKIE['thaali'];
-$email = $_COOKIE['email'];
-$method = $_SERVER['REQUEST_METHOD'];
+$thaali_cookie = isset($_COOKIE['thaali']) ? $_COOKIE['thaali'] : '';
+$email_cookie = isset($_COOKIE['email']) ? $_COOKIE['email'] : '';
+$method_server = $_SERVER['REQUEST_METHOD'];
 
 class Helper
 {
@@ -25,21 +25,21 @@ class Helper
 	    return ($token == $received_token);
 	}
 
-	public static function get_name($db, $email, $thaali) 
-	{
-	    // If admin, get name. Otherwise, verify.
-	    if (self::is_admin()) 
+    public static function get_name($db, $email, $thaali) 
+    {
+
+	    $sql = "SELECT * FROM `family` WHERE `thaali` = '$thaali'";
+
+	    if (!self::is_admin($email))
 	    {
-	        $result = $db->query("SELECT * FROM `family` WHERE `thaali` = "
-	                               . $thaali . " LIMIT 1");
-	    } 
-	    else
-	    {
-	        $result = $db->query("SELECT * FROM `family` WHERE `thaali` = "
-	                               . $thaali . " AND `email` = \"" . $email . "\"");
+	    	$sql .= " AND `email` = '$email'";
 	    }
 
-	    if ($result->num_rows != 1) 
+	    $sql .= " LIMIT 1;";
+
+	    $result = $db->query($sql) or die("{ message: 'DB query failed.' }");
+
+	    if (!$result || $result->num_rows != 1) 
 	    {
 	        return;
 	    }
@@ -48,10 +48,12 @@ class Helper
 	    return $row['firstName'] . " " . $row['lastName'];
 	}
 
-	public static function is_admin() 
-	{
-	    if ($_COOKIE['email'] == "admin@sfjamaat.org")
-	    {
+    // Does not use cookie's email address because that assumes that login was
+    // successful and limits usage only after login. Instead, the email needs
+    // to always be passed in.
+    public static function is_admin($email)
+    {
+        if ($email == "admin@sfjamaat.org") {
 	        return true;
     	}
     	return false;
@@ -73,9 +75,8 @@ class Helper
 
 	public static function rsvp_disabled() 
 	{
-	    // Admin can do anything
-	    if (self::is_admin()) 
-	    {
+        // Admin can change RSVP even if disabled for others
+        if (self::is_admin($_COOKIE['email'])) {
 	        return '1970-1-1';
 	    }
 

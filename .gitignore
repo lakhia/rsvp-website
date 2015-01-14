@@ -1,3 +1,6 @@
-node_modules
-build
+node_modules/
+build/
+tmp/
 .DS_Store
+rsvp.sublime-project
+rsvp.sublime-workspace

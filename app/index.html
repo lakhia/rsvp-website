@@ -5,43 +5,39 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=0.67, maximum-scale=1" />
 <link rel="stylesheet" href = "http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+<!-- build:style inline main -->
+<link rel="stylesheet" href = "css/app.css">
+<!-- /build -->
+</head>
+
+<body ng-app="rsvp" ng-cloak>
+
 <script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.min.js"></script>
 <script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular-cookies.min.js"></script>
-<style type="text/css">
-  h3 { text-align: center; font-family: "Arial Black" }
-  body { font-family: "Arial"; font-size: 13pt }
-  .rsvpBtn { width:80px; text-align: left }
-  .msg { color:#b22; text-align: center; font-size: 8pt }
-  .disbld { opacity: 0.25; }
-  .No  { background: #b88 }
-  .Yes { background: #8b8 }
-  @media print { .noPrnt { display: none !important; } }
-</style>
-</head>
-
-<body ng-app="rsvp">
 
 <!-- Menu bar -->
-<div class="small noPrnt container" ng-controller="menuController" ng-init="init()" >
+<div class="small noPrnt container" ng-controller="mainController" ng-init="init()" >
 <br>
-<ul ng-class="menuClass()" class="nav nav-tabs">
+<ul class="nav nav-tabs">
   <li ui-sref-active="active">
-    <a ui-sref="home"><span class="glyphicon glyphicon-home"></span>  RSVP</a></li>
+    <a ui-sref="home" ng-show="cookies.token"><span class="glyphicon glyphicon-home"></span>  RSVP</a></li>
   <li ui-sref-active="active">
-    <a ui-sref="print"><span class="glyphicon glyphicon-print"></span>  Filling</a></li>
+    <a ui-sref="print" ng-show="cookies.token"><span class="glyphicon glyphicon-print"></span>  Filling</a></li>
   <li ui-sref-active="active">
-    <a ui-sref="help"><span class="glyphicon glyphicon-heart"></span>  Help Out</a></li>
+    <a ui-sref="help" ng-show="cookies.token"><span class="glyphicon glyphicon-heart"></span>  Help Out</a></li>
   <li ui-sref-active="active">
-    <a ui-sref="stats" ng-show="cookies.admin"><span class="glyphicon glyphicon-stats"></span>  Stats</a></li>
+    <a ui-sref="stats" ng-show="cookies.adv"><span class="glyphicon glyphicon-stats"></span>  Stats</a></li>
   <li ui-sref-active="active">
-    <a ui-sref="settings"><span class="glyphicon glyphicon-cog"></span>  Settings</a></li>
+    <a ui-sref="settings" ng-show="cookies.token"><span class="glyphicon glyphicon-cog"></span>  Settings</a></li>
   <li ui-sref-active="active">
-    <a ui-sref="admin" ng-show="cookies.admin"><span class="glyphicon glyphicon-tower"></span>  Administer</a></li>
+    <a ui-sref="admin" ng-show="cookies.adv"><span class="glyphicon glyphicon-tower"></span>  Administer</a></li>
   <li ng-class="{active: $state.includes('login')}">
     <a ui-sref="login.out({out:1})"><span class="glyphicon glyphicon-remove"></span>  Logout</a></li>
 </ul>
-<div class="msg">&nbsp;{{ message }}</div><br>
+</div>
+<br>
 
 <!-- Select tab using view -->
 <ui-view>
@@ -56,7 +52,16 @@
     an <a href="mailto:sf.faiz.almawaid.alburhaniyah@gmail.com">email</a>.</p>
 </footer>
 
-<script src="rsvp.js"></script>
+<!-- build:script inline main -->
+<script src="js/main.js"></script>
+<script src="js/rsvp.js"></script>
+<script src="js/print.js"></script>
+<script src="js/admin.js"></script>
+<!-- /build -->
+
+<!-- build:remove -->
+<script src="//localhost:35729/livereload.js"></script>
+<!-- /build -->
 
 </body>
 </html>

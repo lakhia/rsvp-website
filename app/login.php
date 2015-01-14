@@ -3,8 +3,8 @@
 require_once("aux.php");
 
 // User query params instead of cookie
-$thaali = $_GET['thaali'];
-$email = $_GET['email'];
+$thaali = isset($_GET['thaali']) ? $_GET['thaali'] : '';
+$email = isset($_GET['email']) ? $_GET['email'] : '';
 
 // Get name from credentials
 $name = Helper::get_name($db, $email, $thaali);
@@ -19,8 +19,8 @@ setcookie("token", Helper::create_token($email, $thaali), $expires);
 setcookie("thaali", $thaali, $expires);
 setcookie("email", $email, $expires);
 setcookie("name", $name, $expires);
-if (Helper::is_admin()) {
-    setcookie("admin", "1", $expires);
+if (Helper::is_admin($email)) {
+    setcookie("adv", "1", $expires);
 }
 
 // Returns true value to indicate successful login

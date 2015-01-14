@@ -8,30 +8,40 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
+        cssmin: {
+            target: {
+                files: {
+                    'tmp/app.css': ['app/css/*.css']
+                }
+            }
+        },
+
+        htmlbuild: {
+            dist: {
+                src: 'app/index.html',
+                dest: 'tmp/',
+                options: {
+                    scripts: {
+                        main: 'tmp/rsvp.js'
+                    },
+                    styles: {
+                        main: 'tmp/app.css'
+                    }
+                }
+            }
+        },
+
         watch: {
-            html: {
-                files: ['*.html'],
-                tasks: ['htmlmin'],
+            client: {
+                files: ['app/*.html', 'app/css/*', 'app/js/*.js'],
+                tasks: ['default'],
                 options: {
-                    spawn: false,
                     livereload: 35729
                 }
             },
-            scripts: {
-                files: ['rsvp.js'],
-                tasks: ['uglify'],
-                options: {
-                    spawn: false,
-                    livereload: 35729
-                }
-            },
-            php: {
-                files: ['*.php'],
-                tasks: ['copy'],
-                options: {
-                    spawn: false,
-                    livereload: 35729
-                }
+            server: {
+                files: ['app/*.php'],
+                tasks: ['copy']
             }
         },
 
@@ -51,17 +61,15 @@ module.exports = function(grunt) {
 
         // Minify JS
         uglify: {
-            options: {
-                banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
-            },
             build: {
-                src: 'rsvp.js',
-                dest: 'build/rsvp.js'
+                src: ['app/js/main.js', 'app/js/*.js', 'tmp/tmpl.js'],
+                dest: 'tmp/rsvp.js'
             }
         },
 
         // Minify HTML
         htmlmin: {
+            // Process all except index.html
             build: {
                 options: {
                     removeComments: true,
@@ -69,9 +77,20 @@ module.exports = function(grunt) {
                 },
                 files: [{
                     expand: true,
-                    cwd: './',                           // Project root
-                    src: '*.html',
-                    dest: 'build/'
+                    cwd: 'app',
+                    src: ['*.html','!index.html'],
+                    dest: 'tmp/'
+                }]
+            },
+            // Process only top-level index.html file
+            top: {
+                options: {
+                    removeComments: true,
+                    collapseWhitespace: true
+                },
+                files: [{
+                    src: ['tmp/index.html'],
+                    dest: 'build/index.html'
                 }]
             }
         },
@@ -80,12 +99,19 @@ module.exports = function(grunt) {
         copy: {
             build: {
                 files: [{
-                    // includes files within path
                     expand: true,
+                    cwd: 'app',
                     src: ['*.php'],
-                    dest: 'build/',
-                    filter: 'isFile'
+                    dest: 'build/'
                 }]
+            }
+        },
+
+        ngtemplates: {
+            rsvp: {
+                cwd: 'tmp/',
+                src: ['*.html','!index.html'],
+                dest: 'tmp/tmpl.js'
             }
         },
 
@@ -95,7 +121,7 @@ module.exports = function(grunt) {
                 files: [{
                     dot: true,
                     src: [
-                        'build/'
+                        'build', 'tmp'
                     ]
                 }]
             }
@@ -107,14 +133,22 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-htmlmin');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-angular-templates');
+    grunt.loadNpmTasks('grunt-html-build');
 
-    // Default task plus other tasks
-    grunt.registerTask('default', ['uglify', 'htmlmin', 'copy']);
-    grunt.registerTask('serve', 'Compile, then start a web server', function (target) {
-        grunt.task.run([
-            'default',
-            'php'
-        ]);
-    });
+    // Default build task and serve task
+    grunt.registerTask('default',
+                       ['htmlmin:build', 'ngtemplates',
+                        'uglify', 'copy', 'cssmin', 'htmlbuild',
+                        'htmlmin:top']
+                      );
+    grunt.registerTask('serve', 'Compile, then start a web server',
+        function (target) {
+            grunt.task.run([
+                'default',
+                'php'
+            ]);
+        });
 };
