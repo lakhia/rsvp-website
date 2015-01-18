@@ -14,9 +14,13 @@
 
 <body ng-app="rsvp" ng-cloak>
 
-<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.min.js"></script>
-<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular-cookies.min.js"></script>
+<!-- build:remove -->
+<script src="lib/angularjs/angular.js"></script>
+<script src="lib/angularjs/angular-cookies.js"></script>
+<script src="lib/angularjs/angular-ui-router.js"></script>
+<!-- /build -->
+<!-- build:section cdn -->
+<!-- /build -->
 
 <!-- Menu bar -->
 <div class="small noPrnt container" ng-controller="mainController" ng-init="init()" >

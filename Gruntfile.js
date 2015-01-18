@@ -21,6 +21,9 @@ module.exports = function(grunt) {
                 src: 'app/index.html',
                 dest: 'tmp/',
                 options: {
+                    sections: {
+                        cdn: 'app/lib/cdn.html'
+                    },
                     scripts: {
                         main: 'tmp/app.js'
                     },
