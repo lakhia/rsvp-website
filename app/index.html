@@ -22,40 +22,56 @@
 <!-- build:section cdn -->
 <!-- /build -->
 
-<!-- Menu bar -->
-<div class="small noPrnt container" ng-controller="mainController" ng-init="init()" >
+<div ng-controller="mainController" ng-init="init()">
+
+<!-- Side bar -->
+<div class="sidebar" ng-class="{sidebarSmall: small}">
 <br>
-<ul class="nav nav-tabs">
+<ul class="nav nav-sidebar">
+  <li>
+    <a class="menu" ng-click="menuToggle()" href=""><i class="glyphicon
+    glyphicon-align-justify"></i><span ng-class="{gone:small}">  Menu</span></a></li>
   <li ui-sref-active="active">
-    <a ui-sref="home" ng-show="cookies.token"><span class="glyphicon glyphicon-home"></span>  RSVP</a></li>
+    <a ui-sref="home" ng-show="cookies.token"><i class="glyphicon
+    glyphicon-home"></i><span ng-class="{gone:small}">  RSVP</span></a></li>
   <li ui-sref-active="active">
-    <a ui-sref="print" ng-show="cookies.token"><span class="glyphicon glyphicon-print"></span>  Filling</a></li>
+    <a ui-sref="print" ng-show="cookies.token"><i class="glyphicon
+    glyphicon-print"></i><span ng-class="{gone:small}">  Filling</span></a></li>
   <li ui-sref-active="active">
-    <a ui-sref="help" ng-show="cookies.token"><span class="glyphicon glyphicon-heart"></span>  Help Out</a></li>
+    <a ui-sref="help" ng-show="cookies.token"><i class="glyphicon
+    glyphicon-heart"></i><span ng-class="{gone:small}">  Help Out</span></a></li>
   <li ui-sref-active="active">
-    <a ui-sref="stats" ng-show="cookies.adv"><span class="glyphicon glyphicon-stats"></span>  Stats</a></li>
+    <a ui-sref="stats" ng-show="cookies.adv"><i class="glyphicon
+    glyphicon-stats"></i><span ng-class="{gone:small}">  Stats</span></a></li>
   <li ui-sref-active="active">
-    <a ui-sref="settings" ng-show="cookies.token"><span class="glyphicon glyphicon-cog"></span>  Settings</a></li>
-  <li ui-sref-active="active">
-    <a ui-sref="admin" ng-show="cookies.adv"><span class="glyphicon glyphicon-tower"></span>  Administer</a></li>
-  <li ng-class="{active: $state.includes('login')}">
-    <a ui-sref="login.out({out:1})"><span class="glyphicon glyphicon-remove"></span>  Logout</a></li>
+    <a ui-sref="settings" ng-show="cookies.token"><i class="glyphicon
+    glyphicon-cog"></i><span ng-class="{gone:small}">  Settings</span></a></li>
+  <li ui-sref-active="active"><a
+    ui-sref="admin" ng-show="cookies.adv"><i class="glyphicon
+    glyphicon-tower"></i><span ng-class="{gone:small}">  Administer</span></a></li>
+  <li ng-class="{active: $state.includes('login')}"><a
+    ui-sref="login.out({out:1})"><i class="glyphicon glyphicon-remove"></i><span 
+    ng-class="{gone:small}">  Logout</span></a></li>
 </ul>
 </div>
-<br>
 
-<!-- Select tab using view -->
+<!-- Main content uses view -->
+<div ng-class="{mainSmall: small}" class="main">
 <ui-view>
   <h3>Loading, please wait ...</h3>
 </ui-view>
 
-<!-- Done with tabs, show footer -->
-<footer class="noPrnt container">
+<!-- Footer -->
+<footer class="noPrnt">
   <br class="clearfix"><br><br>
   <p class="small text-muted">For any questions, concerns, comments,
     feedback, please send us
     an <a href="mailto:sf.faiz.almawaid.alburhaniyah@gmail.com">email</a>.</p>
 </footer>
+
+<!-- Complete main content and controller -->
+</div>
+</div>
 
 <!-- build:script inline main -->
 <script src="js/main.js"></script>

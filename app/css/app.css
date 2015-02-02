@@ -1,7 +1,40 @@
+.menu {
+    border-bottom-style: solid;
+    margin-bottom: 25px;
+}
+.mainSmall {
+    margin-left: 40px !important;
+}
+.sidebarSmall {
+    width: 40px !important;
+}
+.main {
+    margin-left: 145px;
+    overflow-x: hidden;
+    padding: 20px;
+}
+.sidebar {
+    position: fixed;
+    width: 145px;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    background-color: #eee;
+}
+.sidebar > ul > li.active > a,
+.sidebar > ul > li.active > a:hover,
+.sidebar > ul > li.active > a:focus {
+    color: #aaa;
+    cursor: default;
+}
+.nav > li > a {
+    padding: 10px;
+}
 h3 { text-align: center; font-family: "Arial Black" }
 body { font-family: "Arial"; font-size: 13pt }
 .rsvpBtn { width:80px; text-align: left }
 .msg { color:#b22; text-align: center; font-size: 8pt }
 .No  { background: #b88 }
 .Yes { background: #8b8 }
+.gone { display: none }
 @media print { .noPrnt { display: none !important; } }
