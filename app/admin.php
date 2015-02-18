@@ -27,4 +27,10 @@ function delete_week($db, $date)
 	echo Helper::convert_array_to_json("", $msg);
 }
 
+function push_data($db)
+{
+	$today = 
+	$sql = "SELECT * FROM `week` WHERE `date` "
+}
+
 ?>

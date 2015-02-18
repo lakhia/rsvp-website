@@ -16,7 +16,7 @@
     <tr>
       <td>
         <input type="date" ng-model="date" class="form-control"
-               placeholder="mm/dd/yyyy"/></td>
+              placeholder="mm/dd/yyyy"/></td>
       <td>
         <input type="text" ng-model="details" class="form-control"
                placeholder="Details" /></td>
@@ -25,6 +25,36 @@
           <span class="glyphicon glyphicon-save"></span>  Add
         </button>
       </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="table table-condensed">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Details</th>
+      <th>Edit</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="(key, value) in future_weeks">
+      <td>
+        <input type="date" ng-model="date" class="form-control"
+              placeholder="mm/dd/yyyy" value="{{ key }}" /></td>
+      <td>
+        <input type="text" ng-model="details" class="form-control"
+               placeholder="Details" value="{{ value.details }}" /></td>
+      <td>
+        <button class="btn btn-primary" ng-click="edit_week({{ key }})">
+          <span class="glyphicon glyphicon-edit"></span>  Edit
+        </button>
+      </td>
+      <td>
+        <button class="btn btn-default" ng-click="delete_week({{ key }})">
+          <span class="glyphicon glyphicon-delete"></span> Delete
+        </button>
     </tr>
   </tbody>
 </table>
