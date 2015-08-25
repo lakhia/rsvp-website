@@ -48,6 +48,7 @@ function($scope, $http, $cookies, $state, $rootScope) {
         }).success(
             function(response)
             {
+                $scope.message = response.message;
                 $scope.details = response.data;
             });
     }

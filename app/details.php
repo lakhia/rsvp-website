@@ -57,7 +57,11 @@ function details_get($db, $thaali, $msg)
 
         $rows[] = $row;
     }
-    echo Helper::convert_array_to_json($rows, $msg);
+    if (isset($rows)) {
+        echo Helper::convert_array_to_json($rows, $msg);
+    } else {
+        die('{ "message": "No details available for week of ' . $from . '" }');
+    }
 }
 
 // Post update to details
