@@ -37,7 +37,7 @@ module.exports = function(grunt) {
         watch: {
             client: {
                 files: ['app/*.html', 'app/css/*', 'app/js/*.js'],
-                tasks: ['default'],
+                tasks: ['debug'],
                 options: {
                     livereload: 35729
                 }
@@ -108,6 +108,14 @@ module.exports = function(grunt) {
                     src: ['*.php'],
                     dest: 'build/'
                 }]
+            },
+            debug: {
+                files: [{
+                    expand: true,
+                    cwd: 'app',
+                    src: ['*.html', '*.php', 'lib/**', 'js/**', 'css/**'],
+                    dest: 'build/'
+                }]
             }
         },
 
@@ -148,10 +156,13 @@ module.exports = function(grunt) {
                         'uglify', 'copy', 'cssmin', 'htmlbuild',
                         'htmlmin:top']
                       );
+    grunt.registerTask('debug',
+                       ['copy:debug']
+                      );
     grunt.registerTask('serve', 'Compile, then start a web server',
         function (target) {
             grunt.task.run([
-                'default',
+                'debug',
                 'php'
             ]);
         });
