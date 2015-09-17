@@ -19,6 +19,8 @@ function($scope, $http, $cookies, $state, $rootScope)
             function(response)
             {
                 $scope.message = response.message;
+		$scope.date = "";
+		$scope.details = "";
             });
     }
 
