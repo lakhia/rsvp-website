@@ -13,24 +13,24 @@ insert_week($db, $data['date'], $data['details']);
 
 function insert_week($db, $date, $details)
 {
-	$sql = "INSERT INTO `week` (`date`, `details`) " .
+    $sql = "INSERT INTO `week` (`date`, `details`) " .
         "VALUES ('$date', '$details') " .
         "on duplicate KEY update details='$details'";
-	$msg = !$db->query($sql) ? $db->error : "Successfully added '$details' on $date";
-	echo Helper::convert_array_to_json("", $msg);
+    $msg = !$db->query($sql) ? $db->error : "Successfully added '$details' on $date";
+    echo Helper::convert_array_to_json("", $msg);
 }
 
 function delete_week($db, $date)
 {
-	$sql = "DELETE FROM `week` WHERE `date` = '$date';";
-	$msg = !$db->query($sql) ? $db->error : "Successfully deleted for $date";
-	echo Helper::convert_array_to_json("", $msg);
+    $sql = "DELETE FROM `week` WHERE `date` = '$date';";
+    $msg = !$db->query($sql) ? $db->error : "Successfully deleted for $date";
+    echo Helper::convert_array_to_json("", $msg);
 }
 
 function push_data($db)
 {
-	$today = 
-	$sql = "SELECT * FROM `week` WHERE `date` "
+    $today = 
+    $sql = "SELECT * FROM `week` WHERE `date` "
 }
 
 ?>
