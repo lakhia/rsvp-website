@@ -63,7 +63,7 @@ class Helper
         if ($array) {
             $wrapper["data"] = $array;
         }
-        return json_encode($wrapper, JSON_PRETTY_PRINT) . "\n";
+        return json_encode($wrapper) . "\n";
     }
 
     public static function rsvp_disabled()
