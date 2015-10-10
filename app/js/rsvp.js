@@ -20,7 +20,7 @@ function($scope, $http, $cookies, $state, $rootScope) {
         if (day == 6) {
             day = -1;
         }
-        addDaysToDate($scope.fdate, (1 - day));
+        $rootScope.addDaysToDate($scope.fdate, (1 - day));
 
         if ($cookies.name !== undefined) {
             $scope.name = $cookies.name.replace(/\+/g, " ");
@@ -29,37 +29,25 @@ function($scope, $http, $cookies, $state, $rootScope) {
         fetchRsvps();
     }
 
-    function addDaysToDate(date, days) {
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    }
-
     function convertDate(date) {
         return date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
     }
 
+    function handleResponse(response) {
+        $scope.message = response.message;
+        $scope.rsvp = response.data;
+        $scope.changed = false;
+        $scope.toggleCount = 0;
+    }
+
     function fetchRsvps() {
         var tdate = new Date($scope.fdate.getTime());
-        addDaysToDate(tdate, 7);
-
-        $http({
-            url: "rsvp.php",
-            method: "GET",
-            params: {from: convertDate($scope.fdate), to: convertDate(tdate)}
-        }).success(
-            function(response)
-            {
-                $scope.message = response.message;
-                $scope.rsvp = response.data;
-            });
+        $rootScope.addDaysToDate(tdate, 7);
+        $rootScope.fetchData($scope.fdate, tdate, "rsvp.php", handleResponse)
     }
 
     $scope.getDisplayDate = function(input) {
-        input = $scope.rsvp[input].date;
-        var parts = input.split('-');
-        var d = new Date(parts[0], parts[1]-1, parts[2]);
-        input = input.replace(/^\d+-/, "");
-        var output = ["Sun","Mon","Tue","Wed","Thr","Fri","Sat"][d.getDay()]
-        return output + ", " + input;
+        return $rootScope.getDisplayDate($scope.rsvp[input].date);
     }
 
     /*
@@ -67,12 +55,12 @@ function($scope, $http, $cookies, $state, $rootScope) {
      */
 
     $scope.nextWeek = function() {
-        addDaysToDate($scope.fdate, 7);
+        $rootScope.addDaysToDate($scope.fdate, 7);
         fetchRsvps();
     }
 
     $scope.prevWeek = function() {
-        addDaysToDate($scope.fdate, -7);
+        $rootScope.addDaysToDate($scope.fdate, -7);
         fetchRsvps();
     }
 
@@ -115,18 +103,11 @@ function($scope, $http, $cookies, $state, $rootScope) {
 
         // TODO: Duplicated in get query
         var tdate = new Date($scope.fdate.getTime());
-        addDaysToDate(tdate, 7);
+        $rootScope.addDaysToDate(tdate, 7);
 
         $http.post("rsvp.php?from=" +
                    convertDate($scope.fdate) + "&to=" + convertDate(tdate),
-                   toggles).success(
-        function(response)
-        {
-            $scope.message = response.message;
-            $scope.rsvp = response.data;
-            $scope.changed = false;
-            $scope.toggleCount = 0;
-
-        })
+                   toggles)
+             .success(handleResponse);
     }
 }]);

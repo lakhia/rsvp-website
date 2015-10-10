@@ -100,9 +100,32 @@ function($scope, $http, $cookies, $rootScope, $state) {
 }])
 
 /* Add references to rootScope so that you can access them from any scope */
-app.run(['$rootScope', '$state', '$stateParams',
-    function ($rootScope, $state, $stateParams) {
+app.run(['$rootScope', '$http', '$state', '$stateParams',
+    function ($rootScope, $http, $state, $stateParams) {
         $rootScope.$state = $state;
         $rootScope.$stateParams = $stateParams;
+
+        // Add helper methods here, can be used by any controller
+        $rootScope.addDaysToDate = function(date, days) {
+            return date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        };
+        $rootScope.getDisplayDate = function(input) {
+            var parts = input.split('-');
+            var d = new Date(parts[0], parts[1]-1, parts[2]);
+            input = input.replace(/^\d+-/, "");
+            var output = ["Sun","Mon","Tue","Wed","Thr","Fri","Sat"][d.getDay()]
+            return output + ", " + input;
+        }
+        $rootScope.fetchData = function(fromDate, toDate, url, handleResponse) {
+            $http({
+                url: url,
+                method: "GET",
+                params: {from: convertDate(fromDate), to: convertDate(toDate)}
+            }).success(handleResponse);
+        }
+        // Private methods
+        function convertDate(date) {
+            return date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
+        }
     }
 ])
