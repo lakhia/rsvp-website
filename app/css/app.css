@@ -37,4 +37,7 @@ body { font-family: "Arial"; font-size: 13pt }
 .No  { background: #b88 }
 .Yes { background: #8b8 }
 .gone { display: none }
-@media print { .noPrnt { display: none !important; } }
+@media print {
+  .noPrnt { display: none !important; }
+  .main { margin-left: 0 }
+}
