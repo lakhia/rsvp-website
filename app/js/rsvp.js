@@ -4,7 +4,7 @@ app.controller("rsvpController", ["$scope", "$http", "$cookies", '$state',
 function($scope, $http, $cookies, $state, $rootScope) {
     $scope.changed = false;
     $scope.toggleCount = 0;
-    $scope.details = {};
+    $scope.rsvp = {};
     $scope.fdate;
 
     $scope.init = function() {
@@ -26,7 +26,7 @@ function($scope, $http, $cookies, $state, $rootScope) {
             $scope.name = $cookies.name.replace(/\+/g, " ");
         }
 
-        fetchDetails();
+        fetchRsvps();
     }
 
     function addDaysToDate(date, days) {
@@ -37,24 +37,24 @@ function($scope, $http, $cookies, $state, $rootScope) {
         return date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
     }
 
-    function fetchDetails() {
+    function fetchRsvps() {
         var tdate = new Date($scope.fdate.getTime());
         addDaysToDate(tdate, 7);
 
         $http({
-            url: "details.php",
+            url: "rsvp.php",
             method: "GET",
             params: {from: convertDate($scope.fdate), to: convertDate(tdate)}
         }).success(
             function(response)
             {
                 $scope.message = response.message;
-                $scope.details = response.data;
+                $scope.rsvp = response.data;
             });
     }
 
     $scope.getDisplayDate = function(input) {
-        input = $scope.details[input].date;
+        input = $scope.rsvp[input].date;
         var parts = input.split('-');
         var d = new Date(parts[0], parts[1]-1, parts[2]);
         input = input.replace(/^\d+-/, "");
@@ -68,12 +68,12 @@ function($scope, $http, $cookies, $state, $rootScope) {
 
     $scope.nextWeek = function() {
         addDaysToDate($scope.fdate, 7);
-        fetchDetails();
+        fetchRsvps();
     }
 
     $scope.prevWeek = function() {
         addDaysToDate($scope.fdate, -7);
-        fetchDetails();
+        fetchRsvps();
     }
 
     $scope.editRSVP = function(id) {
@@ -81,23 +81,23 @@ function($scope, $http, $cookies, $state, $rootScope) {
         $scope.message = '';
 
         // Create a "No" default entry
-        if (!$scope.details[id]) {
-            $scope.details[id] = { rsvp:"No" };
+        if (!$scope.rsvp[id]) {
+            $scope.rsvp[id] = { rsvp:"No" };
         }
 
         // Toggle response to RSVP
-        if ($scope.details[id].rsvp == "Yes") {
-            $scope.details[id].rsvp = "No";
+        if ($scope.rsvp[id].rsvp == "Yes") {
+            $scope.rsvp[id].rsvp = "No";
         } else {
-            $scope.details[id].rsvp = "Yes";
+            $scope.rsvp[id].rsvp = "Yes";
         }
 
         // Keep track of toggle count to enable button
-        if ($scope.details[id].toggled) {
-            $scope.details[id].toggled = 0;
+        if ($scope.rsvp[id].toggled) {
+            $scope.rsvp[id].toggled = 0;
             $scope.toggleCount--;
         } else {
-            $scope.details[id].toggled = 1;
+            $scope.rsvp[id].toggled = 1;
             $scope.toggleCount++;
         }
         $scope.changed = ($scope.toggleCount > 0);
@@ -105,10 +105,10 @@ function($scope, $http, $cookies, $state, $rootScope) {
 
     $scope.submit = function() {
         var toggles = {};
-        for (var id in $scope.details) {
-            if ($scope.details.hasOwnProperty(id)) {
-                if ($scope.details[id].toggled !== undefined) {
-                    toggles[$scope.details[id].date] = $scope.details[id].rsvp;
+        for (var id in $scope.rsvp) {
+            if ($scope.rsvp.hasOwnProperty(id)) {
+                if ($scope.rsvp[id].toggled !== undefined) {
+                    toggles[$scope.rsvp[id].date] = $scope.rsvp[id].rsvp;
                 }
             }
         }
@@ -117,13 +117,13 @@ function($scope, $http, $cookies, $state, $rootScope) {
         var tdate = new Date($scope.fdate.getTime());
         addDaysToDate(tdate, 7);
 
-        $http.post("details.php?from=" +
+        $http.post("rsvp.php?from=" +
                    convertDate($scope.fdate) + "&to=" + convertDate(tdate),
                    toggles).success(
         function(response)
         {
             $scope.message = response.message;
-            $scope.details = response.data;
+            $scope.rsvp = response.data;
             $scope.changed = false;
             $scope.toggleCount = 0;
 
