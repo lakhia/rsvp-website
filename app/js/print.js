@@ -5,7 +5,7 @@ function($scope, $http, $rootScope) {
 
     $scope.init = function() {
         $scope.fdate = new Date();
-        $http.get("print.php").success(handleResponse);
+        fetchData();
     }
 
     function handleResponse(response) {
@@ -13,19 +13,29 @@ function($scope, $http, $rootScope) {
         $scope.message = response.message;
     }
 
+    $scope.getDisplayDate = function(date) {
+        dateString = String(date);
+        if (dateString.indexOf("T") > -1) {
+            date = $rootScope.convertDate(date);
+        }
+        return $rootScope.getDisplayDate(date);
+    }
+
+    function fetchData() {
+        $rootScope.fetchData($scope.fdate, $scope.fdate,
+            "print.php", handleResponse);
+    }
     /*
       Go forward and backwards
      */
     $scope.nextDay = function() {
         $rootScope.addDaysToDate($scope.fdate, 1);
-        $rootScope.fetchData($scope.fdate, $scope.fdate,
-            "print.php", handleResponse);
+        fetchData();
     }
 
     $scope.prevDay = function() {
         $rootScope.addDaysToDate($scope.fdate, -1);
-        $rootScope.fetchData($scope.fdate, $scope.fdate,
-            "print.php", handleResponse);
+        fetchData();
     }
 
 }]);
