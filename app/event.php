@@ -28,13 +28,29 @@ function event_get($db, $thaali, $msg)
     } else {
         $query .= ";";
     }
-
     $result = $db->query($query);
 
-    // Convert rows
-    while($row = $result->fetch_assoc()) {
-        $rows[] = $row;
+    // Get all dates between range
+    $period = new DatePeriod(
+                  new DateTime($from),
+                  new DateInterval('P1D'),
+                  new DateTime($to));
+
+    // Save rows, add place holder dates when needed
+    foreach($period as $date) {
+        $d = $date->format('Y-m-d');
+        if (!isset($row)) {
+            $row = $result->fetch_assoc();
+        }
+        if ($d != $row["date"]) {
+            $k = array("date" => $d);
+            $rows[] = $k;
+        } else {
+            $rows[] = $row;
+            unset($row);
+        }
     }
+
     if (isset($rows)) {
         echo Helper::convert_array_to_json($rows, $msg);
     } else {
@@ -48,9 +64,9 @@ function event_post($db)
     $data = json_decode(file_get_contents('php://input'), false);
 
     foreach ($data as $i) {
-        $date = $i->{'date'};
-        $details = $i->{'details'};
-        $enabled = $i->{'enabled'};
+        $date = $i->date;
+        $details = $i->details;
+        $enabled = $i->enabled;
         if (!isset($enabled) || $enabled == "") $enabled = 0;
         $result = $db->query("insert into week(date, details, enabled) " .
                              "values(\"$date\", \"$details\", $enabled) " .

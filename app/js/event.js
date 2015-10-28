@@ -4,7 +4,6 @@ function($scope, $http, $rootScope) {
     $scope.fdate;
 
     $scope.init = function() {
-        $scope.changed = true;
         $scope.fdate = new Date();
         var day = $scope.fdate.getDay();
         if (day == 6) {
@@ -25,6 +24,7 @@ function($scope, $http, $rootScope) {
             $scope.data = response.data;
         }
         $scope.message = response.message;
+        $scope.changed = false;
     }
 
     $scope.getDisplayDate = function(date) {
@@ -38,6 +38,11 @@ function($scope, $http, $rootScope) {
     $scope.submit = function() {
         $http.post("event.php", $scope.data)
             .success(handleResponse);
+    }
+
+    $scope.onChange = function() {
+        $scope.message = "";
+        $scope.changed = true;
     }
 
     /*

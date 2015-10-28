@@ -17,11 +17,12 @@
     <tr ng-repeat="event in data">
       <td>{{ getDisplayDate(event.date) }}</td>
       <td>
-          <input type="text" class="trans" ng-model="event.details">
+          <input type="text" class="trans" placeholder="<Event details>"
+          ng-model="event.details" ng-change="onChange()">
       </td>
       <td>
           <input type="checkbox" class="form-control"
-          ng-model="event.enabled" ng-true-value="1">
+          ng-model="event.enabled" ng-true-value="1" ng-change="onChange()">
       </td>
     </tr>
   </tbody>
