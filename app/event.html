@@ -1,27 +1,27 @@
-<!-- RSVP view -->
+<!-- event view -->
 <div ng-init="init()">
 
-<h3>RSVP for {{ name }}</h3>
+<h3>Events from {{ getDisplayDate(fdate) }}</h3>
 <br>
 <br>
 
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>Day</th>
+      <th>Date</th>
       <th>Details</th>
-      <th>RSVP</th>
+      <th>Enabled</th>
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="(key, value) in rsvp">
-      <td>{{ getDisplayDate(key) }}</td>
-      <td>{{ value.details }}</td>
+    <tr ng-repeat="event in data">
+      <td>{{ getDisplayDate(event.date) }}</td>
       <td>
-        <button class="btn rsvpBtn" ng-disabled="value.enabled==0"
-                ng-class="value.rsvp" ng-click="editRSVP(key)">
-          <span class="glyphicon glyphicon-pencil"></span>  {{ value.rsvp }}
-        </button>
+          <input type="text" class="trans" ng-model="event.details">
+      </td>
+      <td>
+          <input type="checkbox" class="form-control"
+          ng-model="event.enabled" ng-true-value="1">
       </td>
     </tr>
   </tbody>

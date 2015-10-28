@@ -2,6 +2,9 @@
     border-bottom-style: solid;
     margin-bottom: 25px;
 }
+.nofoc:focus {
+    outline-width: 0;
+}
 .mainSmall {
     margin-left: 40px !important;
 }
@@ -36,6 +39,11 @@ body { font-family: "Arial"; font-size: 13pt }
 .msg { color:#b22; text-align: center; font-size: 8pt }
 .No  { background: #b88 }
 .Yes { background: #8b8 }
+.trans {
+    width: 100%;
+    background: transparent;
+    border: 0px solid;
+}
 .gone { display: none }
 @media print {
   .noPrnt { display: none !important; }

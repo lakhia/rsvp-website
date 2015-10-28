@@ -25,26 +25,16 @@ app.config(['$stateProvider','$urlRouterProvider',
         templateUrl: 'print.html',
         controller: 'printController',
       })
-      .state('help', {
-        url: "/help",
-        templateUrl: 'ni.html',
-        controller: 'adminController',
+      .state('event', {
+        url: "/event",
+        templateUrl: 'event.html',
+        controller: 'eventController',
       })
-      .state('admin', {
-         url: "/admin",
+      .state('family', {
+         url: "/family",
          templateUrl: 'admin.html',
          controller: 'adminController',
       });
-      // .state('stats', {
-      //   url: "/stats",
-      //   templateUrl: 'stats.html',
-      //   controller: 'statsController',
-      // }),
-      // .state('settings', {
-      //    url: "/settings",
-      //    templateUrl: 'settings.html',
-      //    controller: 'settingsControler',
-      // });
 
       $urlRouterProvider.otherwise('/');
 }])
@@ -120,11 +110,12 @@ app.run(['$rootScope', '$http', '$state', '$stateParams',
             $http({
                 url: url,
                 method: "GET",
-                params: {from: convertDate(fromDate), to: convertDate(toDate)}
+                params:
+                  {from: $rootScope.convertDate(fromDate),
+                     to: $rootScope.convertDate(toDate)}
             }).success(handleResponse);
         }
-        // Private methods
-        function convertDate(date) {
+        $rootScope.convertDate = function(date) {
             return date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
         }
     }

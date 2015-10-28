@@ -24,8 +24,8 @@ CREATE TABLE family
 
 CREATE TABLE week
   ( date DATE NOT NULL PRIMARY KEY,
-    details varchar(255)        -- event name or menu
-    -- enabled BOOLEAN DEFAULT true
+    details varchar(255),       -- event name or menu
+    enabled BOOLEAN DEFAULT true
     -- editable BOOLEAN         -- transient or computed value
   );
 

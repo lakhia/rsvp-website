@@ -11,7 +11,7 @@ if (!Helper::verify_token($email_cookie, $thaali_cookie)) {
 if ($method_server == "POST") {
     details_post($db, $thaali_cookie);
 } else {
-    details_get($db, $thaali_cookie, ""); 
+    details_get($db, $thaali_cookie, "");
 }
 
 // Get details for specific dates
@@ -21,19 +21,16 @@ function details_get($db, $thaali, $msg)
     $to = $_GET['to'];
 
     // Make query
-    $query = "SELECT week.date, details, rsvp FROM week " .
+    $query = "SELECT week.date, enabled, details, rsvp FROM week " .
         "LEFT JOIN rsvps ON rsvps.date = week.date " .
         "AND rsvps.thaali_id = " . $thaali . "";
-    if ($from) 
-    {
+    if ($from) {
         $query .= " WHERE week.date >= '"
             . $from . "' AND week.date < '" . $to . "';";
-    }
-    else
-    {
+    } else {
         $query .= ";";
     }
-    
+
     $result = $db->query($query);
 
     // Get cutoff time for disabling entry
@@ -44,8 +41,8 @@ function details_get($db, $thaali, $msg)
     while($row = $result->fetch_assoc()) {
 
         // Editing is only allowed for dates past cutoff
-        if ($row["date"] >= $cutoff) {
-            $row["enabled"] = "true";
+        if ($row["date"] <= $cutoff) {
+            $row["enabled"] = "0";
         }
 
         // Convert rsvp boolean to text
