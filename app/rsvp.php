@@ -23,9 +23,9 @@ function details_get($db, $thaali, $msg)
     // Make query
     $query = "SELECT week.date, enabled, details, rsvp FROM week " .
         "LEFT JOIN rsvps ON rsvps.date = week.date " .
-        "AND rsvps.thaali_id = " . $thaali . "";
+        "AND rsvps.thaali_id = " . $thaali . " WHERE details > ''";
     if ($from) {
-        $query .= " WHERE week.date >= '"
+        $query .= " AND week.date >= '"
             . $from . "' AND week.date < '" . $to . "';";
     } else {
         $query .= ";";
@@ -41,8 +41,8 @@ function details_get($db, $thaali, $msg)
     while($row = $result->fetch_assoc()) {
 
         // Editing is only allowed for dates past cutoff
-        if ($row["date"] <= $cutoff) {
-            $row["enabled"] = "0";
+        if ($row["date"] < $cutoff) {
+            $row["readonly"] = "1";
         }
 
         // Convert rsvp boolean to text

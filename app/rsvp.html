@@ -18,7 +18,8 @@
       <td>{{ getDisplayDate(key) }}</td>
       <td>{{ value.details }}</td>
       <td>
-        <button class="btn rsvpBtn" ng-disabled="value.enabled==0"
+        <button class="btn rsvpBtn" ng-show="value.enabled==1"
+                ng-disabled="value.readonly==1"
                 ng-class="value.rsvp" ng-click="editRSVP(key)">
           <span class="glyphicon glyphicon-pencil"></span>  {{ value.rsvp }}
         </button>

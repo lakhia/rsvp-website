@@ -44,8 +44,6 @@ app.controller("mainController", ["$scope", "$http", "$cookies", "$rootScope",
                                   "$state",
 function($scope, $http, $cookies, $rootScope, $state) {
 
-    $scope.small = 0;
-
     $scope.init = function() {
         // Logout param present?
         if ($rootScope.$stateParams.out) {
@@ -53,6 +51,7 @@ function($scope, $http, $cookies, $rootScope, $state) {
             return;
         }
         $scope.cookies = $cookies;
+        $scope.small = $cookies.menuSmall;
     }
 
     $scope.login = function() {
@@ -77,6 +76,7 @@ function($scope, $http, $cookies, $rootScope, $state) {
 
     $scope.menuToggle = function() {
         $scope.small = !$scope.small;
+        $scope.cookies.menuSmall = $scope.small;
     }
 
     function logout() {
