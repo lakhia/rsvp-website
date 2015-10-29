@@ -32,8 +32,8 @@ app.config(['$stateProvider','$urlRouterProvider',
       })
       .state('family', {
          url: "/family",
-         templateUrl: 'admin.html',
-         controller: 'adminController',
+         templateUrl: 'family.html',
+         controller: 'familyController',
       });
 
       $urlRouterProvider.otherwise('/');
@@ -107,12 +107,17 @@ app.run(['$rootScope', '$http', '$state', '$stateParams',
             return output + ", " + input;
         }
         $rootScope.fetchData = function(fromDate, toDate, url, handleResponse) {
+            var p = null;
+            if (fromDate) {
+                p = {from: $rootScope.convertDate(fromDate)};
+                if (toDate) {
+                    p.to = $rootScope.convertDate(toDate);
+                }
+            }
             $http({
                 url: url,
                 method: "GET",
-                params:
-                  {from: $rootScope.convertDate(fromDate),
-                     to: $rootScope.convertDate(toDate)}
+                params: p
             }).success(handleResponse);
         }
         $rootScope.convertDate = function(date) {

@@ -1,0 +1,46 @@
+<div ng-init="init()">
+
+<h3>Family Panel</h3>
+<br>
+<br>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Thaali</th>
+      <th>Last name</th>
+      <th>First name</th>
+      <th>Email</th>
+      <th>Phone</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="family in data">
+      <td width="40em">
+        <input type="text" ng-model="family.thaali" class="trans"
+               placeholder="thaali"/>
+      </td>
+      <td>
+        <input type="text" ng-model="family.lastName" class="trans"
+               placeholder="Last name" />
+      </td>
+      <td>
+        <input type="text" ng-model="family.firstName" class="trans"
+               placeholder="First name" />
+      </td>
+      <td>
+        <input type="email" ng-model="family.email" class="trans"
+               placeholder="Email" />
+      </td>
+      <td>
+          <input type="text" ng-model="family.phone" class="trans"
+                 placeholder="Phone" />
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="msg">&nbsp;{{ message }}</div>
+<br>
+
+</div>

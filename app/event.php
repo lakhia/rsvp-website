@@ -3,7 +3,8 @@
 require_once("aux.php");
 
 // If token is invalid, return an empty response
-if (!Helper::verify_token($email_cookie, $thaali_cookie)) {
+if (!Helper::is_admin($email_cookie) ||
+    !Helper::verify_token($email_cookie, $thaali_cookie)) {
     return;
 }
 

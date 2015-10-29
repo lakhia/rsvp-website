@@ -22,7 +22,7 @@ function($scope, $http, $rootScope) {
     }
 
     function fetchData() {
-        $rootScope.fetchData($scope.fdate, $scope.fdate,
+        $rootScope.fetchData($scope.fdate, null,
             "print.php", handleResponse);
     }
     /*
