@@ -1,6 +1,7 @@
-.menu {
-    border-bottom-style: solid;
-    margin-bottom: 25px;
+a.menu, a.menu:hover, a.menu:focus {
+    margin-bottom: 15px;
+    background-color: #337AB7  !important;
+    color: #eee;
 }
 .nofoc:focus {
     outline-width: 0;
@@ -12,13 +13,13 @@
     width: 40px !important;
 }
 .main {
-    margin-left: 145px;
+    margin-left: 125px;
     overflow-x: hidden;
     padding: 20px;
 }
 .sidebar {
     position: fixed;
-    width: 145px;
+    width: 125px;
     top: 0px;
     bottom: 0px;
     left: 0px;
@@ -31,10 +32,10 @@
     cursor: default;
 }
 .nav > li > a {
-    padding: 10px;
+    padding: 11px;
 }
 h3 { text-align: center; font-family: "Arial Black" }
-body { font-family: "Arial"; font-size: 13pt }
+body { font-family: "Arial"; font-size: 12pt }
 .rsvpBtn { width:80px; text-align: left }
 .msg { color:#b22; text-align: center; font-size: 8pt }
 .No  { background: #b88 }

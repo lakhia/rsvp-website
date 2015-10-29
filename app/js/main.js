@@ -51,7 +51,7 @@ function($scope, $http, $cookies, $rootScope, $state) {
             return;
         }
         $scope.cookies = $cookies;
-        $scope.small = $cookies.menuSmall;
+        $scope.big = $cookies.menuBig;
     }
 
     $scope.login = function() {
@@ -75,8 +75,8 @@ function($scope, $http, $cookies, $rootScope, $state) {
     }
 
     $scope.menuToggle = function() {
-        $scope.small = !$scope.small;
-        $scope.cookies.menuSmall = $scope.small;
+        $scope.big = !$scope.big;
+        $scope.cookies.menuBig = $scope.big ? 1 : "";
     }
 
     function logout() {
@@ -85,6 +85,7 @@ function($scope, $http, $cookies, $rootScope, $state) {
         delete $cookies.token;
         delete $cookies.name;
         delete $cookies.thaali;
+        delete $cookies.menuBig;
         $scope.message = "You have been logged out";
     }
 }])

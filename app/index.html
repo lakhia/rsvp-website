@@ -25,32 +25,32 @@
 <div ng-controller="mainController" ng-init="init()">
 
 <!-- Side bar -->
-<div class="sidebar noPrnt" ng-class="{sidebarSmall: small}">
-<br>
+<div class="sidebar noPrnt" ng-class="{sidebarSmall: !big}">
+
 <ul class="nav nav-sidebar">
   <li>
     <a class="menu nofoc" ng-click="menuToggle()" href=""><i class="glyphicon
-    glyphicon-menu-hamburger"></i><span ng-class="{gone:small}">&nbsp; Menu</span></a></li>
+    glyphicon-menu-hamburger"></i><span ng-class="{gone:!big}">&nbsp; Menu</span></a></li>
   <li ui-sref-active="active">
     <a class="nofoc" ui-sref="home" ng-show="cookies.token"><i class="glyphicon
-    glyphicon-home"></i><span ng-class="{gone:small}">&nbsp; RSVP</span></a></li>
+    glyphicon-home"></i><span ng-class="{gone:!big}">&nbsp; RSVP</span></a></li>
   <li ui-sref-active="active">
     <a class="nofoc" ui-sref="print" ng-show="cookies.token"><i class="glyphicon
-    glyphicon-print"></i><span ng-class="{gone:small}">&nbsp; Filling</span></a></li>
+    glyphicon-print"></i><span ng-class="{gone:!big}">&nbsp; Filling</span></a></li>
   <li ui-sref-active="active">
     <a class="nofoc" ui-sref="event" ng-show="cookies.adv"><i class="glyphicon
-    glyphicon-cutlery"></i><span ng-class="{gone:small}">&nbsp; Events</span></a></li>
-  <li ui-sref-active="active"><a class="nofoc"
-    ui-sref="family" ng-show="cookies.adv"><i class="glyphicon
-    glyphicon-user"></i><span ng-class="{gone:small}">&nbsp; Family</span></a></li>
-  <li ng-class="{active: $state.includes('login')}"><a
-    ui-sref="login.out({out:1})"><i class="glyphicon glyphicon-remove"></i><span
-    ng-class="{gone:small}">&nbsp; Logout</span></a></li>
+    glyphicon-cutlery"></i><span ng-class="{gone:!big}">&nbsp; Events</span></a></li>
+  <li ui-sref-active="active">
+    <a class="nofoc" ui-sref="family" ng-show="cookies.adv"><i class="glyphicon
+    glyphicon-user"></i><span ng-class="{gone:!big}">&nbsp; Family</span></a></li>
+  <li ng-class="{active: $state.includes('login')}">
+    <a ui-sref="login.out({out:1})"><i class="glyphicon glyphicon-remove"></i><span
+    ng-class="{gone:!big}">&nbsp; Logout</span></a></li>
 </ul>
 </div>
 
 <!-- Main content uses view -->
-<div ng-class="{mainSmall: small}" class="main">
+<div ng-class="{mainSmall: !big}" class="main">
 <ui-view>
   <h3>Loading, please wait ...</h3>
 </ui-view>
