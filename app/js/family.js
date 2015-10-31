@@ -18,13 +18,13 @@ function($scope, $http, $rootScope)
     function handleResponse(response) {
         if (response.data) {
             $scope.data = response.data;
+            $scope.changed = false;
         }
         $scope.message = response.message;
-        $scope.changed = false;
     }
 
     $scope.submit = function() {
-        $http.post("family.php", $scope.data)
+        $http.post("family.php?offset=" + $scope.offset, $scope.data)
             .success(handleResponse);
     }
 

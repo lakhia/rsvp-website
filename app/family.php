@@ -61,7 +61,7 @@ function family_post($db, $thaali) {
         if (!isset($i->email) || $i->email == "") {
             $query = "DELETE FROM family WHERE thaali = " . $i->thaali;
         } else {
-            if (!isset($i->lastName) || !isset($i->firstName)) {
+            if ($i->lastName == "" || $i->firstName == "") {
                 $msg .= ", name is required";
                 continue;
             }
@@ -83,6 +83,7 @@ function family_post($db, $thaali) {
     }
     if (!$msg) {
         $msg = "Thank you, changes have been saved";
+        return family_get($db, $thaali, $msg);
     } else {
         $msg = "Please fix" . $msg;
     }
