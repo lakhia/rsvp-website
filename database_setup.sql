@@ -10,16 +10,14 @@ use sffaiz;
 
 CREATE TABLE family
   (
-    -- id int NOT NULL AUTO_INCREMENT,
-    thaali int NOT NULL,
+    thaali int NOT NULL PRIMARY KEY,
     lastName varchar(255) NOT NULL,
     firstName varchar(255) NOT NULL,
     email varchar(255) NOT NULL,
-    phone varchar(255),
+    phone varchar(255)
     -- bigThaali BOOLEAN,
     -- numAdults int,
     -- numChildren int,
-    UNIQUE KEY `thaali` (`thaali`, `email`)
   );
 
 CREATE TABLE week

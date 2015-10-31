@@ -3,12 +3,16 @@ app.controller("familyController", ["$scope", "$http", "$rootScope",
 function($scope, $http, $rootScope)
 {
     $scope.init = function() {
+        $scope.offset = 0;
         fetchData();
     }
 
     function fetchData() {
-        $rootScope.fetchData(null, null, "family.php",
-            handleResponse)
+        $http({
+            url: "family.php",
+            method: "GET",
+            params: {offset:$scope.offset}
+        }).success(handleResponse);
     }
 
     function handleResponse(response) {
@@ -17,6 +21,26 @@ function($scope, $http, $rootScope)
         }
         $scope.message = response.message;
         $scope.changed = false;
+    }
+
+    $scope.submit = function() {
+        $http.post("family.php", $scope.data)
+            .success(handleResponse);
+    }
+
+    $scope.onChange = function() {
+        $scope.message = "";
+        $scope.changed = true;
+    }
+
+    $scope.next = function() {
+        $scope.offset += 10;
+        fetchData();
+    }
+
+    $scope.prev = function() {
+        $scope.offset -= 10;
+        fetchData();
     }
 
 }]);
