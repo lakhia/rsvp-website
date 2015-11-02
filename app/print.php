@@ -16,20 +16,18 @@ function print_filling($db) {
     // Make query
     $query = "SELECT `thaali`, `lastName`, `firstName` FROM `rsvps` " .
         "LEFT JOIN `family` on family.thaali = rsvps.thaali_id " .
-        "WHERE `rsvp` = 1 AND `date` = '" . $from . "';";
+        "WHERE `rsvp` = 1 AND `date` = '" . $from . "' ORDER BY thaali;";
 
     $result = $db->query($query);
 
-    $output = array();
     while($row = $result->fetch_assoc()) {
-        $temp = array();
         $row['name'] = $row['firstName'] . " " . $row['lastName'];
         unset($row['firstName']);
         unset($row['lastName']);
-        $output[] = $row;
+        $rows[] = $row;
     }
-    if (count($output) > 0) {
-        echo Helper::convert_array_to_json($output, "");
+    if (isset($rows)) {
+        echo Helper::convert_array_to_json($rows, count($rows) . " thaalis");
     } else {
         die('{ "message": "No responses available for ' . $from . '" }');
     }

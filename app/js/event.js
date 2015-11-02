@@ -48,12 +48,12 @@ function($scope, $http, $rootScope) {
     /*
       Go forward and backwards
      */
-    $scope.nextWeek = function() {
+    $scope.next = function() {
         $rootScope.addDaysToDate($scope.fdate, 7);
         fetchData();
     }
 
-    $scope.prevWeek = function() {
+    $scope.prev = function() {
         $rootScope.addDaysToDate($scope.fdate, -7);
         fetchData();
     }

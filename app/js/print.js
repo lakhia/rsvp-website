@@ -9,7 +9,7 @@ function($scope, $http, $rootScope) {
     }
 
     function handleResponse(response) {
-        $scope.printout = response.data;
+        $scope.data = response.data;
         $scope.message = response.message;
     }
 

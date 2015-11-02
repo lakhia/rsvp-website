@@ -4,7 +4,6 @@ app.controller("rsvpController", ["$scope", "$http", "$cookies", '$state',
 function($scope, $http, $cookies, $state, $rootScope) {
     $scope.changed = false;
     $scope.toggleCount = 0;
-    $scope.rsvp = {};
     $scope.fdate;
 
     $scope.init = function() {
@@ -24,7 +23,7 @@ function($scope, $http, $cookies, $state, $rootScope) {
 
         $scope.greet = $rootScope.getName();
 
-        fetchRsvps();
+        fetchData();
     }
 
     function convertDate(date) {
@@ -33,33 +32,33 @@ function($scope, $http, $cookies, $state, $rootScope) {
 
     function handleResponse(response) {
         $scope.message = response.message;
-        $scope.rsvp = response.data;
+        $scope.data = response.data;
         $scope.changed = false;
         $scope.toggleCount = 0;
     }
 
-    function fetchRsvps() {
+    function fetchData() {
         var tdate = new Date($scope.fdate.getTime());
         $rootScope.addDaysToDate(tdate, 7);
         $rootScope.fetchData($scope.fdate, tdate, "rsvp.php", handleResponse)
     }
 
     $scope.getDisplayDate = function(input) {
-        return $rootScope.getDisplayDate($scope.rsvp[input].date);
+        return $rootScope.getDisplayDate($scope.data[input].date);
     }
 
     /*
       RSVP related methods
      */
 
-    $scope.nextWeek = function() {
+    $scope.next = function() {
         $rootScope.addDaysToDate($scope.fdate, 7);
-        fetchRsvps();
+        fetchData();
     }
 
-    $scope.prevWeek = function() {
+    $scope.prev = function() {
         $rootScope.addDaysToDate($scope.fdate, -7);
-        fetchRsvps();
+        fetchData();
     }
 
     $scope.editRSVP = function(id) {
@@ -67,23 +66,23 @@ function($scope, $http, $cookies, $state, $rootScope) {
         $scope.message = '';
 
         // Create a "No" default entry
-        if (!$scope.rsvp[id]) {
-            $scope.rsvp[id] = { rsvp:"No" };
+        if (!$scope.data[id]) {
+            $scope.data[id] = { rsvp:"No" };
         }
 
         // Toggle response to RSVP
-        if ($scope.rsvp[id].rsvp == "Yes") {
-            $scope.rsvp[id].rsvp = "No";
+        if ($scope.data[id].rsvp == "Yes") {
+            $scope.data[id].rsvp = "No";
         } else {
-            $scope.rsvp[id].rsvp = "Yes";
+            $scope.data[id].rsvp = "Yes";
         }
 
         // Keep track of toggle count to enable button
-        if ($scope.rsvp[id].toggled) {
-            $scope.rsvp[id].toggled = 0;
+        if ($scope.data[id].toggled) {
+            $scope.data[id].toggled = 0;
             $scope.toggleCount--;
         } else {
-            $scope.rsvp[id].toggled = 1;
+            $scope.data[id].toggled = 1;
             $scope.toggleCount++;
         }
         $scope.changed = ($scope.toggleCount > 0);
@@ -91,10 +90,10 @@ function($scope, $http, $cookies, $state, $rootScope) {
 
     $scope.submit = function() {
         var toggles = {};
-        for (var id in $scope.rsvp) {
-            if ($scope.rsvp.hasOwnProperty(id)) {
-                if ($scope.rsvp[id].toggled !== undefined) {
-                    toggles[$scope.rsvp[id].date] = $scope.rsvp[id].rsvp;
+        for (var id in $scope.data) {
+            if ($scope.data.hasOwnProperty(id)) {
+                if ($scope.data[id].toggled !== undefined) {
+                    toggles[$scope.data[id].date] = $scope.data[id].rsvp;
                 }
             }
         }

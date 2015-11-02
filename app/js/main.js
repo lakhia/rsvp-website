@@ -46,7 +46,7 @@ function($scope, $http, $cookies, $rootScope, $state) {
 
     $scope.init = function() {
         // Logout param present?
-        if ($rootScope.$stateParams.out) {
+        if ($rootScope.stateParams.out) {
             logout();
             return;
         }
@@ -91,10 +91,9 @@ function($scope, $http, $cookies, $rootScope, $state) {
 }])
 
 /* Add references to rootScope so that you can access them from any scope */
-app.run(['$rootScope', '$cookies', '$http', '$state', '$stateParams',
-    function ($rootScope, $cookies, $http, $state, $stateParams) {
-        $rootScope.$state = $state;
-        $rootScope.$stateParams = $stateParams;
+app.run(['$rootScope', '$cookies', '$http', '$stateParams',
+    function ($rootScope, $cookies, $http, $stateParams) {
+        $rootScope.stateParams = $stateParams;
 
         // Add helper methods here, can be used by any controller
         $rootScope.addDaysToDate = function(date, days) {
@@ -108,12 +107,9 @@ app.run(['$rootScope', '$cookies', '$http', '$state', '$stateParams',
             return output + ", " + input;
         }
         $rootScope.fetchData = function(fromDate, toDate, url, handleResponse) {
-            var p = null;
-            if (fromDate) {
-                p = {from: $rootScope.convertDate(fromDate)};
-                if (toDate) {
-                    p.to = $rootScope.convertDate(toDate);
-                }
+            var p = {from: $rootScope.convertDate(fromDate)};
+            if (toDate) {
+                p.to = $rootScope.convertDate(toDate);
             }
             $http({
                 url: url,
