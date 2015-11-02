@@ -67,8 +67,8 @@ function($scope, $http, $cookies, $rootScope, $state) {
                 if (response.message) {
                     $scope.message = response.message;
                 } else {
-                    $scope.name = response.data;
                     $rootScope.name = response.data;
+                    $rootScope.thaali = $scope.thaali;
                     $state.go("home");
                 }
             });
@@ -91,8 +91,8 @@ function($scope, $http, $cookies, $rootScope, $state) {
 }])
 
 /* Add references to rootScope so that you can access them from any scope */
-app.run(['$rootScope', '$http', '$state', '$stateParams',
-    function ($rootScope, $http, $state, $stateParams) {
+app.run(['$rootScope', '$cookies', '$http', '$state', '$stateParams',
+    function ($rootScope, $cookies, $http, $state, $stateParams) {
         $rootScope.$state = $state;
         $rootScope.$stateParams = $stateParams;
 
@@ -120,6 +120,14 @@ app.run(['$rootScope', '$http', '$state', '$stateParams',
                 method: "GET",
                 params: p
             }).success(handleResponse);
+        }
+        $rootScope.getName = function() {
+            if ($cookies.name !== undefined) {
+                return $cookies.name.replace(/\+/g, " ") +
+                    ", #" + $cookies.thaali;
+            } else {
+                return $rootScope.name + ", #" + $rootScope.thaali;
+            }
         }
         $rootScope.convertDate = function(date) {
             return date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();

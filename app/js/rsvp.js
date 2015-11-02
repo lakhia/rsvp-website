@@ -22,10 +22,7 @@ function($scope, $http, $cookies, $state, $rootScope) {
         }
         $rootScope.addDaysToDate($scope.fdate, (1 - day));
 
-        if ($cookies.name !== undefined) {
-            $scope.greet = $cookies.name.replace(/\+/g, " ") +
-                ", #" + $cookies.thaali;
-        }
+        $scope.greet = $rootScope.getName();
 
         fetchRsvps();
     }
