@@ -1,6 +1,6 @@
 <div ng-init="init()">
 
-<h3>Family Panel</h3>
+<h3>Families</h3>
 <br>
 <br>
 
@@ -43,14 +43,14 @@
 <div class="msg">&nbsp;{{ message }}</div>
 <br>
 <div class="text-center">
-    <button class="btn btn-default" ng-disabled="!offset" ng-click="prev()">
-      <span class="glyphicon glyphicon-chevron-left"></span>  Prev Page
+    <button class="btn btn-default" ng-disabled="!offset" ng-click="next(-10)">
+      <span class="glyphicon glyphicon-chevron-left"></span>  Prev
     </button>&nbsp;&nbsp;
   <button class="btn btn-primary" ng-disabled="!changed" ng-click="submit()">
-    <span class="glyphicon glyphicon-save"></span>  Save Changes
+    <span class="glyphicon glyphicon-save"></span>  Save
   </button>&nbsp;&nbsp;
-  <button class="btn btn-default" ng-click="next()">
-    Next Page  <span class="glyphicon glyphicon-chevron-right"></span>
+  <button class="btn btn-default" ng-click="next(10)">
+    Next  <span class="glyphicon glyphicon-chevron-right"></span>
   </button>
 </div>
 

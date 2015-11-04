@@ -45,17 +45,8 @@ function($scope, $http, $rootScope) {
         $scope.changed = true;
     }
 
-    /*
-      Go forward and backwards
-     */
-    $scope.next = function() {
-        $rootScope.addDaysToDate($scope.fdate, 7);
+    $scope.next = function(offset) {
+        $rootScope.addDaysToDate($scope.fdate, offset);
         fetchData();
     }
-
-    $scope.prev = function() {
-        $rootScope.addDaysToDate($scope.fdate, -7);
-        fetchData();
-    }
-
 }]);

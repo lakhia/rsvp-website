@@ -25,16 +25,9 @@ function($scope, $http, $rootScope) {
         $rootScope.fetchData($scope.fdate, null,
             "print.php", handleResponse);
     }
-    /*
-      Go forward and backwards
-     */
-    $scope.nextDay = function() {
-        $rootScope.addDaysToDate($scope.fdate, 1);
-        fetchData();
-    }
 
-    $scope.prevDay = function() {
-        $rootScope.addDaysToDate($scope.fdate, -1);
+    $scope.next = function(offset) {
+        $rootScope.addDaysToDate($scope.fdate, offset);
         fetchData();
     }
 

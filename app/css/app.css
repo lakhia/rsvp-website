@@ -40,6 +40,9 @@ body { font-family: "Arial"; font-size: 12pt }
 .msg { color:#b22; text-align: center; font-size: 8pt }
 .No  { background: #b88 }
 .Yes { background: #8b8 }
+.rsvpRow {
+    height:55px;
+}
 .trans {
     width: 100%;
     background: transparent;

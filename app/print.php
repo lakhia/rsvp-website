@@ -27,7 +27,10 @@ function print_filling($db) {
         $rows[] = $row;
     }
     if (isset($rows)) {
-        echo Helper::convert_array_to_json($rows, count($rows) . " thaalis");
+        $count = count($rows);
+        $est = round($count * 1.2, 1);
+        echo Helper::convert_array_to_json($rows, $count . " thaalis, " .
+                                           $est . " estimate");
     } else {
         die('{ "message": "No responses available for ' . $from . '" }');
     }

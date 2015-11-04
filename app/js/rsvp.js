@@ -47,28 +47,18 @@ function($scope, $http, $cookies, $state, $rootScope) {
         return $rootScope.getDisplayDate($scope.data[input].date);
     }
 
-    /*
-      RSVP related methods
-     */
-
-    $scope.next = function() {
-        $rootScope.addDaysToDate($scope.fdate, 7);
-        fetchData();
-    }
-
-    $scope.prev = function() {
-        $rootScope.addDaysToDate($scope.fdate, -7);
-        fetchData();
+    $scope.next = function(offset) {
+        if ($scope.toggleCount == 0 ||
+            window.confirm("Unsaved changes, proceed anyway?"))
+        {
+            $rootScope.addDaysToDate($scope.fdate, offset);
+            fetchData();
+        }
     }
 
     $scope.editRSVP = function(id) {
         // Clear message
         $scope.message = '';
-
-        // Create a "No" default entry
-        if (!$scope.data[id]) {
-            $scope.data[id] = { rsvp:"No" };
-        }
 
         // Toggle response to RSVP
         if ($scope.data[id].rsvp == "Yes") {
@@ -91,10 +81,8 @@ function($scope, $http, $cookies, $state, $rootScope) {
     $scope.submit = function() {
         var toggles = {};
         for (var id in $scope.data) {
-            if ($scope.data.hasOwnProperty(id)) {
-                if ($scope.data[id].toggled !== undefined) {
-                    toggles[$scope.data[id].date] = $scope.data[id].rsvp;
-                }
+            if ($scope.data[id].toggled !== undefined) {
+                toggles[$scope.data[id].date] = $scope.data[id].rsvp;
             }
         }
 

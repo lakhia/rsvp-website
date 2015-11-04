@@ -33,14 +33,8 @@ function($scope, $http, $rootScope)
         $scope.changed = true;
     }
 
-    $scope.next = function() {
-        $scope.offset += 10;
+    $scope.next = function(offset) {
+        $scope.offset += offset;
         fetchData();
     }
-
-    $scope.prev = function() {
-        $scope.offset -= 10;
-        fetchData();
-    }
-
 }]);
