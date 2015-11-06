@@ -86,6 +86,7 @@ function($scope, $http, $cookies, $rootScope, $state) {
         delete $cookies.name;
         delete $cookies.thaali;
         delete $cookies.menuBig;
+        $scope.thaali = "";
         $scope.message = "You have been logged out";
     }
 }])

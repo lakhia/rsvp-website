@@ -64,9 +64,18 @@ function details_get($db, $thaali, $msg)
 // Post update to details
 function details_post($db, $thaali)
 {
+    // Get cutoff time for disabling entry
+    $cutoff = Helper::rsvp_disabled();
+
     $data = json_decode(file_get_contents('php://input'), true);
 
     foreach ($data as $k => $v) {
+
+        // Editing is only allowed for dates past cutoff
+        if ($k < $cutoff) {
+            continue;
+        }
+
         // Convert "Yes" back to boolean
         $response = 0;
         if ($v == "Yes") {
