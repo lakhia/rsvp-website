@@ -26,10 +26,6 @@ function($scope, $http, $cookies, $state, $rootScope) {
         fetchData();
     }
 
-    function convertDate(date) {
-        return date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
-    }
-
     function handleResponse(response) {
         $scope.message = response.message;
         $scope.data = response.data;
@@ -91,7 +87,8 @@ function($scope, $http, $cookies, $state, $rootScope) {
         $rootScope.addDaysToDate(tdate, 7);
 
         $http.post("rsvp.php?from=" +
-                   convertDate($scope.fdate) + "&to=" + convertDate(tdate),
+                   $rootScope.convertDate($scope.fdate) +
+                   "&to=" + $rootScope.convertDate(tdate),
                    toggles)
              .success(handleResponse);
     }
