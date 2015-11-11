@@ -20,11 +20,11 @@ CREATE TABLE family
     -- numChildren int,
   );
 
-CREATE TABLE week
-  ( date DATE NOT NULL PRIMARY KEY,
+CREATE TABLE events
+  (
+    date DATE NOT NULL PRIMARY KEY,
     details varchar(255),       -- event name or menu
     enabled BOOLEAN DEFAULT true
-    -- editable BOOLEAN         -- transient or computed value
   );
 
 CREATE TABLE rsvps

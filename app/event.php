@@ -10,19 +10,19 @@ if (!Helper::is_admin($email_cookie) ||
 
 // POST or GET?
 if ($method_server == "POST") {
-    event_post($db, $thaali_cookie);
+    event_post($db);
 } else {
-    event_get($db, $thaali_cookie, "");
+    event_get($db, "");
 }
 
 // Get details for specific dates
-function event_get($db, $thaali, $msg)
+function event_get($db, $msg)
 {
     $from = $_GET['from'];
     $to = $_GET['to'];
 
     // Make query
-    $query = "SELECT * FROM week";
+    $query = "SELECT * FROM events";
     if ($from) {
         $query .= " WHERE date >= '"
             . $from . "' AND date < '" . $to . "';";
@@ -69,7 +69,7 @@ function event_post($db)
         $details = $i->details;
         $enabled = $i->enabled;
         if (!isset($enabled) || $enabled == "") $enabled = 0;
-        $result = $db->query("insert into week(date, details, enabled) " .
+        $result = $db->query("insert into events(date, details, enabled) " .
                              "values(\"$date\", \"$details\", $enabled) " .
                              "on duplicate KEY " .
                              "update details=\"$details\", enabled=$enabled");

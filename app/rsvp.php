@@ -21,12 +21,12 @@ function details_get($db, $thaali, $msg)
     $to = $_GET['to'];
 
     // Make query
-    $query = "SELECT week.date, enabled, details, rsvp FROM week " .
-        "LEFT JOIN rsvps ON rsvps.date = week.date " .
+    $query = "SELECT events.date, enabled, details, rsvp FROM events " .
+        "LEFT JOIN rsvps ON rsvps.date = events.date " .
         "AND rsvps.thaali_id = " . $thaali . " WHERE details > ''";
     if ($from) {
-        $query .= " AND week.date >= '"
-            . $from . "' AND week.date < '" . $to . "';";
+        $query .= " AND events.date >= '"
+            . $from . "' AND events.date < '" . $to . "';";
     } else {
         $query .= ";";
     }
