@@ -93,14 +93,21 @@ function($scope, $http, $cookies, $rootScope, $state) {
 }])
 
 /* Add references to rootScope so that you can access them from any scope */
-app.run(['$rootScope', '$cookies', '$http', '$stateParams',
-    function ($rootScope, $cookies, $http, $stateParams) {
+app.run(['$rootScope', '$cookies', '$http', '$state', '$stateParams',
+    function ($rootScope, $cookies, $http, $state, $stateParams) {
         $rootScope.stateParams = $stateParams;
 
         // Add helper methods here, can be used by any controller
+        $rootScope.isLoggedOut = function() {
+            if (!$cookies.token && !$rootScope.name) {
+                $state.go("login");
+                return 1;
+            }
+            return 0;
+        }
         $rootScope.addDaysToDate = function(date, days) {
             return date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        };
+        }
         $rootScope.getDisplayDate = function(input) {
             var parts = input.split('-');
             var d = new Date(parts[0], parts[1]-1, parts[2]);

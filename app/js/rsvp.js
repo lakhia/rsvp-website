@@ -1,15 +1,13 @@
 /* RSVP controller */
-app.controller("rsvpController", ["$scope", "$http", "$cookies", '$state',
-                                  "$rootScope",
-function($scope, $http, $cookies, $state, $rootScope) {
+app.controller("rsvpController", ["$scope", "$http", "$rootScope",
+function($scope, $http, $rootScope) {
     $scope.changed = false;
     $scope.toggleCount = 0;
     $scope.fdate;
 
     $scope.init = function() {
         // Logged in?
-        if (!$cookies.token && !$rootScope.name) {
-            $state.go("login");
+        if ($rootScope.isLoggedOut()) {
             return;
         }
 

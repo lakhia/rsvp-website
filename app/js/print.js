@@ -4,6 +4,10 @@ function($scope, $http, $rootScope) {
     $scope.fdate;
 
     $scope.init = function() {
+        // Logged in?
+        if ($rootScope.isLoggedOut()) {
+            return;
+        }
         $scope.fdate = new Date();
         fetchData();
     }
