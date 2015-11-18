@@ -20,17 +20,22 @@ function print_filling($db) {
 
     $result = $db->query($query);
 
+    // Append first name and last
     while($row = $result->fetch_assoc()) {
         $row['name'] = $row['firstName'] . " " . $row['lastName'];
         unset($row['firstName']);
         unset($row['lastName']);
         $rows[] = $row;
     }
+
+    // Create message
     if (isset($rows)) {
         $count = count($rows);
-        $est = round($count * 1.2, 1);
-        echo Helper::convert_array_to_json($rows, $count . " thaalis, " .
-                                           $est . " estimate");
+        $msg = $count . " thaalis, " . round($count * 1.2, 1) . " estimate";
+        if ($from >= Helper::get_cutoff_time(0)) {
+            $msg .= ", not locked";
+        }
+        echo Helper::convert_array_to_json($rows, $msg);
     } else {
         die('{ "message": "No responses available for ' . $from . '" }');
     }

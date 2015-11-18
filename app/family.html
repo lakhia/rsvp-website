@@ -7,7 +7,7 @@
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>Thaali</th>
+      <th class="min">Thaali</th>
       <th>Last name</th>
       <th>First name</th>
       <th>Email</th>
@@ -16,7 +16,7 @@
   </thead>
   <tbody>
     <tr ng-repeat="family in data">
-      <td width="40em">
+      <td>
         <input type="text" ng-model="family.thaali" class="trans"
                placeholder="thaali" ng-change="onChange()"/>
       </td>

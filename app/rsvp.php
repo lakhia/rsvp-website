@@ -34,7 +34,7 @@ function details_get($db, $thaali, $msg)
     $result = $db->query($query);
 
     // Get cutoff time for disabling entry
-    $cutoff = Helper::rsvp_disabled();
+    $cutoff = Helper::get_cutoff_time(1);
 
     // Convert rows
     // TODO: Check if $result is non-object
@@ -65,7 +65,7 @@ function details_get($db, $thaali, $msg)
 function details_post($db, $thaali)
 {
     // Get cutoff time for disabling entry
-    $cutoff = Helper::rsvp_disabled();
+    $cutoff = Helper::get_cutoff_time(1);
 
     $data = json_decode(file_get_contents('php://input'), true);
 

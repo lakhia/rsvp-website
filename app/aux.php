@@ -55,6 +55,7 @@ class Helper
         return false;
     }
 
+    // Response via json contains data and optional message
     public static function convert_array_to_json($array, $msg)
     {
         $wrapper = array();
@@ -67,10 +68,13 @@ class Helper
         return json_encode($wrapper) . "\n";
     }
 
-    public static function rsvp_disabled()
+    // Get cutoff date where RSVP becomes readonly and cannot be modified
+    // unless you are admin
+    public static function get_cutoff_time($override_admin)
     {
-        // Admin can change RSVP even if disabled for others
-        if (self::is_admin($_COOKIE['email'])) {
+        // If admin override is enabled, then return a very old date so that
+        // everything is modifiable
+        if ($override_admin && self::is_admin($_COOKIE['email'])) {
             return '1970-1-1';
         }
 
