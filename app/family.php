@@ -22,7 +22,6 @@ function family_get($db, $thaali, $msg)
     if (isset($_GET['offset'])) {
         $offset = $_GET['offset'];
     }
-    $offset += 1;
     $end = $offset + 10;
 
     // Make query

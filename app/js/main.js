@@ -69,7 +69,7 @@ function($scope, $http, $cookies, $rootScope, $state) {
                 } else {
                     $rootScope.name = response.data;
                     $rootScope.thaali = $scope.thaali;
-                    $state.go("home");
+                    $state.go("home", {offset:0});
                 }
             });
     }
@@ -118,8 +118,8 @@ app.run(['$rootScope', '$cookies', '$http', '$state', '$stateParams',
             scope.next = function(offset) {
                 if (scope.changed == 0 ||
                         window.confirm("Unsaved changes, proceed anyway?")) {
-                    scope.offset += offset;
-                    scope.fetchData();
+                    var s = $state.current.name;
+                    $state.go(s, {offset: scope.offset + offset});
                 }
             }
             scope.fetchData();
