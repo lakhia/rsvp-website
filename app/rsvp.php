@@ -17,8 +17,12 @@ if ($method_server == "POST") {
 // Get details for specific dates
 function details_get($db, $thaali, $msg)
 {
-    $from = $_GET['from'];
-    $to = $_GET['to'];
+    $offset = 0;
+    if (isset($_GET['offset'])) {
+        $offset = $_GET['offset'];
+    }
+    $from = Helper::get_week($offset);
+    $to = Helper::get_week($offset + 7);
 
     // Make query
     $query = "SELECT events.date, enabled, details, rsvp FROM events " .
@@ -55,9 +59,9 @@ function details_get($db, $thaali, $msg)
         $rows[] = $row;
     }
     if (isset($rows)) {
-        echo Helper::convert_array_to_json($rows, $msg);
+        Helper::print_to_json($rows, $msg, NULL);
     } else {
-        die('{ "message": "No details available for week of ' . $from . '" }');
+        die('{ "msg": "No details available for week of ' . $from . '" }');
     }
 }
 

@@ -6,12 +6,12 @@ app.config(['$stateProvider','$urlRouterProvider',
   function($stateProvider, $urlRouterProvider) {
     $stateProvider
       .state("home", {
-        url: "/",
+        url: "/{offset}",
         templateUrl: 'rsvp.html',
         controller: 'rsvpController',
       })
       .state('login', {
-        url: "/login",
+        url: "/login/",
         templateUrl: 'login.html',
         controller: 'mainController',
       })
@@ -21,17 +21,17 @@ app.config(['$stateProvider','$urlRouterProvider',
         controller: 'mainController',
       })
       .state('print', {
-        url: "/print",
+        url: "/print/{offset}",
         templateUrl: 'print.html',
         controller: 'printController',
       })
       .state('event', {
-        url: "/event",
+        url: "/event/{offset}",
         templateUrl: 'event.html',
         controller: 'eventController',
       })
       .state('family', {
-         url: "/family",
+         url: "/family/{offset}",
          templateUrl: 'family.html',
          controller: 'familyController',
       });
@@ -64,8 +64,8 @@ function($scope, $http, $cookies, $rootScope, $state) {
             function(response)
             {
                 // Display error or redirect to home
-                if (response.message) {
-                    $scope.message = response.message;
+                if (response.msg) {
+                    $scope.msg = response.msg;
                 } else {
                     $rootScope.name = response.data;
                     $rootScope.thaali = $scope.thaali;
@@ -88,7 +88,7 @@ function($scope, $http, $cookies, $rootScope, $state) {
         delete $cookies.menuBig;
         delete $cookies.email;
         $scope.thaali = "";
-        $scope.message = "You have been logged out";
+        $scope.msg = "You have been logged out";
     }
 }])
 
@@ -97,16 +97,32 @@ app.run(['$rootScope', '$cookies', '$http', '$state', '$stateParams',
     function ($rootScope, $cookies, $http, $state, $stateParams) {
         $rootScope.stateParams = $stateParams;
 
-        // Add helper methods here, can be used by any controller
-        $rootScope.isLoggedOut = function() {
+        // Init scope, setup common functions, fetch data
+        $rootScope.init = function(scope, handleResponse) {
             if (!$cookies.token && !$rootScope.name) {
                 $state.go("login");
-                return 1;
+                return;
             }
-            return 0;
-        }
-        $rootScope.addDaysToDate = function(date, days) {
-            return date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            scope.changed = 0;
+            scope.offset = parseInt($stateParams.offset) || 0;
+
+            // Fetch data using http GET
+            scope.fetchData = function() {
+                $http({
+                    url: scope.url,
+                    method: "GET",
+                    params: {offset: scope.offset}
+                }).success(handleResponse);
+            }
+            // Next button adds offset and fetches data
+            scope.next = function(offset) {
+                if (scope.changed == 0 ||
+                        window.confirm("Unsaved changes, proceed anyway?")) {
+                    scope.offset += offset;
+                    scope.fetchData();
+                }
+            }
+            scope.fetchData();
         }
         $rootScope.getDisplayDate = function(input) {
             var parts = input.split('-');
@@ -115,17 +131,6 @@ app.run(['$rootScope', '$cookies', '$http', '$state', '$stateParams',
             var output = ["Sun","Mon","Tue","Wed","Thr","Fri","Sat"][d.getDay()]
             return output + ", " + input;
         }
-        $rootScope.fetchData = function(fromDate, toDate, url, handleResponse) {
-            var p = {from: $rootScope.convertDate(fromDate)};
-            if (toDate) {
-                p.to = $rootScope.convertDate(toDate);
-            }
-            $http({
-                url: url,
-                method: "GET",
-                params: p
-            }).success(handleResponse);
-        }
         $rootScope.getName = function() {
             if ($cookies.name !== undefined) {
                 return $cookies.name.replace(/\+/g, " ") +
@@ -133,9 +138,6 @@ app.run(['$rootScope', '$cookies', '$http', '$state', '$stateParams',
             } else {
                 return $rootScope.name + ", #" + $rootScope.thaali;
             }
-        }
-        $rootScope.convertDate = function(date) {
-            return date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
         }
     }
 ])

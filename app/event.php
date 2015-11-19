@@ -18,8 +18,12 @@ if ($method_server == "POST") {
 // Get details for specific dates
 function event_get($db, $msg)
 {
-    $from = $_GET['from'];
-    $to = $_GET['to'];
+    $offset = 0;
+    if (isset($_GET['offset'])) {
+        $offset = $_GET['offset'];
+    }
+    $from = Helper::get_week($offset);
+    $to = Helper::get_week($offset + 7);
 
     // Make query
     $query = "SELECT * FROM events";
@@ -53,9 +57,9 @@ function event_get($db, $msg)
     }
 
     if (isset($rows)) {
-        echo Helper::convert_array_to_json($rows, $msg);
+        Helper::print_to_json($rows, $msg, $from);
     } else {
-        die('{ "message": "No details available for week of ' . $from . '" }');
+        die('{ "msg": "No details available for week of ' . $from . '" }');
     }
 }
 
@@ -80,7 +84,7 @@ function event_post($db)
             $msg = "Thank you, changes have been saved!";
         }
     }
-    die('{ "message": "' . $msg . '" }');
+    die('{ "msg": "' . $msg . '" }');
 }
 
 ?>

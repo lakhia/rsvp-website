@@ -1,18 +1,10 @@
-/* Admin controller */
+/* Family controller */
 app.controller("familyController", ["$scope", "$http", "$rootScope",
-function($scope, $http, $rootScope)
-{
-    $scope.init = function() {
-        $scope.offset = 0;
-        fetchData();
-    }
+function($scope, $http, $rootScope) {
+    $scope.url = "family.php";
 
-    function fetchData() {
-        $http({
-            url: "family.php",
-            method: "GET",
-            params: {offset:$scope.offset}
-        }).success(handleResponse);
+    $scope.init = function() {
+        $rootScope.init($scope, handleResponse);
     }
 
     function handleResponse(response) {
@@ -20,7 +12,7 @@ function($scope, $http, $rootScope)
             $scope.data = response.data;
             $scope.changed = false;
         }
-        $scope.message = response.message;
+        $scope.msg = response.msg;
     }
 
     $scope.submit = function() {
@@ -29,12 +21,7 @@ function($scope, $http, $rootScope)
     }
 
     $scope.onChange = function() {
-        $scope.message = "";
+        $scope.msg = "";
         $scope.changed = true;
-    }
-
-    $scope.next = function(offset) {
-        $scope.offset += offset;
-        fetchData();
     }
 }]);

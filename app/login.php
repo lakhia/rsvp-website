@@ -9,7 +9,7 @@ $email = isset($_GET['email']) ? $_GET['email'] : '';
 // Get name from credentials
 $name = Helper::get_name($db, $email, $thaali);
 if ($name == "") {
-    echo Helper::convert_array_to_json(NULL, "Login failed");
+    Helper::print_to_json(NULL, "Login failed", NULL);
     return;
 }
 
@@ -23,7 +23,7 @@ if (Helper::is_admin($email)) {
     setcookie("adv", "1", $expires);
 }
 
-// Returns true value to indicate successful login
-echo Helper::convert_array_to_json($name, "");
+// Send name to indicate successful login
+Helper::print_to_json($name, NULL, NULL);
 
 ?>

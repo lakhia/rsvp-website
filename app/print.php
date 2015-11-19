@@ -11,7 +11,11 @@ print_filling($db);
 
 // Get details for filling team
 function print_filling($db) {
-    $from = $_GET['from'];
+    $offset = 0;
+    if (isset($_GET['offset'])) {
+        $offset = $_GET['offset'];
+    }
+    $from = Helper::get_day($offset);
 
     // Make query
     $query = "SELECT `thaali`, `lastName`, `firstName` FROM `rsvps` " .
@@ -35,10 +39,11 @@ function print_filling($db) {
         if ($from >= Helper::get_cutoff_time(0)) {
             $msg .= ", not locked";
         }
-        echo Helper::convert_array_to_json($rows, $msg);
     } else {
-        die('{ "message": "No responses available for ' . $from . '" }');
+        $rows = NULL;
+        $msg = "No responses available for " . $from;
     }
+    Helper::print_to_json($rows, $msg, $from);
 }
 
 ?>

@@ -35,7 +35,7 @@ class Helper
         }
         $sql .= " LIMIT 1;";
 
-        $result = $db->query($sql) or die("{ message: 'DB query failed.' }");
+        $result = $db->query($sql) or die("{ msg: 'DB query failed.' }");
         if (!$result || $result->num_rows != 1) {
             return;
         }
@@ -55,17 +55,15 @@ class Helper
         return false;
     }
 
-    // Response via json contains data and optional message
-    public static function convert_array_to_json($array, $msg)
+    // Response via json contains data, message and date
+    public static function print_to_json($data, $msg, $date)
     {
-        $wrapper = array();
-        if ($msg) {
-            $wrapper["message"] = $msg;
-        }
-        if ($array) {
-            $wrapper["data"] = $array;
-        }
-        return json_encode($wrapper) . "\n";
+        $response = array(
+            "msg" => $msg,
+            "date" => $date,
+            "data" => $data
+        );
+        echo json_encode($response);
     }
 
     // Get cutoff date where RSVP becomes readonly and cannot be modified
@@ -83,5 +81,44 @@ class Helper
 
         return date('Y-m-d', strtotime( ($now > $cutoff) ? '+2 day' : '+1 day' ) );
     }
+
+    // Get beginning week date in mysql format
+    public static function get_week($offset)
+    {
+        $date = new DateTime();
+
+        // Saturday is cutoff to show next week
+        $day = $date->format("w");
+        if ($day == 6) {
+            $day = -1;
+        }
+        return self::get_offset($date, $offset + 1 - $day);
+    }
+
+    // Get day of interest in mysql format
+    public static function get_day($offset)
+    {
+        $date = new DateTime();
+        return self::get_offset($date, $offset);
+    }
+
+    // Given a date and offset, return mysql date
+    public static function get_offset($date, $offset) {
+        if ($offset >= 0) {
+            $interval = "P" . $offset . "D";
+        } else {
+            $interval = "P" . (-$offset) . "D";
+        }
+        $interval = new DateInterval($interval);
+
+        // PHP DateInterval doesn't like negative numbers
+        if ($offset >= 0) {
+            $date->add($interval);
+        } else {
+            $date->sub($interval);
+        }
+        return $date->format('Y-m-d');
+    }
 }
+
 ?>

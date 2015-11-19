@@ -18,9 +18,9 @@ if ($method_server == "POST") {
 // Get details for all families
 function family_get($db, $thaali, $msg)
 {
-    $offset = $_GET['offset'];
-    if (!isset($offset)) {
-        $offset = 0;
+    $offset = 0;
+    if (isset($_GET['offset'])) {
+        $offset = $_GET['offset'];
     }
     $offset += 1;
     $end = $offset + 10;
@@ -46,9 +46,9 @@ function family_get($db, $thaali, $msg)
 
     // Send data
     if (isset($rows)) {
-        echo Helper::convert_array_to_json($rows, $msg);
+        Helper::print_to_json($rows, $msg, NULL);
     } else {
-        die('{ "message": "No families found" }');
+        die('{ "msg": "No families found" }');
     }
 }
 
@@ -87,7 +87,7 @@ function family_post($db, $thaali) {
     } else {
         $msg = "Please fix" . $msg;
     }
-    die('{ "message": "' . $msg . '" }');
+    die('{ "msg": "' . $msg . '" }');
 }
 
 ?>

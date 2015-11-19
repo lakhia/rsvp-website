@@ -1,7 +1,7 @@
 <!-- event view -->
 <div ng-init="init()">
 
-<h3>Events from {{ getDisplayDate(fdate) }}</h3>
+<h3>Events from {{ getDisplayDate(date) }}</h3>
 <br>
 <br>
 
@@ -28,7 +28,7 @@
   </tbody>
 </table>
 
-<div class="msg">&nbsp;{{ message }}</div>
+<div class="msg">&nbsp;{{ msg }}</div>
 <br>
 <div class="text-center">
   <button class="btn btn-default" ng-click="next(-7)">

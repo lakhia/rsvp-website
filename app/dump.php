@@ -87,7 +87,7 @@ function dump_post($db, $table, $types) {
         $msg .= "Row " . $row . ", " . ($result ? "success" : "failure") . "\n";
     }
 
-    die('{ "message": "' . $msg . '" }');
+    die('{ "msg": "' . $msg . '" }');
 }
 
 ?>

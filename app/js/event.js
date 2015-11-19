@@ -1,37 +1,25 @@
 /* Event controller */
 app.controller("eventController", ["$scope", "$http", "$rootScope",
 function($scope, $http, $rootScope) {
-    $scope.fdate;
+    $scope.date = "";
+    $scope.url = "event.php";
 
     $scope.init = function() {
-        $scope.fdate = new Date();
-        var day = $scope.fdate.getDay();
-        if (day == 6) {
-            day = -1;
-        }
-        $rootScope.addDaysToDate($scope.fdate, (1 - day));
-        fetchData();
-    }
-
-    function fetchData() {
-        var tdate = new Date($scope.fdate.getTime());
-        $rootScope.addDaysToDate(tdate, 7);
-        $rootScope.fetchData($scope.fdate, tdate, "event.php", handleResponse)
+        $rootScope.init($scope, handleResponse);
     }
 
     function handleResponse(response) {
         if (response.data) {
             $scope.data = response.data;
         }
-        $scope.message = response.message;
+        if (response.date) {
+            $scope.date = response.date;
+        }
+        $scope.msg = response.msg;
         $scope.changed = false;
     }
 
     $scope.getDisplayDate = function(date) {
-        dateString = String(date);
-        if (dateString.indexOf("T") > -1) {
-            date = $rootScope.convertDate(date);
-        }
         return $rootScope.getDisplayDate(date);
     }
 
@@ -41,12 +29,7 @@ function($scope, $http, $rootScope) {
     }
 
     $scope.onChange = function() {
-        $scope.message = "";
+        $scope.msg = "";
         $scope.changed = true;
-    }
-
-    $scope.next = function(offset) {
-        $rootScope.addDaysToDate($scope.fdate, offset);
-        fetchData();
     }
 }]);
