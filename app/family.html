@@ -43,7 +43,7 @@
 <div class="msg">&nbsp;{{ msg }}</div>
 <br>
 <div class="text-center">
-    <button class="btn btn-default" ng-disabled="!offset" ng-click="next(-10)">
+    <button class="btn btn-default" ng-disabled="offset<=10" ng-click="next(-10)">
       <span class="glyphicon glyphicon-chevron-left"></span>  Prev
     </button>&nbsp;&nbsp;
   <button class="btn btn-primary" ng-disabled="!changed" ng-click="submit()">
