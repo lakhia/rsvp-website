@@ -11,12 +11,7 @@ app.config(['$stateProvider','$urlRouterProvider',
         controller: 'rsvpController',
       })
       .state('login', {
-        url: "/login/",
-        templateUrl: 'login.html',
-        controller: 'mainController',
-      })
-      .state('login.out', {
-        params: ['out'],
+        url: "/login/{out}",
         templateUrl: 'login.html',
         controller: 'mainController',
       })
@@ -52,6 +47,13 @@ function($scope, $http, $cookies, $rootScope, $state) {
         }
         $scope.cookies = $cookies;
         $scope.big = $cookies.menuBig;
+    }
+
+    $scope.getClass = function(name) {
+        if ($state.current.name == name) {
+            return "active";
+        }
+        return "";
     }
 
     $scope.login = function() {

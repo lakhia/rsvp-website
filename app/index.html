@@ -31,20 +31,20 @@
   <li>
     <a class="menu nofoc" ng-click="menuToggle()" href=""><i class="glyphicon
     glyphicon-menu-hamburger"></i><span ng-class="{gone:!big}">&nbsp; Menu</span></a></li>
-  <li ui-sref-active="active">
+  <li ng-class="getClass('home')">
     <a class="nofoc" ui-sref="home({offset:0})" ng-show="cookies.token"><i class="glyphicon
     glyphicon-home"></i><span ng-class="{gone:!big}">&nbsp; RSVP</span></a></li>
-  <li ui-sref-active="active">
+  <li ng-class="getClass('print')">
     <a class="nofoc" ui-sref="print({offset:0})" ng-show="cookies.token"><i class="glyphicon
     glyphicon-print"></i><span ng-class="{gone:!big}">&nbsp; Filling</span></a></li>
-  <li ui-sref-active="active">
+  <li ng-class="getClass('event')">
     <a class="nofoc" ui-sref="event({offset:0})" ng-show="cookies.adv"><i class="glyphicon
     glyphicon-cutlery"></i><span ng-class="{gone:!big}">&nbsp; Events</span></a></li>
-  <li ui-sref-active="active">
+  <li ng-class="getClass('family')">
     <a class="nofoc" ui-sref="family({offset:1})" ng-show="cookies.adv"><i class="glyphicon
     glyphicon-user"></i><span ng-class="{gone:!big}">&nbsp; Family</span></a></li>
-  <li ng-class="{active: $state.current.name == 'login'}">
-    <a ui-sref="login.out({out:1})"><i class="glyphicon glyphicon-remove"></i><span
+  <li ng-class="getClass('login')">
+    <a ui-sref="login({out:1})"><i class="glyphicon glyphicon-remove"></i><span
     ng-class="{gone:!big}">&nbsp; Logout</span></a></li>
 </ul>
 </div>
