@@ -12,6 +12,7 @@ a.menu, a.menu:hover, a.menu:focus {
     margin-left: 105px !important;
 }
 .main {
+    transition: margin .2s;
     margin-left: 40px;
     overflow-x: hidden;
     padding: 20px;

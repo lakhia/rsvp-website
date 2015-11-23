@@ -29,8 +29,9 @@
 
 <ul class="nav">
   <li>
-    <a class="menu nofoc" ng-click="menuToggle()" href=""><i class="glyphicon
-    glyphicon-menu-hamburger"></i><span ng-class="{gone:!big}">&nbsp; Menu</span></a></li>
+    <a class="menu nofoc" ng-click="menuToggle()"
+    href=""><i ng-class="{gone:big}" class="glyphicon
+    glyphicon-menu-hamburger">&nbsp; </i><h4 ng-class="{gone:!big}">Faiz SF</h4></a></li>
   <li ng-class="getClass('home')">
     <a class="nofoc" ui-sref="home({offset:0})" ng-show="cookies.token"><i class="glyphicon
     glyphicon-home"></i><span ng-class="{gone:!big}">&nbsp; RSVP</span></a></li>
