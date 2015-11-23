@@ -78,7 +78,7 @@ function($scope, $http, $cookies, $rootScope, $state) {
 
     $scope.menuToggle = function() {
         $scope.big = !$scope.big;
-        $scope.cookies.menuBig = $scope.big ? 1 : "";
+        $cookies.menuBig = $scope.big ? 1 : "";
     }
 
     function logout() {
@@ -114,16 +114,23 @@ app.run(['$rootScope', '$cookies', '$http', '$state', '$stateParams',
                     url: scope.url,
                     method: "GET",
                     params: {offset: scope.offset}
-                }).success(handleResponse);
+                }).success(handleResponse).error(scope.error);
             }
             // Next button adds offset and fetches data
             scope.next = function(offset) {
-                if (scope.changed == 0 ||
-                        window.confirm("Unsaved changes, proceed anyway?")) {
-                    var s = $state.current.name;
-                    $state.go(s, {offset: scope.offset + offset});
-                }
+                $state.go($state.current.name, {offset: scope.offset + offset});
             }
+            // Network request failed
+            scope.error = function(response, status) {
+                scope.msg = "Request failed (" + status + "), try again";
+            }
+            // Warn on navigation change
+            scope.$on('$stateChangeStart', function (event) {
+                if (scope.changed != 0 &&
+                    !window.confirm("Unsaved changes, proceed anyway?")) {
+                    event.preventDefault();
+                }
+            });
             scope.fetchData();
         }
         $rootScope.getDisplayDate = function(input) {

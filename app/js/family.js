@@ -17,7 +17,7 @@ function($scope, $http, $rootScope) {
 
     $scope.submit = function() {
         $http.post("family.php?offset=" + $scope.offset, $scope.data)
-            .success(handleResponse);
+            .success(handleResponse).error($scope.error);
     }
 
     $scope.onChange = function() {

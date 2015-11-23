@@ -50,6 +50,6 @@ function($scope, $http, $rootScope) {
         $http.post("rsvp.php?offset=" +
                    $scope.offset,
                    toggles)
-             .success(handleResponse);
+            .success(handleResponse).error($scope.error);
     }
 }]);
