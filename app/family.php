@@ -60,7 +60,8 @@ function family_post($db, $thaali) {
         if (!isset($i->email) || $i->email == "") {
             $query = "DELETE FROM family WHERE thaali = " . $i->thaali;
         } else {
-            if ($i->lastName == "" || $i->firstName == "") {
+            if (!isset($i->lastName) || !isset($i->firstName) ||
+                $i->lastName == "" || $i->firstName == "") {
                 $msg .= ", name is required";
                 continue;
             }
