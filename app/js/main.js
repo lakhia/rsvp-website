@@ -109,36 +109,40 @@ app.run(['$rootScope', '$cookies', '$http', '$state', '$stateParams',
             scope.offset = parseInt($stateParams.offset) || 0;
 
             // Fetch data using http GET
-            scope.fetchData = function() {
+            function fetchData() {
                 $http({
                     url: scope.url,
                     method: "GET",
                     timeout: 8000,
                     params: {offset: scope.offset}
-                }).success(handleResponse).error(scope.error);
+                }).success(handleResponse).error(error);
             }
+            // Network request failed
+            function error(response, status) {
+                scope.msg = "Request failed (" + status + "), try again";
+            }
+            // Warn on navigation change if changes are pending
+            function leave(event) {
+                if (scope.changed != 0 &&
+                    !window.confirm("Unsaved changes, proceed anyway?")) {
+                    event.preventDefault();
+                }
+            }
+            scope.$on('$stateChangeStart', leave);
+            window.onbeforeunload = leave;
+
             // Next button adds offset and fetches data
             scope.next = function(offset) {
                 $state.go($state.current.name, {offset: scope.offset + offset});
-            }
-            // Network request failed
-            scope.error = function(response, status) {
-                scope.msg = "Request failed (" + status + "), try again";
             }
             // Submit
             scope.submit = function() {
                 $http.post(scope.url + "?offset=" + scope.offset,
                            scope.data, {timeout:8000})
-                    .success(handleResponse).error(scope.error);
+                    .success(handleResponse).error(error);
             }
-            // Warn on navigation change
-            scope.$on('$stateChangeStart', function (event) {
-                if (scope.changed != 0 &&
-                    !window.confirm("Unsaved changes, proceed anyway?")) {
-                    event.preventDefault();
-                }
-            });
-            scope.fetchData();
+
+            fetchData();
         }
         $rootScope.getDisplayDate = function(input) {
             var parts = input.split('-');
