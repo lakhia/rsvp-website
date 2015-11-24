@@ -70,13 +70,26 @@ function event_post($db)
 
     foreach ($data as $i) {
         $date = $i->date;
-        $details = $i->details;
-        $enabled = $i->enabled;
-        if (!isset($enabled) || $enabled == "") $enabled = 0;
-        $result = $db->query("insert into events(date, details, enabled) " .
-                             "values(\"$date\", \"$details\", $enabled) " .
-                             "on duplicate KEY " .
-                             "update details=\"$details\", enabled=$enabled");
+
+        // Take care of uninit variables
+        $enabled = 0;
+        if (isset($i->enabled) && $i->enabled) {
+            $enabled = $i->enabled;
+        }
+        $details = "";
+        if (isset($i->details)) {
+            $details = $i->details;
+        }
+
+        if ($details == "") {
+            $query = "DELETE FROM events WHERE date = '$date';";
+        } else {
+            $query = "INSERT INTO events(date, details, enabled) " .
+                     "VALUES(\"$date\", \"$details\", $enabled) " .
+                     "ON DUPLICATE KEY " .
+                     "UPDATE details=\"$details\", enabled=$enabled";
+        }
+        $result = $db->query($query);
         if (!$result) {
             $msg =  $db->error;
             break;
