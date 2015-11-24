@@ -1,6 +1,6 @@
 /* Printout controller */
-app.controller("printController", ["$scope", "$http", '$rootScope',
-function($scope, $http, $rootScope) {
+app.controller("printController", ["$scope", '$rootScope',
+function($scope, $rootScope) {
     $scope.date = "";
     $scope.url = "print.php";
 

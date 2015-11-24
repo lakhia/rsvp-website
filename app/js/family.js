@@ -1,6 +1,6 @@
 /* Family controller */
-app.controller("familyController", ["$scope", "$http", "$rootScope",
-function($scope, $http, $rootScope) {
+app.controller("familyController", ["$scope", "$rootScope",
+function($scope, $rootScope) {
     $scope.url = "family.php";
 
     $scope.init = function() {
@@ -13,11 +13,6 @@ function($scope, $http, $rootScope) {
             $scope.changed = false;
         }
         $scope.msg = response.msg;
-    }
-
-    $scope.submit = function() {
-        $http.post("family.php?offset=" + $scope.offset, $scope.data)
-            .success(handleResponse).error($scope.error);
     }
 
     $scope.onChange = function() {

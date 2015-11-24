@@ -1,6 +1,6 @@
 /* Event controller */
-app.controller("eventController", ["$scope", "$http", "$rootScope",
-function($scope, $http, $rootScope) {
+app.controller("eventController", ["$scope", "$rootScope",
+function($scope, $rootScope) {
     $scope.date = "";
     $scope.url = "event.php";
 
@@ -21,11 +21,6 @@ function($scope, $http, $rootScope) {
 
     $scope.getDisplayDate = function(date) {
         return $rootScope.getDisplayDate(date);
-    }
-
-    $scope.submit = function() {
-        $http.post("event.php", $scope.data)
-            .success(handleResponse).error($scope.error);
     }
 
     $scope.onChange = function() {

@@ -113,6 +113,7 @@ app.run(['$rootScope', '$cookies', '$http', '$state', '$stateParams',
                 $http({
                     url: scope.url,
                     method: "GET",
+                    timeout: 8000,
                     params: {offset: scope.offset}
                 }).success(handleResponse).error(scope.error);
             }
@@ -123,6 +124,12 @@ app.run(['$rootScope', '$cookies', '$http', '$state', '$stateParams',
             // Network request failed
             scope.error = function(response, status) {
                 scope.msg = "Request failed (" + status + "), try again";
+            }
+            // Submit
+            scope.submit = function() {
+                $http.post(scope.url + "?offset=" + scope.offset,
+                           scope.data, {timeout:8000})
+                    .success(handleResponse).error(scope.error);
             }
             // Warn on navigation change
             scope.$on('$stateChangeStart', function (event) {

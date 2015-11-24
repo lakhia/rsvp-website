@@ -1,6 +1,6 @@
 /* RSVP controller */
-app.controller("rsvpController", ["$scope", "$http", "$rootScope",
-function($scope, $http, $rootScope) {
+app.controller("rsvpController", ["$scope", "$rootScope",
+function($scope, $rootScope) {
     $scope.url = "rsvp.php";
 
     $scope.init = function() {
@@ -10,46 +10,36 @@ function($scope, $http, $rootScope) {
 
     function handleResponse(response) {
         $scope.msg = response.msg;
-        $scope.data = response.data;
+        $scope.raw = response.data;
+        $scope.data = {};
         $scope.changed = 0;
     }
 
     $scope.getDisplayDate = function(input) {
-        return $rootScope.getDisplayDate($scope.data[input].date);
+        return $rootScope.getDisplayDate($scope.raw[input].date);
     }
 
-    $scope.editRSVP = function(id) {
+    $scope.onChange = function(id) {
         // Clear message
         $scope.msg = '';
 
         // Toggle response to RSVP
-        if ($scope.data[id].rsvp == "Yes") {
-            $scope.data[id].rsvp = "No";
+        if ($scope.raw[id].rsvp == "Yes") {
+            $scope.raw[id].rsvp = "No";
         } else {
-            $scope.data[id].rsvp = "Yes";
+            $scope.raw[id].rsvp = "Yes";
         }
 
-        // Keep track of toggle count to enable button
-        if ($scope.data[id].toggled) {
-            $scope.data[id].toggled = 0;
+        // Update change count to enable button, update data to send
+        var date = $scope.raw[id].date;
+        if ($scope.raw[id].toggled) {
+            $scope.raw[id].toggled = 0;
             $scope.changed--;
+            delete $scope.data[date];
         } else {
-            $scope.data[id].toggled = 1;
+            $scope.raw[id].toggled = 1;
             $scope.changed++;
+            $scope.data[date] = $scope.raw[id].rsvp;
         }
-    }
-
-    $scope.submit = function() {
-        var toggles = {};
-        for (var id in $scope.data) {
-            if ($scope.data[id].toggled !== undefined) {
-                toggles[$scope.data[id].date] = $scope.data[id].rsvp;
-            }
-        }
-
-        $http.post("rsvp.php?offset=" +
-                   $scope.offset,
-                   toggles)
-            .success(handleResponse).error($scope.error);
     }
 }]);
