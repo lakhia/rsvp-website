@@ -26,14 +26,9 @@ function details_get($db, $thaali, $msg)
 
     // Make query
     $query = "SELECT events.date, enabled, details, rsvp FROM events " .
-        "LEFT JOIN rsvps ON rsvps.date = events.date " .
-        "AND rsvps.thaali_id = " . $thaali . " WHERE details > ''";
-    if ($from) {
-        $query .= " AND events.date >= '"
-            . $from . "' AND events.date < '" . $to . "';";
-    } else {
-        $query .= ";";
-    }
+        "LEFT JOIN rsvps ON rsvps.date = events.date AND rsvps.thaali_id = " .
+        $thaali . " WHERE details > '' AND events.date >= '" .
+        $from . "' AND events.date < '" . $to . "' order by date;";
 
     $result = $db->query($query);
 

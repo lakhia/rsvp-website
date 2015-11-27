@@ -26,13 +26,9 @@ function event_get($db, $msg)
     $to = Helper::get_week($offset + 7);
 
     // Make query
-    $query = "SELECT * FROM events";
-    if ($from) {
-        $query .= " WHERE date >= '"
-            . $from . "' AND date < '" . $to . "';";
-    } else {
-        $query .= ";";
-    }
+    $query = "SELECT * FROM events WHERE date >= '" . 
+        $from . "' AND date < '" . $to . "' order by date;";
+
     $result = $db->query($query);
 
     // Get all dates between range
