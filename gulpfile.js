@@ -1,14 +1,14 @@
 var gulp = require('gulp'),
-    templateCache = require('gulp-angular-templatecache'),
-    minifyHTML = require('gulp-minify-html'),
-    uglify = require("gulp-uglify"),
     concat = require('gulp-concat'),
-    htmlReplace = require('gulp-html-replace'),
+    connect = require('gulp-connect-php'),
     cssmin = require('gulp-cssmin'),
     fileInsert = require("gulp-file-insert"),
+    htmlReplace = require('gulp-html-replace'),
     inlineSource = require('gulp-inline-source'),
-    connect = require('gulp-connect-php'),
     livereload = require('gulp-livereload');
+    minifyHTML = require('gulp-minify-html'),
+    templateCache = require('gulp-angular-templatecache'),
+    uglify = require("gulp-uglify"),
 
 // Server for development
 gulp.task('serve', ['watch'], function() {
