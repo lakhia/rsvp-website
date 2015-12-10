@@ -36,16 +36,15 @@ app.config(['$stateProvider','$urlRouterProvider',
 
 /* Menu and login management */
 app.controller("mainController", ["$scope", "$http", "$cookies", "$rootScope",
-                                  "$state", '$stateParams',
-function($scope, $http, $cookies, $rootScope, $state, $stateParams) {
+                                  "$state",
+function($scope, $http, $cookies, $rootScope, $state) {
 
     $scope.init = function() {
         // Logout param present?
-        if ($stateParams.out) {
+        if ($rootScope.stateParams.out) {
             logout();
             return;
         }
-
         $scope.cookies = $cookies;
         $scope.big = $cookies.menuBig;
     }
@@ -98,10 +97,11 @@ function($scope, $http, $cookies, $rootScope, $state, $stateParams) {
 /* Add references to rootScope so that you can access them from any scope */
 app.run(['$rootScope', '$cookies', '$http', '$state', '$stateParams',
     function ($rootScope, $cookies, $http, $state, $stateParams) {
+        $rootScope.stateParams = $stateParams;
 
         // Init scope, setup common functions, fetch data
         $rootScope.init = function(scope, handleResponse) {
-            if (!$rootScope.isLoggedIn()) {
+            if (!$cookies.token && !$rootScope.name) {
                 $state.go("login");
                 return;
             }
@@ -144,11 +144,6 @@ app.run(['$rootScope', '$cookies', '$http', '$state', '$stateParams',
 
             fetchData();
         }
-        // Return true if logged in
-        $rootScope.isLoggedIn = function() {
-            return $cookies.token || $rootScope.name;
-        }
-        // Get display date
         $rootScope.getDisplayDate = function(input) {
             var parts = input.split('-');
             var d = new Date(parts[0], parts[1]-1, parts[2]);

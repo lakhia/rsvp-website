@@ -22,16 +22,24 @@
   Use build system:
 
   * Install [npm](https://docs.npmjs.com/getting-started/installing-node)
-  * Install [grunt](http://gruntjs.com/getting-started#working-with-an-existing-grunt-project)
-  * Run `grunt watch &` and output will be generated in `build` directory each
-    time any changes are detected and send reload event to browser
-  * Run `grunt serve &` which will run a webserver and open main page in browser
+  * Install all project dependencies using: npm install
+  * Run `gulp serve &` which will serve local files at:
+     * http://127.0.0.1:8010  
+  * Make changes to files under app/ directory. Any changes are detected and
+    send reload event to browser
+  * When ready to deploy, run "gulp" and publish all files in build directory
+    except for hidden .tmp sub-directory
 
 # Files
 
   * database_setup.sql used to setup database
-  * index.html is the single web page
-  * main.js has the main angular controller
-  * other javascript files contain view-specific controllers
+  * app/index.html is the single web page
+  * app/js/main.js is the main angular controllers
+  * other app/js/*.js files contain view-specific controllers
   * several php files serve JSON to angular
+
+# Internal dependencies
+
+  * Uses angular-ui-router to route to different parts of the app
   * Uses bootstrap to style buttons, tables, etc.
+  * Uses loading-bar to show progress bar at top
