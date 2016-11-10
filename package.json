@@ -1,10 +1,11 @@
 {
-  "name": "faiz",
-  "license": "UNLICENSED",
+  "name": "rsvp",
+  "license": "Copyright 2016",
   "private": true,
   "version": "0.1.0",
   "dependencies": {},
   "devDependencies": {
+    "gulp-angular-templatecache": "^2.0.0",
     "gulp-concat": "^2.6.0",
     "gulp-connect-php": "0.0.7",
     "gulp-cssmin": "^0.1.7",
@@ -13,6 +14,7 @@
     "gulp-inline-source": "^2.1.0",
     "gulp-livereload": "^3.8.1",
     "gulp-minify": "0.0.5",
+    "gulp-minify-html": "^1.0.6"
     "gulp-uglify": "^1.5.1",
     "gulp-webserver": "^0.9.1"
   }

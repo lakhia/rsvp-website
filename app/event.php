@@ -4,8 +4,8 @@ require_once("aux.php");
 
 // If token is invalid, return an empty response
 if (!Helper::is_admin($email_cookie) ||
-    !Helper::verify_token($email_cookie, $thaali_cookie)) {
-    return;
+    !Helper::verify_token($db, $email_cookie, $thaali_cookie)) {
+    die('{ "msg": "Login failed, please logout and login again" }');
 }
 
 // POST or GET?

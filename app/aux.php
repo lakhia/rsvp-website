@@ -18,9 +18,15 @@ class Helper
         return hash('md4', $thaali . $_SERVER["SERVER_NAME"] . $email);
     }
 
-    public static function verify_token($email, $thaali)
+    public static function verify_token($db, $email, $thaali)
     {
         $received_token = $_COOKIE['token'];
+
+        // Does record match with database?
+        $name = self::get_name($db, $email, $thaali);
+        if ($name == "") {
+            return false;
+        }
 
         $token = self::create_token($email, $thaali);
         return ($token == $received_token);
@@ -37,7 +43,7 @@ class Helper
 
         $result = $db->query($sql) or die("{ msg: 'DB query failed.' }");
         if (!$result || $result->num_rows != 1) {
-            return;
+            return "";
         }
 
         $row = $result->fetch_assoc();

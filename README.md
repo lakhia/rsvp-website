@@ -13,6 +13,12 @@
   * [Angular](https://angularjs.org/) 1.2.x or higher
   * [Angular ui-router](https://github.com/angular-ui/ui-router/wiki)
 
+# Setup
+
+  Mysql needs to be setup. Run:
+  
+  * mysql -v -u root < database_setup.sql
+
   On the backend, it currently requires:
 
   * PHP 5.5
@@ -24,7 +30,7 @@
   * Install [npm](https://docs.npmjs.com/getting-started/installing-node)
   * Install all project dependencies using: npm install
   * Run `gulp serve &` which will serve local files at:
-     * http://127.0.0.1:8010  
+     * http://127.0.0.1:8010
   * Make changes to files under app/ directory. Any changes are detected and
     send reload event to browser
   * When ready to deploy, run "gulp" and publish all files in build directory
