@@ -10,6 +10,7 @@
       <th class="min">Thaali</th>
       <th>Last name</th>
       <th>First name</th>
+      <th class="min">Size</th>
       <th>Email</th>
       <th>Phone</th>
     </tr>
@@ -27,6 +28,10 @@
       <td>
         <input type="text" ng-model="family.firstName" class="trans"
                placeholder="First name" ng-change="onChange()"/>
+      </td>
+      <td>
+        <input type="text" ng-model="family.size" class="min trans"
+               placeholder="M" ng-change="onChange()"/>
       </td>
       <td>
         <input type="email" ng-model="family.email" class="trans"

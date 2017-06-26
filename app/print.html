@@ -9,6 +9,7 @@
       <th class="min"></th>
       <th>Thaali</th>
       <th>Name</th>
+      <th>Filled</th>
       <th>Notes</th>
     </tr>
   </thead>
@@ -17,7 +18,8 @@
       <td><i ng-class="getClass($index)"></i></td>
       <td>{{ item["thaali"] }}</td>
       <td>{{ item["name"] }}</td>
-      <td>{{ item["notes"] }}</td>
+      <td><input type="checkbox"></td>
+      <td>{{ item["size"] }}</td>
     </tr>
   </tbody>
 </table>

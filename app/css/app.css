@@ -1,5 +1,5 @@
 a.menu, a.menu:hover, a.menu:focus {
-    background-color: #337AB7 !important;
+    background-color: #38B !important;
     color: #eee;
 }
 .min {
@@ -8,7 +8,7 @@ a.menu, a.menu:hover, a.menu:focus {
 .nofoc:focus {
     outline-width: 0;
 }
-.mainBig {
+.menuBig {
     margin-left: 105px !important;
 }
 .main {
@@ -19,6 +19,9 @@ a.menu, a.menu:hover, a.menu:focus {
 }
 .sidebarBig {
     width: 105px !important;
+}
+.glyphicon-scissors {
+    transform: translateY(-1.5em);
 }
 .sidebar {
     position: fixed;
@@ -40,7 +43,7 @@ a.menu, a.menu:hover, a.menu:focus {
 }
 h3 { font-size: 140%; text-align: center }
 .rsvpBtn { width:80px; text-align: left }
-.msg { color:#b22; text-align: center; font-size: 80% }
+.msg { color:#b22; text-align: center; font-size: 85% }
 .No  { background: #b88 }
 .Yes { background: #8b8 }
 .rsvpRow {

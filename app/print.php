@@ -19,26 +19,39 @@ function print_filling($db) {
 
     // Get details for date
     $details = get_details($db, $from);
+    $people = 0;
 
     if ($details) {
         // Get RSVP and family
-        $query = "SELECT `thaali`, `lastName`, `firstName` FROM `rsvps` " .
+        $query = "SELECT thaali, lastName, firstName, size FROM `rsvps` " .
             "LEFT JOIN `family` on family.thaali = rsvps.thaali_id " .
             "WHERE `rsvp` = 1 AND `date` = '" . $from . "' ORDER BY thaali;";
         $result = $db->query($query);
 
-        // Append first name and last
         while($row = $result->fetch_assoc()) {
+
+            // Append first name and last
             $row['name'] = $row['firstName'] . " " . $row['lastName'];
             unset($row['firstName']);
             unset($row['lastName']);
+
+            // Count people, only show size if not medium
+            $size = $row['size'];
+            if ($size == 'L') {
+                $people += 6;
+            } else if ($size == 'S') {
+                $people += 2;
+            } else {
+                unset($row['size']);
+                $people += 4;
+            }
             $rows[] = $row;
         }
     }
     // Create message
     if (isset($rows)) {
         $count = count($rows);
-        $msg = $count . " thaalis, " . round($count * 1.2, 1) . " estimate";
+        $msg = $count . " thaalis, " . $people . " people";
         if ($from >= Helper::get_cutoff_time(0)) {
             $msg .= ", not locked";
         }
