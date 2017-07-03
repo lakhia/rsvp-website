@@ -28,3 +28,23 @@ function($scope, $rootScope) {
         return $rootScope.getDisplayDate(date);
     }
 }]);
+
+
+// Auxillary function used to hide rows
+function hideRow(child, delay) {
+    node = child.parentNode.parentNode;
+    node.classList.toggle("hideRow");
+    hideDelay = function(n) {
+        n.classList.toggle("gone");
+    }
+    window.setTimeout(hideDelay, delay, node);
+}
+
+function reset(nodes) {
+    for (var i=0; i<nodes.length; i++) {
+        if (nodes[i].checked) {
+            nodes[i].checked = false;
+            hideRow(nodes[i], 0);
+        }
+    }
+}

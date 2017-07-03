@@ -16,11 +16,9 @@ CREATE TABLE family
     thaali int NOT NULL PRIMARY KEY,
     lastName varchar(255) NOT NULL,
     firstName varchar(255) NOT NULL,
+    size char,
     email varchar(255) NOT NULL,
     phone varchar(255)
-    -- bigThaali BOOLEAN,
-    -- numAdults int,
-    -- numChildren int,
   );
 
 CREATE TABLE events
@@ -34,9 +32,6 @@ CREATE TABLE rsvps
   ( date DATE NOT NULL,
     thaali_id int NOT NULL,
     rsvp BOOLEAN NOT NULL DEFAULT false,
-    -- lessRice BOOLEAN,
-    -- numAdults int,
-    -- numChildren int
     UNIQUE KEY `thaali_id` (`thaali_id`, `date`)
   );
 
@@ -113,4 +108,3 @@ insert into events
   ( date, details)
   values
   ( "2016-12-24", "Nihari, khitchri" );
-

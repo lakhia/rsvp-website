@@ -1,8 +1,13 @@
+.hideRow {
+ opacity: 0; visibility: hidden;
+ transition: visibility .2s linear, opacity .2s linear;
+}
+
 a.menu, a.menu:hover, a.menu:focus {
     background-color: #38B !important;
     color: #eee;
 }
-.min {
+.minWidth {
     width: 5px;
 }
 .nofoc:focus {

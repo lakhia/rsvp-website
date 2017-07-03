@@ -1,3 +1,4 @@
+ 
 <div ng-init="init()">
 
 <h3>Filling for {{ getDisplayDate(date) }}</h3>
@@ -6,19 +7,21 @@
 <table class="table-striped table">
   <thead>
     <tr>
-      <th class="min"></th>
+      <th class="minWidth"></th>
       <th>Thaali</th>
-      <th>Name</th>
       <th>Filled</th>
+      <th>Name</th>
       <th>Notes</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody id="rTab">
     <tr ng-repeat="item in data">
       <td><i ng-class="getClass($index)"></i></td>
       <td>{{ item["thaali"] }}</td>
+      <td>
+        <input type="checkbox" onclick="hideRow(this, 500)">
+      </td>
       <td>{{ item["name"] }}</td>
-      <td><input type="checkbox"></td>
       <td>{{ item["size"] }}</td>
     </tr>
   </tbody>
@@ -29,6 +32,9 @@
 <div class="noPrnt text-center">
   <button class="btn btn-default" ng-click="next(-1)">
     <span class="glyphicon glyphicon-chevron-left"></span>  Prev
+  </button>&nbsp;&nbsp;
+  <button class="btn btn-default" onClick="reset(document.getElementsByTagName('input'))">
+      Reset
   </button>&nbsp;&nbsp;
   <button class="btn btn-default" ng-click="next(1)">Next  <span
     class="glyphicon glyphicon-chevron-right"></span>
