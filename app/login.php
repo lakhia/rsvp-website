@@ -1,6 +1,6 @@
 <?php
 
-require_once("aux.php");
+require_once("auxil.php");
 
 // User query params instead of cookie
 $thaali = isset($_GET['thaali']) ? $_GET['thaali'] : '';

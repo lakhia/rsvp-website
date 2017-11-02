@@ -1,6 +1,6 @@
 <?php
 
-require_once("aux.php");
+require_once("auxil.php");
 
 // If token is invalid, return an empty response
 if (!Helper::is_admin($email_cookie) ||

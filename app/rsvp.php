@@ -1,6 +1,6 @@
 <?php
 
-require_once("aux.php");
+require_once("auxil.php");
 
 // If token is invalid, return an empty response
 if (!Helper::verify_token($db, $email_cookie, $thaali_cookie)) {

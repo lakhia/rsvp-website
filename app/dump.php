@@ -1,6 +1,6 @@
 <?php
 
-require_once("aux.php");
+require_once("auxil.php");
 
 $table = $_GET['table'];
 
