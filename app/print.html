@@ -1,29 +1,53 @@
- 
+
 <div ng-init="init()">
 
 <h3>Filling for {{ getDisplayDate(date) }}</h3>
 <br>
 <br>
+<div class="container">
+  <div class="item1"><b>Order By: </b>
+    <select ng_model="sortColumn">
+      <option value='thaali'> Thaali No </option>
+      <option value='area'> Area </option>
+      <option value='size'> Size </option>
+      <option value='name'> Name </option>
+      <option value='thaali_avail'> Available </option>
+      <option value='thaali_filled'> Filled </option>
+    </select>
+   </div>
+   <div class="item2"><b>Not picked:</b><span>{{(data | filter: { thaali_avail:  0 }).length}}/{{data.length}}</span>
+                      <b>Not Filled:</b><span>{{(data | filter: { thaali_filled: 0 }).length}}/{{data.length}}</span>
+   </div>
+</div>
+
 <table class="table-striped table">
   <thead>
     <tr>
-      <th class="minWidth"></th>
       <th>Thaali</th>
+      <th>Tiffin Available</th>
       <th>Filled</th>
       <th>Name</th>
-      <th>Notes</th>
+      <th>Area</th>
+      <th>Size</th>
     </tr>
   </thead>
   <tbody id="rTab">
-    <tr ng-repeat="item in data">
-      <td><i ng-class="getClass($index)"></i></td>
+     <br>
+     <br>
+    <tr ng-repeat="item in data | orderBy: sorterFunc">
       <td>{{ item["thaali"] }}</td>
       <td>
-        <input type="checkbox" onclick="hideRow(this, 500)">
+        <input type="checkbox" ng-model='item["thaali_avail"]' ng_true_value=1 ng_false_value=0 ng-change="onChange()"/>
+      </td>
+      <td>
+        <input type="checkbox" ng-model='item["thaali_filled"]' ng_true_value=1 ng_false_value=0 ng-change="onChange()"/>
       </td>
       <td>{{ item["name"] }}</td>
+      <td>{{ item["area"] }}</td>
       <td>{{ item["size"] }}</td>
     </tr>
+    <br>
+    <br>
   </tbody>
 </table>
 
@@ -33,13 +57,16 @@
   <button class="btn btn-default" ng-click="next(-1)">
     <span class="glyphicon glyphicon-chevron-left"></span>  Prev
   </button>&nbsp;&nbsp;
-  <button class="btn btn-default" onClick="reset(document.getElementsByTagName('input'))">
+  <button class="btn btn-default" ng-click="reset(document.getElementsByTagName('input'))">
       Reset
   </button>&nbsp;&nbsp;
+  <button class="btn btn-primary" ng-disabled="!changed" ng-show="getSave()"  ng-click="submit()">
+    <span class="glyphicon glyphicon-save"></span>  Save
+    &nbsp;&nbsp;
+  </button>
   <button class="btn btn-default" ng-click="next(1)">Next  <span
     class="glyphicon glyphicon-chevron-right"></span>
   </button>
 </div>
 </div>
-
 </div>

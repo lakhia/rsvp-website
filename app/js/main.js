@@ -70,6 +70,7 @@ function($scope, $http, $cookies, $rootScope, $state) {
                     $scope.msg = response.msg;
                 } else {
                     $rootScope.name = response.data;
+                    $rootScope.resp = response.resp;
                     $rootScope.thaali = $scope.thaali;
                     $state.go("home", {offset:0});
                 }
@@ -84,6 +85,7 @@ function($scope, $http, $cookies, $rootScope, $state) {
     function logout() {
         delete $rootScope.name;
         delete $cookies.adv;
+        delete $cookies.resp;
         delete $cookies.token;
         delete $cookies.name;
         delete $cookies.thaali;

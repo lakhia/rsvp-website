@@ -18,7 +18,8 @@ CREATE TABLE family
     firstName varchar(255) NOT NULL,
     size char,
     email varchar(255) NOT NULL,
-    phone varchar(255)
+    phone varchar(255),
+    area varchar(255)
   );
 
 CREATE TABLE events
@@ -52,25 +53,25 @@ insert into rsvps
   rsvp=0;
 
 insert into family
-  ( thaali, lastName, firstName, email, phone )
+  ( thaali, lastName, firstName, email, phone, area )
   values
-  ( 36, 'Yamani', 'Ali Akber', 'lakhia@gmail.com', '510-565-7861' );
+  ( 36, 'Yamani', 'Ali Akber', 'lakhia@gmail.com', '510-565-7861' , 'Masjid');
 insert into family
-  ( thaali, lastName, firstName, email, phone )
+  ( thaali, lastName, firstName, email, phone, area  )
   values
-  ( 5, 'Pedhiwala', 'Mohammed', 'mpedhiwala@gmail.com', '510-494-1520' );
+  ( 5, 'Pedhiwala', 'Mohammed', 'mpedhiwala@gmail.com', '510-494-1520', 'Masjid' );
 insert into family
-  ( thaali, lastName, firstName, email, phone )
-  values
-  ( 6, 'Bootwala', 'Mustafa', 'mabootwala@gmail.com', '650-676-8849' );
+  ( thaali, lastName, firstName, email, phone, area  )
+  values,
+  ( 6, 'Bootwala', 'Mustafa', 'mabootwala@gmail.com', '650-676-8849', 'Ardenwood' );
 insert into family
-  ( thaali, lastName, firstName, email, phone )
+  ( thaali, lastName, firstName, email, phone , area )
   values
-  ( 7, 'Patanwala', 'Aliasgar', 'apatanwala@gmail.com', '650-276-8037' );
+  ( 7, 'Patanwala', 'Aliasgar', 'apatanwala@gmail.com', '650-276-8037','Sacramento' );
 insert into family
-  ( thaali, lastName, firstName, email, phone )
+  ( thaali, lastName, firstName, email, phone , area )
   values
-  ( 8, 'Partapurwala', 'Murtaza', 'murtazap@gmail.com', '510-579-4909' );
+  ( 8, 'Partapurwala', 'Murtaza', 'murtazap@gmail.com', '510-579-4909', 'Sacramento' );
 
 insert into events
   ( date, details)

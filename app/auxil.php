@@ -13,9 +13,15 @@ $method_server = $_SERVER['REQUEST_METHOD'];
 
 class Helper
 {
+    public static $resp = "";
+
     public static function create_token($email, $thaali)
     {
         return hash('md4', $thaali . $_SERVER["SERVER_NAME"] . $email);
+    }
+
+    public static function get_resp() {
+        return self::$resp;
     }
 
     public static function verify_token($db, $email, $thaali)
@@ -47,6 +53,8 @@ class Helper
         }
 
         $row = $result->fetch_assoc();
+
+        self::$resp = $row['resp'];
         return $row['firstName'] . " " . $row['lastName'];
     }
 

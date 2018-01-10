@@ -11,8 +11,10 @@
       <th>Last name</th>
       <th>First name</th>
       <th class="minWidth">Size</th>
+      <th>Area</th>
       <th>Email</th>
       <th>Phone</th>
+      <th>Responsibility</th>
     </tr>
   </thead>
   <tbody>
@@ -34,12 +36,20 @@
                placeholder="M" ng-change="onChange()"/>
       </td>
       <td>
+        <input type="area" ng-model="family.area" class="trans"
+               placeholder="Area" ng-change="onChange()"/>
+      </td>
+      <td>
         <input type="email" ng-model="family.email" class="trans"
                placeholder="Email" ng-change="onChange()"/>
       </td>
       <td>
         <input type="text" ng-model="family.phone" class="trans"
                placeholder="Phone" ng-change="onChange()"/>
+      </td>
+      <td>
+        <input type="text" ng-model="family.resp" class="trans"
+               ng-change="onChange()"/>
       </td>
     </tr>
   </tbody>

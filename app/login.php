@@ -19,6 +19,7 @@ setcookie("token", Helper::create_token($email, $thaali), $expires);
 setcookie("thaali", $thaali, $expires);
 setcookie("email", $email, $expires);
 setcookie("name", $name, $expires);
+setcookie("resp", Helper::get_resp(), $expires);
 if (Helper::is_admin($email)) {
     setcookie("adv", "1", $expires);
 }

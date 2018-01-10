@@ -69,12 +69,14 @@ function family_post($db, $thaali) {
                 $i->phone = "";
             }
             // Insert or update
-            $query = "insert into family(thaali, lastName, firstName, size, email, phone) " .
+            $query = "insert into family" .
+	        "(thaali, lastName, firstName, size, area, email, phone, resp) " .
                 "values($i->thaali, '$i->lastName', '$i->firstName', '$i->size'," .
-                "'$i->email', '$i->phone')" .
+                "'$i->area','$i->email', '$i->phone', '$i->resp')" .
                 "on duplicate KEY " .
                 "update lastName='$i->lastName', firstName='$i->firstName'," .
-                "size='$i->size', email='$i->email', phone='$i->phone'";
+                "size='$i->size', area='$i->area', email='$i->email', " .
+		"phone='$i->phone', resp='$i->resp'";
         }
         $result = $db->query($query);
         if (!$result) {

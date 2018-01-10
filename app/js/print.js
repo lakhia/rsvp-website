@@ -6,45 +6,47 @@ function($scope, $rootScope) {
 
     $scope.init = function() {
         $rootScope.init($scope, handleResponse);
+        $scope.sortColumn = 'thaali';
+        $scope.changed = false;
     }
 
     function handleResponse(response) {
         $scope.data = response.data;
         $scope.date = response.date;
         $scope.msg = response.msg;
+        $scope.changed = false;
     }
 
-    $scope.getClass = function(index) {
-        if (index >= 1) {
-            if (parseInt($scope.data[index]["thaali"]) !=
-                parseInt($scope.data[index-1]["thaali"]) + 1) {
-                return  "msg glyphicon glyphicon-scissors";
-            }
+    $scope.onChange = function() {
+        $scope.msg = "";
+        $scope.changed = true;
+    }
+
+    $scope.sorterFunc = function(item) {
+        if ($scope.sortColumn == 'thaali') {
+            return parseInt(item.thaali);
+        } else {
+            return item[$scope.sortColumn];
         }
-        return "";
+    }
+
+    $scope.getSave = function() {
+        resp = $scope.cookies.resp;
+        return resp && resp.indexOf("F") > -1;
     }
 
     $scope.getDisplayDate = function(date) {
         return $rootScope.getDisplayDate(date);
     }
+
+    $scope.reset = function(nodes){
+        $scope.availCounter = 0;
+        $scope.fillCounter = 0;
+        $scope.changed = true;
+
+        angular.forEach($scope.data, function(item) {
+            item.thaali_avail = 0;
+            item.thaali_filled = 0;
+        });
+    }
 }]);
-
-
-// Auxillary function used to hide rows
-function hideRow(child, delay) {
-    node = child.parentNode.parentNode;
-    node.classList.toggle("hideRow");
-    hideDelay = function(n) {
-        n.classList.toggle("gone");
-    }
-    window.setTimeout(hideDelay, delay, node);
-}
-
-function reset(nodes) {
-    for (var i=0; i<nodes.length; i++) {
-        if (nodes[i].checked) {
-            nodes[i].checked = false;
-            hideRow(nodes[i], 0);
-        }
-    }
-}
