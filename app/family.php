@@ -45,7 +45,7 @@ function family_get($db, $thaali, $msg)
 
     // Send data
     if (isset($rows)) {
-        Helper::print_to_json($rows, $msg, NULL);
+        Helper::print_to_json($rows, $msg);
     } else {
         die('{ "msg": "No families found" }');
     }

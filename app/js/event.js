@@ -19,9 +19,7 @@ function($scope, $rootScope) {
         $scope.changed = false;
     }
 
-    $scope.getDisplayDate = function(date) {
-        return $rootScope.getDisplayDate(date);
-    }
+    $scope.getDisplayDate = $rootScope.getDisplayDate;
 
     $scope.onChange = function() {
         $scope.msg = "";

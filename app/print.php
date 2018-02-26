@@ -13,20 +13,19 @@ if (isset($_GET['offset'])) {
 $from = Helper::get_day($offset);
 // POST or GET?
 if ($method_server == "POST") {
-    print_post($db, $from);
+    print_post($db, $from, $offset);
 } else {
-    print_filling($db, $from);
+    print_filling($db, $from, $offset);
 }
 
 // Get details for filling team
-function print_filling($db, $from) {
+function print_filling($db, $from, $offset, $msg = "") {
     // Get details for date
     $details = get_details($db, $from);
-    $people = 0;
 
     if ($details) {
         // Get RSVP and family
-        $query = "SELECT thaali, lastName, firstName, size,area, thaali_avail, thaali_filled FROM `rsvps` " .
+        $query = "SELECT thaali, lastName, firstName, size, area, avail, filled FROM `rsvps` " .
             "LEFT JOIN `family` on family.thaali = rsvps.thaali_id " .
             "WHERE `rsvp` = 1 AND `date` = '" . $from . "' ORDER BY thaali;";
         $result = $db->query($query);
@@ -40,13 +39,8 @@ function print_filling($db, $from) {
 
             // Count people, only show size if not medium
             $size = $row['size'];
-            if ($size == 'L') {
-                $people += 6;
-            } else if ($size == 'S') {
-                $people += 2;
-            } else {
+            if ($size == 'M') {
                 unset($row['size']);
-                $people += 4;
             }
             $rows[] = $row;
         }
@@ -54,15 +48,13 @@ function print_filling($db, $from) {
     // Create message
     if (isset($rows)) {
         $count = count($rows);
-        $msg = $count . " thaalis, " . $people . " people";
-        if ($from >= Helper::get_cutoff_time(0)) {
-            $msg .= ", not locked";
-        }
+        $save = Helper::is_save_available($offset);
     } else {
         $rows = NULL;
         $msg = "No responses available for " . $from;
+        $save = NULL;
     }
-    Helper::print_to_json($rows, $msg, $from);
+    Helper::print_to_json($rows, $msg, $from, $save);
 }
 
 function get_details($db, $date) {
@@ -79,30 +71,34 @@ function get_details($db, $date) {
 }
 
 // Post update to details
-function print_post($db, $from)
+function print_post($db, $from, $offset)
 {
     $msg = "";
     $data = json_decode(file_get_contents('php://input'), false);
+    $save = Helper::is_save_available($offset);
 
-    foreach ($data as $i) {
-        $thaali_id      = $i->thaali;
-        $thaali_avail   = $i->thaali_avail;
-        $thaali_filled  = $i->thaali_filled;
+    if ($save) {
+        foreach ($data as $i) {
+            $thaali_id      = $i->thaali;
 
-        $query = "UPDATE rsvps set thaali_avail='". $thaali_avail .
-           "',  thaali_filled = '". $thaali_filled . "'  " .
-           "WHERE  thaali_id = '" . $thaali_id . "' and date = '" . $from . "'" ;
+            $query = "UPDATE rsvps set avail='". $i->avail .
+               "',  filled = '" . $i->filled . "'  " .
+               "WHERE  thaali_id = '" . $thaali_id .
+               "' and date = '" . $from . "'";
 
-        $result = $db->query($query);
-        if (!$result) {
-            $msg =   $db->error ;
-            break;
+            $result = $db->query($query);
+            if (!$result) {
+                $msg =   $db->error ;
+                break;
+            };
         };
-    };
+    } else {
+        $msg = "Unable to save, please try later";
+    }
 
     if (!$msg) {
         $msg = "Thank you, changes have been saved";
-        return  print_filling($db, $from);
+        return  print_filling($db, $from, $offset, $msg);
     } else {
         $msg = "Error: " . $msg;
     }

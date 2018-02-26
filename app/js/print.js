@@ -14,6 +14,7 @@ function($scope, $rootScope) {
         $scope.data = response.data;
         $scope.date = response.date;
         $scope.msg = response.msg;
+        $scope.save = response.other;
         $scope.changed = false;
     }
 
@@ -30,23 +31,16 @@ function($scope, $rootScope) {
         }
     }
 
-    $scope.getSave = function() {
-        resp = $scope.cookies.resp;
-        return resp && resp.indexOf("F") > -1;
-    }
+    $scope.getDisplayDate = $rootScope.getDisplayDate;
 
-    $scope.getDisplayDate = function(date) {
-        return $rootScope.getDisplayDate(date);
-    }
-
-    $scope.reset = function(nodes){
+    $scope.reset = function(nodes) {
         $scope.availCounter = 0;
         $scope.fillCounter = 0;
         $scope.changed = true;
 
         angular.forEach($scope.data, function(item) {
-            item.thaali_avail = 0;
-            item.thaali_filled = 0;
+            item.avail = 0;
+            item.filled = 0;
         });
     }
 }]);

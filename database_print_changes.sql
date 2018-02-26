@@ -14,9 +14,9 @@ update family set area = "San Bruno"        where thaali in (353, 351);
 update family set area = "Novato"           where thaali in (352, 356);
 update family set area = "San Francisco"    where thaali in (87, 69, 203, 205 ,213, 215);
 
-alter table rsvps add column thaali_avail tinyint(1) default 0;
-alter table rsvps add column thaali_filled tinyint(1) default 0;
+alter table rsvps add column avail bool default 0;
+alter table rsvps add column filled bool default 0;
 alter table family add column resp varchar(3);
 
-// Filling team members get responsibilty F 
+// Filling team members get responsibilty F
 update family set resp = "F" where thaali in ( 1, 8, 7, 36, 28, 3, 92, 23, 37, 5, 13, 73, 43, 65, 19, 70, 20, 33, 9, 4, 21);

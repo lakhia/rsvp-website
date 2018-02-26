@@ -20,7 +20,7 @@ class Helper
         return hash('md4', $thaali . $_SERVER["SERVER_NAME"] . $email);
     }
 
-    public static function get_resp() {
+    public static function get_responsibility() {
         return self::$resp;
     }
 
@@ -70,12 +70,13 @@ class Helper
     }
 
     // Response via json contains data, message and date
-    public static function print_to_json($data, $msg, $date)
+    public static function print_to_json($data, $msg, $date=NULL, $other=NULL)
     {
         $response = array(
             "msg" => $msg,
             "date" => $date,
-            "data" => $data
+            "data" => $data,
+            "other" => $other
         );
         echo json_encode($response);
     }
@@ -94,6 +95,14 @@ class Helper
         $now = time();
 
         return date('Y-m-d', strtotime( ($now > $cutoff) ? '+2 day' : '+1 day' ) );
+    }
+
+    public static function is_save_available($offset)
+    {
+        if (self::is_admin($_COOKIE['email'])) {
+            return 1;
+        }
+        return ($offset == 0 && strpos(self::get_responsibility(), "F") !== false);
     }
 
     // Get beginning week date in mysql format

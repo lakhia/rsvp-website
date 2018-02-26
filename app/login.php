@@ -9,7 +9,7 @@ $email = isset($_GET['email']) ? $_GET['email'] : '';
 // Get name from credentials
 $name = Helper::get_name($db, $email, $thaali);
 if ($name == "") {
-    Helper::print_to_json(NULL, "Login failed", NULL);
+    Helper::print_to_json(NULL, "Login failed");
     return;
 }
 
@@ -19,12 +19,11 @@ setcookie("token", Helper::create_token($email, $thaali), $expires);
 setcookie("thaali", $thaali, $expires);
 setcookie("email", $email, $expires);
 setcookie("name", $name, $expires);
-setcookie("resp", Helper::get_resp(), $expires);
 if (Helper::is_admin($email)) {
     setcookie("adv", "1", $expires);
 }
 
 // Send name to indicate successful login
-Helper::print_to_json($name, NULL, NULL);
+Helper::print_to_json($name, NULL);
 
 ?>
