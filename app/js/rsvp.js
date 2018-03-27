@@ -18,28 +18,31 @@ function($scope, $rootScope) {
     $scope.getDisplayDate = function(input) {
         return $rootScope.getDisplayDate($scope.raw[input].date);
     }
-
-    $scope.onChange = function(id) {
+    
+    $scope.onChange = function(id, field) {
         // Clear message
         $scope.msg = '';
 
         // Toggle response to RSVP
-        if ($scope.raw[id].rsvp == "Yes") {
-            $scope.raw[id].rsvp = "No";
-        } else {
-            $scope.raw[id].rsvp = "Yes";
-        }
-
-        // Update change count to enable button, update data to send
         var date = $scope.raw[id].date;
-        if ($scope.raw[id].toggled) {
-            $scope.raw[id].toggled = 0;
-            $scope.changed--;
-            delete $scope.data[date];
-        } else {
-            $scope.raw[id].toggled = 1;
-            $scope.changed++;
-            $scope.data[date] = $scope.raw[id].rsvp;
+        
+        if (field == "RSVP" ){
+            if ($scope.raw[id].rsvp == "Yes") {
+                $scope.raw[id].rsvp = "No";
+            } else {
+                $scope.raw[id].rsvp = "Yes";
+            }
+
+            $scope.changed = true;
+            $scope.data[date] = [ $scope.raw[id].rsvp,
+                    $scope.raw[id].lessRice ];
+                  
+        }
+        else {
+            $scope.changed = true;
+            $scope.data[date] = [ $scope.raw[id].rsvp,
+                    $scope.raw[id].lessRice ];
+
         }
     }
 }]);

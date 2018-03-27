@@ -25,7 +25,7 @@ function details_get($db, $thaali, $msg)
     $to = Helper::get_week($offset + 7);
 
     // Make query
-    $query = "SELECT events.date, enabled, details, rsvp FROM events " .
+    $query = "SELECT events.date, enabled, details, rsvp, lessRice  FROM events " .
         "LEFT JOIN rsvps ON rsvps.date = events.date AND rsvps.thaali_id = " .
         $thaali . " WHERE details > '' AND events.date >= '" .
         $from . "' AND events.date < '" . $to . "' order by date;";
@@ -77,12 +77,15 @@ function details_post($db, $thaali)
 
         // Convert "Yes" back to boolean
         $response = 0;
-        if ($v == "Yes") {
+        if ($v[0] == "Yes") {
             $response = 1;
         }
-        $result = $db->query("insert into rsvps(date, thaali_id, rsvp) " .
-                               "values(\"$k\", $thaali, $response) " .
-                               "on duplicate KEY update rsvp=$response");
+
+        $riceQty = $v[1];
+
+        $result = $db->query("insert into rsvps(date, thaali_id, rsvp, lessRice) " .
+                               "values(\"$k\", $thaali, $response, $riceQty) " .
+                               "on duplicate KEY update rsvp=$response, lessRice=$riceQty");
         if (!$result) {
             $msg =  $db->error;
         } else {

@@ -11,6 +11,7 @@
     <option value='name'> Name </option>
     <option value='avail'> Available </option>
     <option value='filled'> Filled </option>
+    <option value='lessRice'>Rice Qty </option>
   </select>
 </div>
 <div class="item2"><b>Not picked: </b><span>{{(data | filter: { avail:  0 }).length}}/{{data.length}}</span><br>
@@ -26,6 +27,7 @@
       <th>Name</th>
       <th>Area</th>
       <th>Size</th>
+      <th>Less Rice</th>
     </tr>
   </thead>
   <tbody id="rTab">
@@ -42,6 +44,7 @@
       <td>{{ item["name"] }}</td>
       <td>{{ item["area"] }}</td>
       <td>{{ item["size"] }}</td>
+      <td>{{ item["lessRice"] }}</td>
     </tr>
     <br>
     <br>

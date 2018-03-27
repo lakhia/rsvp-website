@@ -25,7 +25,7 @@ function print_filling($db, $from, $offset, $msg = "") {
 
     if ($details) {
         // Get RSVP and family
-        $query = "SELECT thaali, lastName, firstName, size, area, avail, filled FROM `rsvps` " .
+        $query = "SELECT thaali, lastName, firstName, size, area, avail, filled, lessRice FROM `rsvps` " .
             "LEFT JOIN `family` on family.thaali = rsvps.thaali_id " .
             "WHERE `rsvp` = 1 AND `date` = '" . $from . "' ORDER BY thaali;";
         $result = $db->query($query);
@@ -42,8 +42,16 @@ function print_filling($db, $from, $offset, $msg = "") {
             if ($size == 'M') {
                 unset($row['size']);
             }
-            $rows[] = $row;
-        }
+
+            // Convert lessRice boolean to text
+            if ($row["lessRice"]  == 1 ){
+                $row["lessRice"] = "Less";
+            } else {
+                $row["lessRice"] = "";
+            }
+
+                $rows[] = $row;
+            }
     }
     // Create message
     if (isset($rows)) {
