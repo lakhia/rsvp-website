@@ -10,7 +10,7 @@
     <tr>
       <th>Day</th>
       <th>Details</th>
-      <th class="minWidth"> Less Rice</th>
+      <th class="minWidth">Less Rice</th>
       <th class="minWidth">RSVP</th>
     </tr>
   </thead>
@@ -19,12 +19,14 @@
       <td>{{ getDisplayDate(key) }}</td>
       <td>{{ value.details }}</td>
       <td>
-        <input type="checkbox" ng-model='value.lessRice' ng_true_value=1 ng_false_value=0 ng-change="onChange(key, 'Rice')"/>
+        <input type="checkbox" ng-model='value.lessRice' ng-show="value.enabled==1"
+        ng-disabled="value.readonly==1 || value.rsvp=='No'"
+        ng_true_value=1 ng_false_value=0 ng-change="onRiceChange(key)"/>
       </td>
       <td>
-        <button class="btn rsvpBtn" ng-show="value.enabled==1"
+        <button class="rsvpBtn btn" ng-show="value.enabled==1"
                 ng-disabled="value.readonly==1"
-                ng-class="value.rsvp" ng-click="onChange(key, 'RSVP')">
+                ng-class="value.rsvp" ng-click="onRSVPChange(key)">
           <span class="glyphicon glyphicon-pencil"></span>  {{ value.rsvp }}
         </button>
       </td>

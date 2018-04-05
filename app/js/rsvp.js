@@ -18,31 +18,47 @@ function($scope, $rootScope) {
     $scope.getDisplayDate = function(input) {
         return $rootScope.getDisplayDate($scope.raw[input].date);
     }
-    
-    $scope.onChange = function(id, field) {
+
+    function onChange(id) {
         // Clear message
         $scope.msg = '';
 
-        // Toggle response to RSVP
+        // Create empty dict if needed
         var date = $scope.raw[id].date;
-        
-        if (field == "RSVP" ){
-            if ($scope.raw[id].rsvp == "Yes") {
-                $scope.raw[id].rsvp = "No";
-            } else {
-                $scope.raw[id].rsvp = "Yes";
+        if (! $scope.data[date]) {
+            $scope.data[date] = {};
+        }
+        return $scope.data[date];
+    }
+
+    $scope.onRiceChange = function(id) {
+        var dateData = onChange(id);
+        if (dateData.lessRice) {
+            delete dateData.lessRice;
+            if (!dateData.rsvp) {
+                delete dateData;
             }
-
-            $scope.changed = true;
-            $scope.data[date] = [ $scope.raw[id].rsvp,
-                    $scope.raw[id].lessRice ];
-                  
+        } else {
+            dateData.lessRice = $scope.raw[id].lessRice;
         }
-        else {
-            $scope.changed = true;
-            $scope.data[date] = [ $scope.raw[id].rsvp,
-                    $scope.raw[id].lessRice ];
+        $scope.changed = Object.keys($scope.data).length;
+    }
 
+    $scope.onRSVPChange = function(id) {
+        var dateData = onChange(id);
+        if ($scope.raw[id].rsvp == "Yes") {
+            $scope.raw[id].rsvp = "No";
+        } else {
+            $scope.raw[id].rsvp = "Yes";
         }
+        if (dateData.rsvp) {
+            delete dateData.rsvp;
+            if (!dateData.lessRice) {
+                delete dateData;
+            }
+        } else {
+            dateData.rsvp = $scope.raw[id].rsvp;
+        }
+        $scope.changed = Object.keys($scope.data).length;
     }
 }]);

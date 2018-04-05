@@ -50,9 +50,10 @@ function print_filling($db, $from, $offset, $msg = "") {
                 $row["lessRice"] = "";
             }
 
-                $rows[] = $row;
-            }
+            $rows[] = $row;
+        }
     }
+
     // Create message
     if (isset($rows)) {
         $count = count($rows);
