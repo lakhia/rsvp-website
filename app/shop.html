@@ -1,0 +1,44 @@
+<div ng-init="init()">
+
+<h3>Shopping from {{ getDisplayDate(date) }}</h3>
+
+<table class="table-striped table">
+  <thead>
+    <tr>
+      <th class="col-xs-1">Date</th>
+      <th class="col-xs-6">Ingredients</th>
+      <th class="col-xs-1">Counts</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="(key, value) in data">
+      <td>{{ getDisplayDate(key) }}</td>
+      <td>
+      <span ng-repeat="(item, quant) in value['ingred']">
+        <b class="col-xs-2">{{ item }}</b>
+        <span class="col-xs-4">
+          <span ng-repeat="q in quant">{{ q }}<br></span>
+        </span>
+      </span>
+      </td>
+      <td>
+        <span ng-repeat="(i, q) in value['count']">{{ i }}: {{ q }}<br></span>
+      </td>
+    </tr>
+    <br>
+    <br>
+  </tbody>
+</table>
+
+<div class="msg">&nbsp;{{ msg }}</div>
+<br>
+<div class="noPrnt text-center">
+  <button class="btn btn-default" ng-click="next(-7)">
+    <span class="glyphicon glyphicon-chevron-left"></span>  Prev
+  </button>&nbsp;&nbsp;
+  <button class="btn btn-default" ng-click="next(7)">Next  <span
+    class="glyphicon glyphicon-chevron-right"></span>
+  </button>
+</div>
+</div>
+</div>

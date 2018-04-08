@@ -38,12 +38,18 @@
   <li ng-class="getClass('print')">
     <a class="nofoc" ui-sref="print({offset:0})" ng-show="cookies.token"><i class="glyphicon
     glyphicon-print"></i><span ng-class="{gone:!menuBig}">&nbsp; Filling</span></a></li>
-  <li ng-class="getClass('event')">
-    <a class="nofoc" ui-sref="event({offset:0})" ng-show="cookies.adv"><i class="glyphicon
-    glyphicon-cutlery"></i><span ng-class="{gone:!menuBig}">&nbsp; Events</span></a></li>
   <li ng-class="getClass('family')">
     <a class="nofoc" ui-sref="family({offset:1})" ng-show="cookies.adv"><i class="glyphicon
     glyphicon-user"></i><span ng-class="{gone:!menuBig}">&nbsp; Family</span></a></li>
+  <li ng-class="getClass('event')">
+    <a class="nofoc" ui-sref="event({offset:0})" ng-show="cookies.adv"><i class="glyphicon
+    glyphicon-cutlery"></i><span ng-class="{gone:!menuBig}">&nbsp; Events</span></a></li>
+  <li ng-class="getClass('shop')">
+    <a class="nofoc" ui-sref="shop({offset:0})" ng-show="cookies.token"><i class="glyphicon
+    glyphicon-shopping-cart"></i><span ng-class="{gone:!menuBig}">&nbsp; Shopping</span></a></li>
+  <li ng-class="getClass('measure')">
+    <a class="nofoc" ui-sref="measure({offset:A})" ng-show="cookies.adv"><i class="glyphicon
+    glyphicon-scale"></i><span ng-class="{gone:!menuBig}">&nbsp; Measure</span></a></li>
   <li ng-class="getClass('login')">
     <a ui-sref="login({out:1})"><i class="glyphicon glyphicon-remove"></i><span
     ng-class="{gone:!menuBig}">&nbsp; Logout</span></a></li>
@@ -73,6 +79,8 @@
 <script src="js/print.js"></script>
 <script src="js/event.js"></script>
 <script src="js/family.js"></script>
+<script src="js/shop.js"></script>
+<script src="js/measure.js"></script>
 <script src="lib/loading-bar.js"></script>
 <!-- endbuild -->
 

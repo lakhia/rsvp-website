@@ -2,6 +2,12 @@
  opacity: 0; visibility: hidden;
  transition: visibility .2s linear, opacity .2s linear;
 }
+.sugg {
+  position: absolute;
+  left: 90px;
+  color: #faa;
+  z-index: 5;
+}
 
 a.menu, a.menu:hover, a.menu:focus {
     background-color: #38B !important;

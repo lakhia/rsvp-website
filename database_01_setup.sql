@@ -46,7 +46,6 @@ insert into rsvps
   ( date, thaali_id, rsvp )
   values
   ( "2016-12-01", 36, 1 );
-
 insert into rsvps
   ( date, thaali_id, rsvp )
   values

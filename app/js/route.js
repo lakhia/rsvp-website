@@ -29,6 +29,16 @@ app.config(['$stateProvider','$urlRouterProvider',
          url: "/family/{offset}",
          templateUrl: 'family.html',
          controller: 'familyController',
+      })
+      .state('shop', {
+        url: "/shop/{offset}",
+        templateUrl: 'shop.html',
+        controller: 'shopController',
+      })
+      .state('measure', {
+        url: "/measure/{offset}",
+        templateUrl: 'measure.html',
+        controller: 'measureController',
       });
 
       $urlRouterProvider.otherwise('/');

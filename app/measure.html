@@ -1,0 +1,50 @@
+<!-- event view -->
+<div ng-init="init()">
+
+<h3>Menu Measurement, page {{ offset/10 + 1 }}</h3>
+<br>
+<br>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Menu</th>
+      <th>Ingredients Per Thaali</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="est in data">
+      <td>{{ est.menu }}</td>
+      <td>
+      <span ng-repeat="ingred in est['ingred']">
+        <span class="col-xs-2">
+          <input type="text" ng-model="ingred.multiplier" class="trans" ng-change="onChange()"
+              placeholder="0.0">
+        </span>
+        <span class="col-xs-2">{{ ingred.unit }}</span>
+        <span class="col-xs-3">
+          <input type="text" ng-model="ingred.name" class="trans" ng-change="onChange()"
+              placeholder="ingredient" ng-keyup="querySuggest(ingred, $event)">
+          <span class="sugg" ng-bind="ingred.sug"></span>
+        </span>
+      </span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="msg">&nbsp;{{ msg }}</div>
+<br>
+<div class="text-center">
+  <button class="btn btn-default" ng-disabled="offset<10" ng-click="next(-10)">
+    <span class="glyphicon glyphicon-chevron-left"></span>  Prev
+  </button>&nbsp;&nbsp;
+  <button class="btn btn-primary" ng-disabled="!changed" ng-click="submit()">
+    <span class="glyphicon glyphicon-save"></span>  Save
+  </button>&nbsp;&nbsp;
+  <button class="btn btn-default" ng-click="next(10)">
+    Next  <span class="glyphicon glyphicon-chevron-right"></span>
+  </button>
+</div>
+
+</div>

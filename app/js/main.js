@@ -67,6 +67,7 @@ app.run(['$rootScope', '$http', '$state', '$stateParams',
             }
             scope.getDisplayDate = function(input) {
                 var parts = input.split('-');
+                if (parts.length <3) return input;
                 var d = new Date(parts[0], parts[1]-1, parts[2]);
                 input = input.replace(/^\d+-/, "");
                 var output = ["Sun","Mon","Tue","Wed","Thr","Fri","Sat"][d.getDay()]

@@ -26,7 +26,7 @@ function event_get($db, $msg)
     $to = Helper::get_week($offset + 7);
 
     // Make query
-    $query = "SELECT * FROM events WHERE date >= '" . 
+    $query = "SELECT * FROM events WHERE date >= '" .
         $from . "' AND date < '" . $to . "' order by date;";
 
     $result = $db->query($query);
@@ -44,8 +44,7 @@ function event_get($db, $msg)
             $row = $result->fetch_assoc();
         }
         if ($d != $row["date"]) {
-            $k = array("date" => $d);
-            $rows[] = $k;
+            $rows[] = array("date" => $d);
         } else {
             $rows[] = $row;
             unset($row);
