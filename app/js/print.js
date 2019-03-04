@@ -14,7 +14,7 @@ function($scope, $rootScope) {
         $scope.data = response.data;
         $scope.date = response.date;
         $scope.msg = response.msg;
-        $scope.save = response.other;
+        $scope.o = response.other;
         $scope.changed = false;
     }
 

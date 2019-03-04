@@ -10,6 +10,7 @@
     <tr>
       <th>Date</th>
       <th>Details</th>
+      <th class="minWidth">Niyaz</th>
       <th class="minWidth">Enabled</th>
     </tr>
   </thead>
@@ -19,6 +20,10 @@
       <td>
           <input type="text" class="trans" placeholder="<Event details>"
           ng-model="event.details" ng-change="onChange()">
+      </td>
+      <td>
+          <input type="checkbox" class="form-control"
+          ng-model="event.niyaz" ng-true-value="1" ng-change="onChange()">
       </td>
       <td>
           <input type="checkbox" class="form-control"

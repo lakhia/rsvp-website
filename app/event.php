@@ -70,7 +70,11 @@ function event_post($db)
         // Take care of uninit variables
         $enabled = 0;
         if (isset($i->enabled) && $i->enabled) {
-            $enabled = $i->enabled;
+            $enabled = 1;
+        }
+        $niyaz = 0;
+        if (isset($i->niyaz) && $i->niyaz) {
+            $niyaz = 1;
         }
         $details = "";
         if (isset($i->details)) {
@@ -80,10 +84,10 @@ function event_post($db)
         if ($details == "") {
             $query = "DELETE FROM events WHERE date = '$date';";
         } else {
-            $query = "INSERT INTO events(date, details, enabled) " .
-                     "VALUES(\"$date\", \"$details\", $enabled) " .
+            $query = "INSERT INTO events(date, details, enabled, niyaz) " .
+                     "VALUES(\"$date\", \"$details\", $enabled, $niyaz) " .
                      "ON DUPLICATE KEY " .
-                     "UPDATE details=\"$details\", enabled=$enabled";
+                     "UPDATE details=\"$details\", enabled=$enabled, niyaz=$niyaz";
         }
         $result = $db->query($query);
         if (!$result) {

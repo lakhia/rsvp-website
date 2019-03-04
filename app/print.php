@@ -25,29 +25,32 @@ function print_filling($db, $from, $offset, $msg = "") {
 
     if ($details) {
         // Get RSVP and family
-        $query = "SELECT thaali, lastName, firstName, size, area, avail, filled, lessRice FROM `rsvps` " .
+        $query = "SELECT thaali, CONCAT(firstName, ' ', lastName) AS name, " .
+            "adults, kids, size, area, here, filled, lessRice FROM rsvps " .
             "LEFT JOIN `family` on family.thaali = rsvps.thaali_id " .
             "WHERE `rsvp` = 1 AND `date` = '" . $from . "' ORDER BY thaali;";
         $result = $db->query($query);
+        $totalA = 0;
+        $totalK = 0;
 
         while($row = $result->fetch_assoc()) {
-
-            // Append first name and last
-            $row['name'] = $row['firstName'] . " " . $row['lastName'];
-            unset($row['firstName']);
-            unset($row['lastName']);
-
-            // Count people, only show size if not medium
-            $size = $row['size'];
-            if ($size == 'M') {
-                unset($row['size']);
+            if ($details['niyaz']) {
+                $totalA += $row['adults'];
+                $totalK += $row['kids'];
+                $row['size'] = $row['adults'] . ", " . $row['kids']; 
+                unset($row['adults']);
+                unset($row['kids']); 
+            } else {
+                if ($row['size'] == 'M') {
+                    unset($row['size']);
+                }
             }
 
             // Convert lessRice boolean to text
-            if ($row["lessRice"]  == 1 ){
+            if ($row["lessRice"]  == 1) {
                 $row["lessRice"] = "Less";
             } else {
-                $row["lessRice"] = "";
+                unset($row["lessRice"]);
             }
 
             $rows[] = $row;
@@ -56,27 +59,28 @@ function print_filling($db, $from, $offset, $msg = "") {
 
     // Create message
     if (isset($rows)) {
-        $count = count($rows);
         $save = Helper::is_save_available($offset);
+        $other = array("save" => $save, "niyaz" => $details['niyaz'],
+                       "adults" => $totalA, "kids" => $totalK);
     } else {
         $rows = NULL;
         $msg = "No responses available for " . $from;
-        $save = NULL;
+        $other = NULL;
     }
-    Helper::print_to_json($rows, $msg, $from, $save);
+    Helper::print_to_json($rows, $msg, $from, $other);
 }
 
 function get_details($db, $date) {
-    $query = 'SELECT details,enabled from events where date="' . $date . '";';
+    $query = 'SELECT details,niyaz,enabled from events where date="' . $date . '";';
     $result = $db->query($query);
     if (!$result || $result->num_rows != 1) {
         return "";
     }
     $row = $result->fetch_assoc();
     if (!$row['enabled']) {
-        return "";
+        return NULL;
     }
-    return $row['details'];
+    return $row;
 }
 
 // Post update to details
@@ -88,9 +92,9 @@ function print_post($db, $from, $offset)
 
     if ($save) {
         foreach ($data as $i) {
-            $thaali_id      = $i->thaali;
+            $thaali_id = $i->thaali;
 
-            $query = "UPDATE rsvps set avail='". $i->avail .
+            $query = "UPDATE rsvps set here='". $i->here .
                "',  filled = '" . $i->filled . "'  " .
                "WHERE  thaali_id = '" . $thaali_id .
                "' and date = '" . $from . "'";

@@ -1,7 +1,7 @@
 
 <div ng-init="init()">
 
-<h3>Filling for {{ getDisplayDate(date) }}</h3>
+<h3>RSVP for {{ getDisplayDate(date) }}</h3>
 <br>
 <div class="item1"><b>Order By: </b>
   <select ng_model="sortColumn">
@@ -9,25 +9,27 @@
     <option value='area'> Area </option>
     <option value='size'> Size </option>
     <option value='name'> Name </option>
-    <option value='avail'> Available </option>
-    <option value='filled'> Filled </option>
-    <option value='lessRice'>Rice Qty </option>
+    <option value='here'> Here </option>
+    <option ng-hide="o.niyaz" value='filled'> Filled </option>
+    <option ng-hide="o.niyaz" value='lessRice'>Rice Qty </option>
   </select>
 </div>
-<div class="item2"><b>Not picked: </b><span>{{(data | filter: { avail:  0 }).length}}/{{data.length}}</span><br>
-                  <b>Not Filled: </b><span>{{(data | filter: { filled: 0 }).length}}/{{data.length}}</span>
+<div class="item2">
+    <span ng-show="o.niyaz"><b>Count: </b>{{o.adults}}, {{o.kids}}</span><br>
+    <b>Not here: </b>{{(data | filter: { here: 0 }).length}}/{{data.length}}<br>
+    <span ng-hide="o.niyaz"><b>Not filled: </b>{{(data | filter: { filled: 0 }).length}}/{{data.length}}</span>
 </div>
 
 <table class="table-striped table">
   <thead>
     <tr>
       <th>Thaali</th>
-      <th>Tiffin Available</th>
-      <th>Filled</th>
+      <th>Here</th>
+      <th ng-hide="o.niyaz">Filled</th>
       <th>Name</th>
       <th>Area</th>
       <th>Size</th>
-      <th>Less Rice</th>
+      <th ng-hide="o.niyaz">Less Rice</th>
     </tr>
   </thead>
   <tbody id="rTab">
@@ -36,15 +38,15 @@
     <tr ng-repeat="item in data | orderBy: sorterFunc">
       <td>{{ item["thaali"] }}</td>
       <td>
-        <input type="checkbox" ng-model='item.avail' ng_true_value=1 ng_false_value=0 ng-change="onChange()"/>
+        <input type="checkbox" ng-model='item.here' ng_true_value=1 ng_false_value=0 ng-change="onChange()"/>
       </td>
-      <td>
+      <td ng-hide="o.niyaz">
         <input type="checkbox" ng-model='item.filled' ng_true_value=1 ng_false_value=0 ng-change="onChange()"/>
       </td>
       <td>{{ item["name"] }}</td>
       <td>{{ item["area"] }}</td>
       <td>{{ item["size"] }}</td>
-      <td>{{ item["lessRice"] }}</td>
+      <td ng-hide="niyaz">{{ item["lessRice"] }}</td>
     </tr>
     <br>
     <br>
@@ -57,10 +59,10 @@
   <button class="btn btn-default" ng-click="next(-1)">
     <span class="glyphicon glyphicon-chevron-left"></span>  Prev
   </button>&nbsp;&nbsp;
-  <button class="btn btn-default" ng-show="save" ng-click="reset(document.getElementsByTagName('input'))">
+  <button class="btn btn-default" ng-show="o.save" ng-click="reset(document.getElementsByTagName('input'))">
       Reset
   </button>&nbsp;&nbsp;
-  <button class="btn btn-primary" ng-disabled="!changed" ng-show="save" ng-click="submit()">
+  <button class="btn btn-primary" ng-disabled="!changed" ng-show="o.save" ng-click="submit()">
     <span class="glyphicon glyphicon-save"></span>  Save
     &nbsp;&nbsp;
   </button>

@@ -25,7 +25,7 @@ function details_get($db, $thaali, $msg)
     $to = Helper::get_week($offset + 7);
 
     // Make query
-    $query = "SELECT events.date, enabled, details, rsvp, lessRice FROM events " .
+    $query = "SELECT events.date, adults, kids, enabled, details, rsvp, lessRice FROM events " .
         "LEFT JOIN rsvps ON rsvps.date = events.date AND rsvps.thaali_id = " .
         $thaali . " WHERE details > '' AND events.date >= '" .
         $from . "' AND events.date < '" . $to . "' order by date;";
@@ -76,11 +76,11 @@ function details_post($db, $thaali)
 
         // Convert "Yes" back to boolean
         $response = 1;
-        if ($v['rsvp'] && $v['rsvp'] != "Yes") {
+        if (isset($v['rsvp']) && $v['rsvp'] != "Yes") {
             $response = 0;
         }
         $lessRice = 0;
-        if ($v['lessRice']) {
+        if (isset($v['lessRice'])) {
             $lessRice = 1;
         }
 
