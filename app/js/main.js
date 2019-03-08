@@ -46,7 +46,7 @@ function($scope, $http, $cookies, $rootScope, $state) {
             return;
         }
         $scope.cookies = $cookies;
-        $scope.big = $cookies.menuBig;
+        $scope.menuBig = localStorage.getItem('menuBig') == "1";
     }
 
     $scope.getClass = function(name) {
@@ -69,7 +69,7 @@ function($scope, $http, $cookies, $rootScope, $state) {
                 if (response.msg) {
                     $scope.msg = response.msg;
                 } else {
-                    $rootScope.name = response.data;
+                    localStorage.setItem('greet', response.data);
                     $rootScope.thaali = $scope.thaali;
                     $state.go("home", {offset:0});
                 }
@@ -77,18 +77,16 @@ function($scope, $http, $cookies, $rootScope, $state) {
     }
 
     $scope.menuToggle = function() {
-        $scope.big = !$scope.big;
-        $cookies.menuBig = $scope.big ? 1 : "";
+        $scope.menuBig = !$scope.menuBig;
+        localStorage.setItem('menuBig', $scope.menuBig ? 1 : 0);
     }
 
     function logout() {
-        delete $rootScope.name;
         delete $cookies.adv;
         delete $cookies.token;
-        delete $cookies.name;
         delete $cookies.thaali;
-        delete $cookies.menuBig;
         delete $cookies.email;
+        localStorage.clear();
         $scope.thaali = "";
         $scope.msg = "You have been logged out";
     }
@@ -101,7 +99,7 @@ app.run(['$rootScope', '$cookies', '$http', '$state', '$stateParams',
 
         // Init scope, setup common functions, fetch data
         $rootScope.init = function(scope, handleResponse) {
-            if (!$cookies.token && !$rootScope.name) {
+            if (!localStorage.length) {
                 $state.go("login");
                 return;
             }
@@ -150,14 +148,6 @@ app.run(['$rootScope', '$cookies', '$http', '$state', '$stateParams',
             input = input.replace(/^\d+-/, "");
             var output = ["Sun","Mon","Tue","Wed","Thr","Fri","Sat"][d.getDay()]
             return output + ", " + input;
-        }
-        $rootScope.getName = function() {
-            if ($cookies.name !== undefined) {
-                return $cookies.name.replace(/\+/g, " ") +
-                    ", #" + $cookies.thaali;
-            } else {
-                return $rootScope.name + ", #" + $rootScope.thaali;
-            }
         }
     }
 ])

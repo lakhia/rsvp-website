@@ -17,15 +17,12 @@ if ($method_server == "POST") {
 // Get details for specific dates
 function details_get($db, $thaali, $msg)
 {
-    $offset = 0;
-    if (isset($_GET['offset'])) {
-        $offset = $_GET['offset'];
-    }
+    $offset = Helper::get_if_defined($_GET['offset'], 0);
     $from = Helper::get_week($offset);
     $to = Helper::get_week($offset + 7);
 
     // Make query
-    $query = "SELECT events.date, adults, kids, enabled, details, rsvp, lessRice FROM events " .
+    $query = "SELECT events.date, adults, kids, niyaz, enabled, details, rsvp, lessRice FROM events " .
         "LEFT JOIN rsvps ON rsvps.date = events.date AND rsvps.thaali_id = " .
         $thaali . " WHERE details > '' AND events.date >= '" .
         $from . "' AND events.date < '" . $to . "' order by date;";
@@ -36,21 +33,20 @@ function details_get($db, $thaali, $msg)
     $cutoff = Helper::get_cutoff_time(1);
 
     // Convert rows
-    // TODO: Check if $result is non-object
     while($row = $result->fetch_assoc()) {
-
         // Editing is only allowed for dates past cutoff
         if ($row["date"] < $cutoff) {
             $row["readonly"] = "1";
         }
-
-        // Convert rsvp boolean to text
-        if ($row["rsvp"]) {
-            $row["rsvp"] = "Yes";
-        } else {
-            $row["rsvp"] = "No";
+        if (!$row["niyaz"]) {
+            unset($row['niyaz']);
         }
-
+        if (!$row["rsvp"]) {
+            unset($row['rsvp']);
+        }
+        if (!$row["lessRice"]) {
+            unset($row['lessRice']);
+        }
         $rows[] = $row;
     }
     if (isset($rows)) {
@@ -74,19 +70,16 @@ function details_post($db, $thaali)
             continue;
         }
 
-        // Convert "Yes" back to boolean
-        $response = 1;
-        if (isset($v['rsvp']) && $v['rsvp'] != "Yes") {
-            $response = 0;
-        }
-        $lessRice = 0;
-        if (isset($v['lessRice'])) {
-            $lessRice = 1;
-        }
+        // Retrieve items
+        $response = Helper::get_if_defined($v['rsvp']) ? 1 : 0;
+        $lessRice = Helper::get_if_defined($v['lessRice'], "null");
+        $adults = Helper::get_if_defined($v['adults'], "null");
+        $kids = Helper::get_if_defined($v['kids'], "null");
 
-        $result = $db->query("insert into rsvps(date, thaali_id, rsvp, lessRice) " .
-                               "values(\"$k\", $thaali, $response, $lessRice) " .
-                               "on duplicate KEY update rsvp=$response, lessRice=$lessRice");
+        $result = $db->query("insert into rsvps(date, thaali_id, rsvp, lessRice, adults, kids) " .
+                             "values(\"$k\", $thaali, $response, $lessRice, $adults, $kids) " .
+                             "on duplicate KEY update rsvp=$response, lessRice=$lessRice, " .
+                             "adults=$adults, kids=$kids");
         if (!$result) {
             $msg =  $db->error;
         } else {

@@ -25,33 +25,33 @@
 <div ng-controller="mainController" ng-init="init()">
 
 <!-- Side bar -->
-<div class="sidebar noPrnt" ng-class="{sidebarBig: big}">
+<div class="sidebar noPrnt" ng-class="{sidebarBig: menuBig}">
 
 <ul class="nav">
   <li>
     <a class="menu nofoc" ng-click="menuToggle()"
-    href=""><i ng-class="{gone:big}" class="glyphicon
-    glyphicon-menu-hamburger">&nbsp; </i><h4 ng-class="{gone:!big}">Faiz SF</h4></a></li>
+    href=""><i ng-class="{gone:menuBig}" class="glyphicon
+    glyphicon-menu-hamburger">&nbsp; </i><h4 ng-class="{gone:!menuBig}">Faiz SF</h4></a></li>
   <li ng-class="getClass('home')">
     <a class="nofoc" ui-sref="home({offset:0})" ng-show="cookies.token"><i class="glyphicon
-    glyphicon-home"></i><span ng-class="{gone:!big}">&nbsp; RSVP</span></a></li>
+    glyphicon-home"></i><span ng-class="{gone:!menuBig}">&nbsp; RSVP</span></a></li>
   <li ng-class="getClass('print')">
     <a class="nofoc" ui-sref="print({offset:0})" ng-show="cookies.token"><i class="glyphicon
-    glyphicon-print"></i><span ng-class="{gone:!big}">&nbsp; Filling</span></a></li>
+    glyphicon-print"></i><span ng-class="{gone:!menuBig}">&nbsp; Filling</span></a></li>
   <li ng-class="getClass('event')">
     <a class="nofoc" ui-sref="event({offset:0})" ng-show="cookies.adv"><i class="glyphicon
-    glyphicon-cutlery"></i><span ng-class="{gone:!big}">&nbsp; Events</span></a></li>
+    glyphicon-cutlery"></i><span ng-class="{gone:!menuBig}">&nbsp; Events</span></a></li>
   <li ng-class="getClass('family')">
     <a class="nofoc" ui-sref="family({offset:1})" ng-show="cookies.adv"><i class="glyphicon
-    glyphicon-user"></i><span ng-class="{gone:!big}">&nbsp; Family</span></a></li>
+    glyphicon-user"></i><span ng-class="{gone:!menuBig}">&nbsp; Family</span></a></li>
   <li ng-class="getClass('login')">
     <a ui-sref="login({out:1})"><i class="glyphicon glyphicon-remove"></i><span
-    ng-class="{gone:!big}">&nbsp; Logout</span></a></li>
+    ng-class="{gone:!menuBig}">&nbsp; Logout</span></a></li>
 </ul>
 </div>
 
 <!-- Main content uses view -->
-<div ng-class="{menuBig: big}" class="main">
+<div ng-class="{menuBig: menuBig}" class="main">
 <ui-view>
   <h3>Loading, please wait ...</h3>
 </ui-view>

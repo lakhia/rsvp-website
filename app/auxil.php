@@ -125,6 +125,11 @@ class Helper
         return self::get_offset($date, $offset);
     }
 
+    // Get if defined, otherwise return default
+    public static function get_if_defined(&$var, $default=null) {
+        return isset($var) ? $var : $default;
+    }
+
     // Given a date and offset, return mysql date
     public static function get_offset($date, $offset) {
         if ($offset >= 0) {

@@ -18,12 +18,12 @@ $expires = time() + (86400 * 60); // 86400 = 1 day
 setcookie("token", Helper::create_token($email, $thaali), $expires);
 setcookie("thaali", $thaali, $expires);
 setcookie("email", $email, $expires);
-setcookie("name", $name, $expires);
 if (Helper::is_admin($email)) {
     setcookie("adv", "1", $expires);
 }
+$greet = $name . ", #" . $thaali;
 
 // Send name to indicate successful login
-Helper::print_to_json($name, NULL);
+Helper::print_to_json($greet, NULL);
 
 ?>
