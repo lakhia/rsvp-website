@@ -34,12 +34,9 @@ function($scope, $rootScope) {
     $scope.getDisplayDate = $rootScope.getDisplayDate;
 
     $scope.reset = function(nodes) {
-        $scope.availCounter = 0;
-        $scope.fillCounter = 0;
         $scope.changed = true;
-
         angular.forEach($scope.data, function(item) {
-            item.avail = 0;
+            item.here = 0;
             item.filled = 0;
         });
     }

@@ -72,8 +72,8 @@ function($scope, $rootScope) {
         raw.rsvp = !raw.rsvp;
         if (raw.niyaz) {
             if (raw.rsvp) {
-                raw.adults = localStorage.getItem('adults', 0);
-                raw.kids = localStorage.getItem('kids', 0);
+                raw.adults = localStorage.getItem('adults') || 0;
+                raw.kids = localStorage.getItem('kids') || 0;
             } else {
                 raw.adults = null;
                 raw.kids = null;

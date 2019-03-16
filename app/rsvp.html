@@ -12,7 +12,7 @@
       <th class="col-xs-7">Details</th>
       <th class="col-xs-1">Less Rice</th>
       <th class="col-xs-1">RSVP</th>
-      <th class="col-xs-5">&nbsp;</th>
+      <th class="col-xs-3">&nbsp;</th>
     </tr>
   </thead>
   <tbody>
@@ -28,17 +28,17 @@
       <td>
         <button class="rsvpBtn btn" ng-show="value.enabled" ng-disabled="value.readonly"
           ng-class="rsvpLabel(value.rsvp)" ng-click="onRSVPChange(key)">
-          <span class="glyphicon glyphicon-pencil"></span>  {{ rsvpLabel(value.rsvp) }}
+          {{ rsvpLabel(value.rsvp) }}
         </button>
       </td>
       <td>
-        <div ng-show="value.niyaz" class="input-group">
-          <span class="input-group-addon">Adults:</span>
+        <div ng-show="value.niyaz" class="form-inline">
           <input ng-disabled="value.readonly || !value.rsvp" type="text" ng-model="value.adults"
           class="minWidth form-control" ng-change="onCountChange(key, 'adults')">
-          <span class="input-group-addon">Kids:</span>
+          <label>&nbsp;Adults</label><br>
           <input ng-disabled="value.readonly || !value.rsvp" type="text" ng-model="value.kids"
           class="minWidth form-control" ng-change="onCountChange(key, 'kids')">
+          <label>&nbsp;Kids</label>
         </div>
       </td>
     </tr>

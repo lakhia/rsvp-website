@@ -8,7 +8,8 @@ a.menu, a.menu:hover, a.menu:focus {
     color: #eee;
 }
 .minWidth {
-    width: 35px !important;
+    width: 45px !important;
+    height: 22px  !important;
 }
 .nofoc:focus {
     outline-width: 0;
