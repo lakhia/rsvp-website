@@ -24,7 +24,7 @@ gulp.task('html', function () {
 });
 gulp.task('watch', function () {
     livereload.listen();
-    gulp.watch(['app/*.*', 'app/js/*.*'],
+    gulp.watch(['app/*.*', 'app/js/*.*', 'app/css/*.*'],
                ['html']);
 });
 

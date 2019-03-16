@@ -91,7 +91,7 @@ class Helper
             return '1970-1-1';
         }
 
-        $cutoff = strtotime('today 7pm');
+        $cutoff = strtotime('today 9pm');
         $now = time();
 
         return date('Y-m-d', strtotime( ($now > $cutoff) ? '+2 day' : '+1 day' ) );

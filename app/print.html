@@ -15,9 +15,8 @@
   </select>
 </div>
 <div class="item2">
-    <div ng-show="o.niyaz"><b>Thaals: </b>{{o.adults / 8 + o.kids / 16}}</div>
-    <div ng-hide="o.niyaz"><b>Not here: </b>{{ notHere() }}</div>
-    <span ng-hide="o.niyaz"><b>Not filled: </b>{{(data | filter: { filled: 0 }).length}} / {{data.length}}</span>
+    <div>{{ firstLine(o) }}</div>
+    <span>{{ secondLine(o) }}</span>
 </div>
 
 <table class="table-striped table">

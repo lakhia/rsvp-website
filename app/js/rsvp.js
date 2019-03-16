@@ -44,6 +44,7 @@ function($scope, $rootScope) {
         if (dateData.lessRice) {
             delete dateData.lessRice;
         } else {
+            dateData.rsvp = 1;
             dateData.lessRice = $scope.raw[id].lessRice;
         }
         onPostChange(id);
@@ -77,8 +78,7 @@ function($scope, $rootScope) {
                 raw.adults = localStorage.getItem('adults') || 0;
                 raw.kids = localStorage.getItem('kids') || 0;
             } else {
-                raw.adults = null;
-                raw.kids = null;
+                dateData.kids = dateData.adults = raw.kids = raw.adults = null;
             }
         }
         if (dateData.rsvp) {

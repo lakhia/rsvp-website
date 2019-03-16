@@ -43,6 +43,12 @@ function details_get($db, $thaali, $msg)
         }
         if (!$row["rsvp"]) {
             unset($row['rsvp']);
+            if ($row['adults'] == 0) {
+                unset($row['adults']);
+            }
+            if ($row['kids'] == 0) {
+                unset($row['kids']);
+            }
         }
         if (!$row["lessRice"]) {
             unset($row['lessRice']);
@@ -73,8 +79,16 @@ function details_post($db, $thaali)
         // Retrieve items
         $response = Helper::get_if_defined($v['rsvp']) ? 1 : 0;
         $lessRice = Helper::get_if_defined($v['lessRice'], "null");
-        $adults = Helper::get_if_defined($v['adults'], 0);
-        $kids = Helper::get_if_defined($v['kids'], 0);
+        $adults = intval(Helper::get_if_defined($v['adults'], 0));
+        $kids = intval(Helper::get_if_defined($v['kids'], 0));
+
+        // Validate
+        if ($adults < 0) {
+            $adults = 0;
+        }
+        if ($kids < 0) {
+            $kids = 0;
+        }
 
         $result = $db->query("insert into rsvps(date, thaali_id, rsvp, lessRice, adults, kids) " .
                              "values(\"$k\", $thaali, $response, $lessRice, $adults, $kids) " .

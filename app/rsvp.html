@@ -34,10 +34,10 @@
       <td>
         <div ng-show="value.niyaz" class="form-inline">
           <input ng-disabled="value.readonly || !value.rsvp" type="text" ng-model="value.adults"
-          class="minWidth form-control" ng-change="onCountChange(key, 'adults')">
+          class="minWidth form-control" ng-change="onCountChange(key)">
           <label>&nbsp;Adults</label><br>
           <input ng-disabled="value.readonly || !value.rsvp" type="text" ng-model="value.kids"
-          class="minWidth form-control" ng-change="onCountChange(key, 'kids')">
+          class="minWidth form-control" ng-change="onCountChange(key)">
           <label>&nbsp;Kids</label>
         </div>
       </td>

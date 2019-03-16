@@ -37,7 +37,7 @@ function print_filling($db, $from, $offset, $msg = "") {
             if ($details['niyaz']) {
                 $totalA += $row['adults'];
                 $totalK += $row['kids'];
-                $row['size'] = $row['adults'] . ", " . $row['kids']; 
+                $row['size'] = $row['adults'] . " / " . $row['kids']; 
                 unset($row['adults']);
                 unset($row['kids']); 
             } else {

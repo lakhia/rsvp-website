@@ -19,6 +19,8 @@
   
   * mysql -v -u root < database_setup.sql
 
+  Repeat above step for all the other database_*.sql files.
+
   On the backend, it currently requires:
 
   * PHP 5.5
@@ -33,16 +35,22 @@
      * http://127.0.0.1:8010
   * Make changes to files under app/ directory. Any changes are detected and
     send reload event to browser
+
+# Deployment
+
   * When ready to deploy, run "gulp" and publish all files in build directory
     except for hidden .tmp sub-directory
+  * Run deployment squasher:
+     cd rsvp; perl deploy.pl <site_admin_email> <qa>
+    Note that "qa" will default to empty string for production. 
 
 # Files
 
-  * database_setup.sql used to setup database
+  * database_*.sql used to setup database
   * app/index.html is the single web page
   * app/js/main.js is the main angular controllers
   * other app/js/*.js files contain view-specific controllers
-  * several php files serve JSON to angular
+  * app/*.php files serve JSON
 
 # Internal dependencies
 
