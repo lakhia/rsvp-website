@@ -1,9 +1,12 @@
 -- Each event can be either faiz or niyaz
-alter table events add niyaz boolean default false;
+ALTER TABLE events ADD niyaz boolean DEFAULT False NOT NULL;
 
 -- Each RSVP may have
-alter table rsvps add adults int default 0;
-alter table rsvps add kids int default 0;
+ALTER TABLE rsvps ADD adults int default 0 not null;
+ALTER TABLE rsvps ADD kids int default 0 not null;
 
 -- Thaali "available" renamed to apply to niyaaz also
-alter table rsvps CHANGE COLUMN avail here boolean;
+UPDATE rsvps SET avail = False WHERE avail IS NULL;
+UPDATE rsvps SET filled = False WHERE filled IS NULL;
+ALTER TABLE rsvps CHANGE COLUMN avail here boolean NOT NULL;
+ALTER TABLE rsvps CHANGE COLUMN filled filled boolean NOT NULL;

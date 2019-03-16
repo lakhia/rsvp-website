@@ -31,6 +31,18 @@ function($scope, $rootScope) {
         }
     }
 
+    $scope.notHere = function() {
+        if (!$scope.data) return "";
+        var sum = $scope.data.reduce(function(prev, elem) {
+            if (elem.here == '0' && elem.filled == '0') {
+                return prev + 1;
+            } else {
+                return prev;
+            }
+        }, 0);
+        return sum + " / " + $scope.data.length; 
+    }
+
     $scope.getDisplayDate = $rootScope.getDisplayDate;
 
     $scope.reset = function(nodes) {

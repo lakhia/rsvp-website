@@ -15,9 +15,9 @@
   </select>
 </div>
 <div class="item2">
-    <span ng-show="o.niyaz"><b>Count: </b>{{o.adults}}, {{o.kids}}</span><br>
-    <b>Not here: </b>{{(data | filter: { here: 0 }).length}}/{{data.length}}<br>
-    <span ng-hide="o.niyaz"><b>Not filled: </b>{{(data | filter: { filled: 0 }).length}}/{{data.length}}</span>
+    <span ng-show="o.niyaz"><b>Thaals: </b>{{o.adults / 8 + o.kids / 16}}</span><br>
+    <b>Not here: </b>{{ notHere() }}<br>
+    <span ng-hide="o.niyaz"><b>Not filled: </b>{{(data | filter: { filled: 0 }).length}} / {{data.length}}</span>
 </div>
 
 <table class="table-striped table">
