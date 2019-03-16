@@ -54,8 +54,10 @@ function($scope, $rootScope) {
         var raw = $scope.raw[id];
         dateData.adults = raw.adults;
         dateData.kids = raw.kids;
+        dateData.rsvp = 1;
         localStorage.setItem('adults', raw.adults);
         localStorage.setItem('kids', raw.kids);
+        onPostChange(id);
     }
 
     $scope.rsvpLabel = function(rsvp) {
