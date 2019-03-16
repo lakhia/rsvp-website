@@ -5,18 +5,18 @@
 <br>
 <div class="item1"><b>Order By: </b>
   <select ng_model="sortColumn">
-    <option value='thaali'> Thaali No </option>
-    <option value='area'> Area </option>
-    <option value='size'> Size </option>
-    <option value='name'> Name </option>
-    <option value='here'> Here </option>
-    <option ng-hide="o.niyaz" value='filled'> Filled </option>
+    <option value='thaali'>Thaali</option>
+    <option value='area'>Area</option>
+    <option value='size'>Size</option>
+    <option value='name'>Name</option>
+    <option ng-hide="o.niyaz" value='here'>Here </option>
+    <option ng-hide="o.niyaz" value='filled'>Filled </option>
     <option ng-hide="o.niyaz" value='lessRice'>Rice Qty </option>
   </select>
 </div>
 <div class="item2">
-    <span ng-show="o.niyaz"><b>Thaals: </b>{{o.adults / 8 + o.kids / 16}}</span><br>
-    <b>Not here: </b>{{ notHere() }}<br>
+    <div ng-show="o.niyaz"><b>Thaals: </b>{{o.adults / 8 + o.kids / 16}}</div>
+    <div ng-hide="o.niyaz"><b>Not here: </b>{{ notHere() }}</div>
     <span ng-hide="o.niyaz"><b>Not filled: </b>{{(data | filter: { filled: 0 }).length}} / {{data.length}}</span>
 </div>
 
@@ -24,7 +24,7 @@
   <thead>
     <tr>
       <th>Thaali</th>
-      <th>Here</th>
+      <th ng-hide="o.niyaz">Here</th>
       <th ng-hide="o.niyaz">Filled</th>
       <th>Name</th>
       <th>Area</th>
@@ -37,7 +37,7 @@
      <br>
     <tr ng-repeat="item in data | orderBy: sorterFunc">
       <td>{{ item["thaali"] }}</td>
-      <td>
+      <td ng-hide="o.niyaz">
         <input type="checkbox" ng-model='item.here' ng_true_value=1 ng_false_value=0 ng-change="onChange()"/>
       </td>
       <td ng-hide="o.niyaz">

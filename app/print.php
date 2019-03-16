@@ -59,7 +59,7 @@ function print_filling($db, $from, $offset, $msg = "") {
 
     // Create message
     if (isset($rows)) {
-        $save = Helper::is_save_available($offset);
+        $save = Helper::is_save_available($offset) && !$details['niyaz'];
         $other = array("save" => $save, "niyaz" => $details['niyaz'],
                        "adults" => $totalA, "kids" => $totalK);
     } else {
