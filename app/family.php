@@ -68,6 +68,9 @@ function family_post($db, $thaali) {
             if (!isset($i->phone)) {
                 $i->phone = "";
             }
+            if ($i->size == 'M') {
+                $i->size = '';
+            }
             // Insert or update
             $query = "insert into family" .
 	        "(thaali, lastName, firstName, size, area, email, phone, resp) " .
@@ -76,7 +79,7 @@ function family_post($db, $thaali) {
                 "on duplicate KEY " .
                 "update lastName='$i->lastName', firstName='$i->firstName'," .
                 "size='$i->size', area='$i->area', email='$i->email', " .
-		"phone='$i->phone', resp='$i->resp'";
+                "phone='$i->phone', resp='$i->resp'";
         }
         $result = $db->query($query);
         if (!$result) {
