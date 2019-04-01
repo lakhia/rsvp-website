@@ -17,11 +17,10 @@
   </thead>
   <tbody>
     <tr class="rsvpRow" ng-repeat="(key, value) in raw">
-      <td>{{ getDisplayDate(key) }}</td>
+      <td>{{ getRawDate(key) }}</td>
       <td>{{ value.details }}</td>
       <td>
-        <input ng-hide="value.niyaz" type="checkbox" ng-model='value.lessRice'
-         ng-show="value.enabled"
+        <input ng-hide="value.niyaz || !value.enabled" type="checkbox" ng-model='value.lessRice'
          ng-disabled="value.readonly || !value.rsvp"
          ng_true_value=1 ng_false_value=0 ng-change="onRiceChange(key)"/>
       </td>

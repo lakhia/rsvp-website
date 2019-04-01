@@ -26,9 +26,6 @@ a.menu, a.menu:hover, a.menu:focus {
 .sidebarBig {
     width: 105px !important;
 }
-.glyphicon-scissors {
-    transform: translateY(-1.5em);
-}
 .sidebar {
     position: fixed;
     width: 40px;

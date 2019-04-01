@@ -62,6 +62,7 @@ function event_get($db, $msg)
 // Post update to details
 function event_post($db)
 {
+    $msg = "";
     $data = json_decode(file_get_contents('php://input'), false);
 
     foreach ($data as $i) {
@@ -73,7 +74,7 @@ function event_post($db)
             $enabled = 1;
         }
         $niyaz = 0;
-        if (isset($i->niyaz) && $i->niyaz) {
+        if ($enabled && isset($i->niyaz) && $i->niyaz) {
             $niyaz = 1;
         }
         $details = "";
@@ -93,11 +94,14 @@ function event_post($db)
         if (!$result) {
             $msg =  $db->error;
             break;
-        } else {
-            $msg = "Thank you, changes have been saved!";
         }
     }
-    die('{ "msg": "' . $msg . '" }');
+    if (!$msg) {
+        $msg = "Thank you, changes have been saved!";
+        return event_get($db, $msg);
+    } else {
+        die('{ "msg": "' . $msg . '" }');
+    }
 }
 
 ?>

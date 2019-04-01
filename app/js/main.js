@@ -1,52 +1,28 @@
-var app = angular.module("rsvp", ['ui.router', 'ngCookies',
-                                  'angular-loading-bar']);
-
-/* Route configuration */
-app.config(['$stateProvider','$urlRouterProvider',
-  function($stateProvider, $urlRouterProvider) {
-    $stateProvider
-      .state("home", {
-        url: "/{offset}",
-        templateUrl: 'rsvp.html',
-        controller: 'rsvpController',
-      })
-      .state('login', {
-        url: "/login/{out}",
-        templateUrl: 'login.html',
-        controller: 'mainController',
-      })
-      .state('print', {
-        url: "/print/{offset}",
-        templateUrl: 'print.html',
-        controller: 'printController',
-      })
-      .state('event', {
-        url: "/event/{offset}",
-        templateUrl: 'event.html',
-        controller: 'eventController',
-      })
-      .state('family', {
-         url: "/family/{offset}",
-         templateUrl: 'family.html',
-         controller: 'familyController',
-      });
-
-      $urlRouterProvider.otherwise('/');
-}])
-
 /* Menu and login management */
-app.controller("mainController", ["$scope", "$http", "$cookies", "$rootScope",
-                                  "$state",
-function($scope, $http, $cookies, $rootScope, $state) {
+app.controller("loginController", ["$scope", "$cookies", "$rootScope",
+                                  "$state", "$stateParams",
+function($scope, $cookies, $rootScope, $state, $stateParams) {
 
     $scope.init = function() {
-        // Logout param present?
-        if ($rootScope.stateParams.out) {
-            logout();
-            return;
+        if ($stateParams.out) {
+            // Logout
+            delete $cookies.adv;
+            delete $cookies.token;
+            delete $cookies.thaali;
+            delete $cookies.email;
+            localStorage.clear();
+            $scope.msg = "You have been logged out";
         }
         $scope.cookies = $cookies;
         $scope.menuBig = localStorage.getItem('menuBig') == "1";
+        $rootScope.init($scope, "login.php", handleResponse);
+    }
+
+    function handleResponse(response) {
+        if (!response.msg) {
+            localStorage.setItem('greet', response.data);
+            $state.go("home", {offset:0});
+        }
     }
 
     $scope.getClass = function(name) {
@@ -56,68 +32,56 @@ function($scope, $http, $cookies, $rootScope, $state) {
         return "";
     }
 
-    $scope.login = function() {
-        var request = $http({
-            url: "login.php",
-            method: "GET",
-            params: {thaali: $scope.thaali, email: $scope.email}
-        });
-        request.success(
-            function(response)
-            {
-                // Display error or redirect to home
-                if (response.msg) {
-                    $scope.msg = response.msg;
-                } else {
-                    localStorage.setItem('greet', response.data);
-                    $rootScope.thaali = $scope.thaali;
-                    $state.go("home", {offset:0});
-                }
-            });
-    }
-
     $scope.menuToggle = function() {
         $scope.menuBig = !$scope.menuBig;
         localStorage.setItem('menuBig', $scope.menuBig ? 1 : 0);
     }
-
-    function logout() {
-        delete $cookies.adv;
-        delete $cookies.token;
-        delete $cookies.thaali;
-        delete $cookies.email;
-        localStorage.clear();
-        $scope.thaali = "";
-        $scope.msg = "You have been logged out";
-    }
 }])
 
 /* Add references to rootScope so that you can access them from any scope */
-app.run(['$rootScope', '$cookies', '$http', '$state', '$stateParams',
-    function ($rootScope, $cookies, $http, $state, $stateParams) {
-        $rootScope.stateParams = $stateParams;
+app.run(['$rootScope', '$http', '$state', '$stateParams',
+    function ($rootScope, $http, $state, $stateParams) {
 
         // Init scope, setup common functions, fetch data
-        $rootScope.init = function(scope, handleResponse) {
-            if (!localStorage.length) {
-                $state.go("login");
-                return;
-            }
+        $rootScope.init = function(scope, url, handleResponse) {
+            scope.date = "";
             scope.changed = 0;
             scope.offset = parseInt($stateParams.offset) || 0;
+
+            scope.onChange = function() {
+                scope.msg = "";
+                scope.changed = true;
+            }
+            scope.getDisplayDate = function(input) {
+                var parts = input.split('-');
+                var d = new Date(parts[0], parts[1]-1, parts[2]);
+                input = input.replace(/^\d+-/, "");
+                var output = ["Sun","Mon","Tue","Wed","Thr","Fri","Sat"][d.getDay()]
+                return output + ", " + input;
+            }
 
             // Fetch data using http GET
             function fetchData() {
                 $http({
-                    url: scope.url,
+                    url: url,
                     method: "GET",
                     timeout: 8000,
                     params: {offset: scope.offset}
-                }).success(handleResponse).error(error);
+                }).success(handleSuccess).error(error);
             }
-            // Network request failed
+            // Network request handlers
+            function handleSuccess(response) {
+                scope.data = response.data;
+                scope.date = response.date;
+                scope.msg = response.msg;
+                scope.o = response.other;
+                scope.changed = false;
+                if (handleResponse) {
+                    handleResponse(response);
+                }
+            }
             function error(response, status) {
-                scope.msg = "Request failed (" + status + "), try again";
+                scope.msg = "Request failed, try again";
             }
             // Warn on navigation change if changes are pending
             function leave(event) {
@@ -135,19 +99,15 @@ app.run(['$rootScope', '$cookies', '$http', '$state', '$stateParams',
             }
             // Submit
             scope.submit = function() {
-                $http.post(scope.url + "?offset=" + scope.offset,
+                $http.post(url + "?offset=" + scope.offset,
                            scope.data, {timeout:8000})
-                    .success(handleResponse).error(error);
+                    .success(handleSuccess).error(error);
             }
-
-            fetchData();
-        }
-        $rootScope.getDisplayDate = function(input) {
-            var parts = input.split('-');
-            var d = new Date(parts[0], parts[1]-1, parts[2]);
-            input = input.replace(/^\d+-/, "");
-            var output = ["Sun","Mon","Tue","Wed","Thr","Fri","Sat"][d.getDay()]
-            return output + ", " + input;
+            if (!localStorage.length) {
+                $state.go("login");
+            } else {
+                fetchData();
+            }
         }
     }
 ])

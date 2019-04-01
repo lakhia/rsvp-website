@@ -22,7 +22,7 @@
 <!-- build:cdn -->
 <!-- endbuild -->
 
-<div ng-controller="mainController" ng-init="init()">
+<div ng-controller="loginController" ng-init="init()">
 
 <!-- Side bar -->
 <div class="sidebar noPrnt" ng-class="{sidebarBig: menuBig}">
@@ -53,7 +53,6 @@
 <!-- Main content uses view -->
 <div ng-class="{menuBig: menuBig}" class="main">
 <ui-view>
-  <h3>Loading, please wait ...</h3>
 </ui-view>
 
 <!-- Footer -->
@@ -68,6 +67,7 @@
 </div>
 
 <!-- build:script -->
+<script src="js/route.js"></script>
 <script src="js/main.js"></script>
 <script src="js/rsvp.js"></script>
 <script src="js/print.js"></script>

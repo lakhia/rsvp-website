@@ -26,7 +26,7 @@ class Helper
 
     public static function verify_token($db, $email, $thaali)
     {
-        $received_token = $_COOKIE['token'];
+        $received_token = self::get_if_defined($_COOKIE['token'], '');
 
         // Does record match with database?
         $name = self::get_name($db, $email, $thaali);

@@ -71,13 +71,16 @@ sub html {
     while ($line = <IN>) {
         # Javascript methods
         $line =~ s/getClass/gC/g;
-        $line =~ s/on(Count|RSVP|Rice|)Change/o$1/g;
+        $line =~ s/on(..)[a-zA-Z]*Change/o$1/g;
+        $line =~ s/onChange/oC/g;
         $line =~ s/getDisplayDate/gD/g;
+        $line =~ s/getRawDate/gR/g;
         $line =~ s/changed/cg/g;
         $line =~ s/rsvpLabel/rL/g;
         $line =~ s/....Line//g;
         $line =~ s/raw/r/g;
         $line =~ s/next/n/g;
+        $line =~ s/submit/sb/g;
         # CSS names
         $line =~ s/sidebar/s/g;
         $line =~ s/nofoc/n/g;

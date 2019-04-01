@@ -2,15 +2,15 @@
 
 require_once("auxil.php");
 
-// User query params instead of cookie
-$thaali = isset($_GET['thaali']) ? $_GET['thaali'] : '';
-$email = isset($_GET['email']) ? $_GET['email'] : '';
+$data = json_decode(file_get_contents('php://input'), false);
+$thaali = Helper::get_if_defined($data->pass, '');
+$email = Helper::get_if_defined($data->email, '');
 
 // Get name from credentials
 $name = Helper::get_name($db, $email, $thaali);
 if ($name == "") {
-    Helper::print_to_json(NULL, "Login failed");
-    return;
+    $msg = "Login failed";
+    die('{ "msg": "' . $msg . '" }');
 }
 
 // Verified, set cookies for 60 days

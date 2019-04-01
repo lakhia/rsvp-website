@@ -1,22 +1,19 @@
 /* RSVP controller */
 app.controller("rsvpController", ["$scope", "$rootScope",
 function($scope, $rootScope) {
-    $scope.url = "rsvp.php";
 
     $scope.init = function() {
         $scope.greet = localStorage.getItem('greet');
-        $rootScope.init($scope, handleResponse);
+        $rootScope.init($scope, "rsvp.php", handleResponse);
+    }
+
+    $scope.getRawDate = function(input) {
+        return $scope.getDisplayDate($scope.raw[input].date);
     }
 
     function handleResponse(response) {
-        $scope.msg = response.msg;
         $scope.raw = response.data;
         $scope.data = {};
-        $scope.changed = 0;
-    }
-
-    $scope.getDisplayDate = function(input) {
-        return $rootScope.getDisplayDate($scope.raw[input].date);
     }
 
     function onPreChange(id) {

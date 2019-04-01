@@ -1,26 +1,10 @@
 /* Printout controller */
 app.controller("printController", ["$scope", '$rootScope',
 function($scope, $rootScope) {
-    $scope.date = "";
-    $scope.url = "print.php";
 
     $scope.init = function() {
-        $rootScope.init($scope, handleResponse);
+        $rootScope.init($scope, "print.php", null);
         $scope.sortColumn = 'thaali';
-        $scope.changed = false;
-    }
-
-    function handleResponse(response) {
-        $scope.data = response.data;
-        $scope.date = response.date;
-        $scope.msg = response.msg;
-        $scope.o = response.other;
-        $scope.changed = false;
-    }
-
-    $scope.onChange = function() {
-        $scope.msg = "";
-        $scope.changed = true;
     }
 
     $scope.sorterFunc = function(item) {
@@ -32,7 +16,7 @@ function($scope, $rootScope) {
     }
 
     $scope.firstLine = function(other) {
-        if (!$scope.data) return "";
+        if (!other) return "";
         if (other.niyaz == "1") {
             return "Adults: " + other.adults + ", Kids: " + other.kids;
         } else {
@@ -47,6 +31,7 @@ function($scope, $rootScope) {
         }
     }
     $scope.secondLine = function(other) {
+        if (!other) return "";
         if (other.niyaz == "1") {
             return "Thaals: " + (other.adults / 8 + other.kids / 16).toFixed(1);
         } else {
@@ -60,8 +45,6 @@ function($scope, $rootScope) {
             return "Not filled: " + sum + " / " + $scope.data.length;
         }
     }
-
-    $scope.getDisplayDate = $rootScope.getDisplayDate;
 
     $scope.reset = function(nodes) {
         $scope.changed = true;

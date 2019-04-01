@@ -41,6 +41,9 @@ function details_get($db, $thaali, $msg)
         if (!$row["niyaz"]) {
             unset($row['niyaz']);
         }
+        if (!$row["enabled"]) {
+            unset($row["enabled"]);
+        }
         if (!$row["rsvp"]) {
             unset($row['rsvp']);
             if ($row['adults'] == 0) {
@@ -78,7 +81,7 @@ function details_post($db, $thaali)
 
         // Retrieve items
         $response = Helper::get_if_defined($v['rsvp']) ? 1 : 0;
-        $lessRice = Helper::get_if_defined($v['lessRice'], "null");
+        $lessRice = Helper::get_if_defined($v['lessRice'], 0);
         $adults = intval(Helper::get_if_defined($v['adults'], 0));
         $kids = intval(Helper::get_if_defined($v['kids'], 0));
 

@@ -49,7 +49,7 @@ gulp.task('templates', function () {
 
 /* Creates build/.tmp/all.js */
 gulp.task('js', gulp.series('templates', function() {
-    return gulp.src(['app/js/main.js', 'app/js/*.js', 'app/lib/*.js', 'build/.tmp/templates.js'])
+    return gulp.src(['app/js/route.js', 'app/js/*.js', 'app/lib/*.js', 'build/.tmp/templates.js'])
         .pipe(concat('all.js'))
         .pipe(uglify())
         .pipe(gulp.dest('build/.tmp'));
@@ -86,7 +86,7 @@ gulp.task('index', function() {
 });
 
 /* Default task that kicks off other tasks */
-gulp.task('default', gulp.series('js','css', 'php', 'index'));
+gulp.task('default', gulp.series(gulp.parallel('js', 'css', 'php'), 'index'));
 
 // Server for production
 gulp.task('serve-prod', gulp.series('default', function() {
