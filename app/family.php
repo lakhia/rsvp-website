@@ -18,10 +18,7 @@ if ($method_server == "POST") {
 // Get details for all families
 function family_get($db, $thaali, $msg)
 {
-    $offset = 0;
-    if (isset($_GET['offset'])) {
-        $offset = $_GET['offset'];
-    }
+    $offset = Helper::get_if_defined($_GET['offset'], 0);
     $end = $offset + 10;
 
     // Make query
@@ -56,30 +53,34 @@ function family_post($db, $thaali) {
     $msg = "";
     $data = json_decode(file_get_contents('php://input'), false);
     foreach ($data as $i) {
-        // No email means delete user because they cannot login without it
-        if (!isset($i->email) || $i->email == "") {
+        $email = Helper::get_if_defined($i->email, '');
+        if ($email == '') {
+            // No email means delete user because they cannot login without it
             $query = "DELETE FROM family WHERE thaali = " . $i->thaali;
         } else {
-            if (!isset($i->lastName) || !isset($i->firstName) ||
-                $i->lastName == "" || $i->firstName == "") {
+            $lastName = Helper::get_if_defined($i->lastName, '');
+            $firstName = Helper::get_if_defined($i->firstName, '');
+            $phone = Helper::get_if_defined($i->phone, '');
+            $size = Helper::get_if_defined($i->size, '');
+            $area = Helper::get_if_defined($i->area, '');
+            $resp = Helper::get_if_defined($i->resp, '');
+
+            if ($lastName == '' || $firstName == '') {
                 $msg .= ", name is required";
                 continue;
             }
-            if (!isset($i->phone)) {
-                $i->phone = "";
-            }
-            if ($i->size == 'M') {
+            if ($size == 'M') {
                 $i->size = '';
             }
             // Insert or update
             $query = "insert into family" .
 	        "(thaali, lastName, firstName, size, area, email, phone, resp) " .
-                "values($i->thaali, '$i->lastName', '$i->firstName', '$i->size'," .
-                "'$i->area','$i->email', '$i->phone', '$i->resp')" .
+                "values($i->thaali, '$lastName', '$firstName', '$size'," .
+                "'$area','$email', '$phone', '$resp')" .
                 "on duplicate KEY " .
-                "update lastName='$i->lastName', firstName='$i->firstName'," .
-                "size='$i->size', area='$i->area', email='$i->email', " .
-                "phone='$i->phone', resp='$i->resp'";
+                "update lastName='$lastName', firstName='$firstName'," .
+                "size='$size', area='$area', email='$email', " .
+                "phone='$phone', resp='$resp'";
         }
         $result = $db->query($query);
         if (!$result) {

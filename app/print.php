@@ -6,10 +6,7 @@ require_once('auxil.php');
 if (!Helper::verify_token($db, $email_cookie, $thaali_cookie)) {
     die('{ "msg": "Login failed, please logout and login again" }');
 }
-$offset = 0;
-if (isset($_GET['offset'])) {
-    $offset = $_GET['offset'];
-}
+$offset = Helper::get_if_defined($_GET['offset'], 0);
 $from = Helper::get_day($offset);
 // POST or GET?
 if ($method_server == "POST") {

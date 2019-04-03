@@ -18,10 +18,7 @@ if ($method_server == "POST") {
 // Get details for specific dates
 function event_get($db, $msg)
 {
-    $offset = 0;
-    if (isset($_GET['offset'])) {
-        $offset = $_GET['offset'];
-    }
+    $offset = Helper::get_if_defined($_GET['offset'], 0);
     $from = Helper::get_week($offset);
     $to = Helper::get_week($offset + 7);
 

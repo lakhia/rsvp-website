@@ -5,14 +5,8 @@ require_once('auxil.php');
 if (!Helper::verify_token($db, $email_cookie, $thaali_cookie)) {
     die('{ "msg": "Login failed, please logout and login again" }');
 }
-$offset = 0;
-if (isset($_GET['offset'])) {
-    $offset = $_GET['offset'];
-}
-$len = 6;
-if (isset($_GET['len'])) {
-    $len = $_GET['len'];
-}
+$offset = Helper::get_if_defined($_GET['offset'], 0);
+$len = Helper::get_if_defined($_GET['len'], 6);
 shopping_get($db, $offset, $len);
 
 // Get details for shopping
