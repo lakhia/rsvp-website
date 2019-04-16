@@ -89,6 +89,13 @@ function details_post($db, $thaali)
         if ($kids < 0) {
             $kids = 0;
         }
+        if (!$response) {
+            $lessRice = 0;
+        }
+        if (isset($v['adults']) && $adults + $kids == 0) {
+            // If adults is set then this was Niyaz RSVP
+            $response = 0;
+        }
 
         $result = $db->query("insert into rsvps(date, thaali_id, rsvp, lessRice, adults, kids) " .
                              "values(\"$k\", $thaali, $response, $lessRice, $adults, $kids) " .
