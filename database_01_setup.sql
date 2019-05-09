@@ -1,11 +1,13 @@
+DROP USER IF EXISTS 'sffaiz'@'localhost';
 CREATE USER 'sffaiz'@'localhost' IDENTIFIED BY 'sffaiz-pass';
 GRANT ALL ON *.* TO sffaiz@localhost;
 GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP
   ON sffaiz.*
   TO 'sffaiz'@'localhost';
 
-create database sffaiz;
-use sffaiz;
+DROP DATABASE IF EXISTS sffaiz;
+CREATE DATABASE sffaiz;
+USE sffaiz;
 
 --
 -- TABLE schema
@@ -62,7 +64,7 @@ insert into family
   ( 5, 'Pedhiwala', 'Mohammed', 'mpedhiwala@gmail.com', '510-494-1520', 'Masjid' );
 insert into family
   ( thaali, lastName, firstName, email, phone, area  )
-  values,
+  values
   ( 6, 'Bootwala', 'Mustafa', 'mabootwala@gmail.com', '650-676-8849', 'Ardenwood' );
 insert into family
   ( thaali, lastName, firstName, email, phone , area )

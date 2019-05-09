@@ -1,9 +1,9 @@
 
-// For changes made to print page
-// adding area column to table
-// and updating area for specific rows
+use sffaiz;
 
-alter table family add  area varchar(255);
+-- For changes made to print page
+-- adding area column to table
+-- and updating area for specific rows
 
 update family set area = "Sacramento"       where thaali between 300 and 314;
 update family set area = "Lathrop"          where thaali in (10,11,22, 29, 45, 47 );
@@ -18,5 +18,5 @@ alter table rsvps add column avail bool default 0;
 alter table rsvps add column filled bool default 0;
 alter table family add column resp varchar(3);
 
-// Filling team members get responsibilty F
+-- Filling team members get responsibilty F
 update family set resp = "F" where thaali in ( 1, 8, 7, 36, 28, 3, 92, 23, 37, 5, 13, 73, 43, 65, 19, 70, 20, 33, 9, 4, 21);

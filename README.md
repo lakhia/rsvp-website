@@ -17,18 +17,17 @@
 
   Mysql needs to be setup. Run:
   
-  * mysql -v -u root < database_setup.sql
-
-  Repeat above step for all the other database_*.sql files.
+  *  mysql -v -u root < database_*.sql
 
   On the backend, it currently requires:
 
   * PHP 5.5
-  * MySQL
+  * MySQL 5.7
   * Web server
 
   Use build system:
 
+  * Install [node](https://nodejs.org/en/download/package-manager/)
   * Install [npm](https://docs.npmjs.com/getting-started/installing-node)
   * Install all project dependencies using: npm install
   * Run `gulp serve &` which will serve local files at:

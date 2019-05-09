@@ -1,3 +1,4 @@
+use sffaiz;
 -- Each event can be either faiz or niyaz
 ALTER TABLE events ADD niyaz boolean DEFAULT False NOT NULL;
 
