@@ -4,20 +4,19 @@
   "private": true,
   "version": "0.1.0",
   "dependencies": {
-    "gulp": "^3.9.1"
+    "gulp": "^4.0.2"
   },
   "devDependencies": {
-    "gulp-angular-templatecache": "^2.0.0",
-    "gulp-concat": "^2.6.0",
-    "gulp-connect-php": "0.0.7",
-    "gulp-cssmin": "^0.1.7",
-    "gulp-file-insert": "^1.0.2",
-    "gulp-html-replace": "^1.5.5",
-    "gulp-inline-source": "^2.1.0",
-    "gulp-livereload": "^3.8.1",
-    "gulp-minify": "0.0.5",
+    "gulp-angular-templatecache": "^2.2.7",
+    "gulp-concat": "^2.6.1",
+    "gulp-connect-php": "1.0.3",
+    "gulp-cssmin": "^0.2.0",
+    "gulp-file-insert": "^2.0.0",
+    "gulp-html-replace": "^1.6.2",
+    "gulp-inline-source": "^4.0.0",
+    "gulp-livereload": "^4.0.1",
+    "gulp-minify": "3.1.0",
     "gulp-minify-html": "^1.0.6",
-    "gulp-uglify": "^1.5.1",
-    "gulp-webserver": "^0.9.1"
+    "gulp-uglify": "^3.0.2"
   }
 }

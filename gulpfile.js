@@ -8,36 +8,63 @@ var gulp = require('gulp'),
     livereload = require('gulp-livereload');
     minifyHTML = require('gulp-minify-html'),
     templateCache = require('gulp-angular-templatecache'),
-    uglify = require("gulp-uglify"),
+    uglify = require("gulp-uglify");
 
 // Server for development
-gulp.task('serve', ['watch'], function() {
+gulp.task('watch', function () {
+    livereload.listen();
+    gulp.watch(['app/*.*', 'app/js/*.*', 'app/css/*.*'],
+               gulp.series('html'));
+});
+gulp.task('serve', gulp.parallel('watch', function() {
     connect.server({
         base: 'app',
         port: 8010,
         livereload: true
     });
-});
+}));
 gulp.task('html', function () {
-    gulp.src('app/*.html')
+    return gulp.src('app/*.html')
         .pipe(livereload());
-});
-gulp.task('watch', function () {
-    livereload.listen();
-    gulp.watch(['app/*.*', 'app/js/*.*', 'app/css/*.*'],
-               ['html']);
-});
-
-// Server for production
-gulp.task('serve-prod', ['default'], function() {
-    connect.server({
-        base: 'build',
-        port: 8020
-    });
 });
 
 // Build for production
-gulp.task('default', ['js','css', 'php'], function() {
+gulp.task('php', function() {
+    return gulp.src('app/*.php')
+        .pipe(gulp.dest('build/'));
+});
+
+/* Creates build/.tmp/template.js */
+gulp.task('templates', function () {
+    return gulp.src(['app/*.html', '!app/index.html'])
+        .pipe(minifyHTML())
+        .pipe(templateCache('templates.js',
+                            {
+                                base: function (file) { return file.relative; },
+                                module: 'rsvp',
+                                standAlone: false
+                            }))
+        .pipe(gulp.dest('build/.tmp'));
+});
+
+/* Creates build/.tmp/all.js */
+gulp.task('js', gulp.series('templates', function() {
+    return gulp.src(['app/js/main.js', 'app/js/*.js', 'app/lib/*.js', 'build/.tmp/templates.js'])
+        .pipe(concat('all.js'))
+        .pipe(uglify())
+        .pipe(gulp.dest('build/.tmp'));
+}));
+
+/* Creates build/.tmp/all.css */
+gulp.task('css', function () {
+	return gulp.src('app/css/*.css')
+        .pipe(concat('all.css'))
+		.pipe(cssmin())
+		.pipe(gulp.dest('build/.tmp'));
+});
+
+/* Create build/index.html */
+gulp.task('index', function() {
     return gulp.src('app/index.html')
         .pipe(htmlReplace({
             'script': {
@@ -58,32 +85,13 @@ gulp.task('default', ['js','css', 'php'], function() {
         .pipe(gulp.dest('build/'));
 });
 
-gulp.task('php', function() {
-    gulp.src('app/*.php')
-        .pipe(gulp.dest('build/'));
-});
+/* Default task that kicks off other tasks */
+gulp.task('default', gulp.series('js','css', 'php', 'index'));
 
-gulp.task('js', ['templates'], function() {
-    return gulp.src(['app/js/main.js', 'app/js/*.js', 'app/lib/*.js', 'build/.tmp/templates.js'])
-        .pipe(concat('all.js'))
-        .pipe(uglify())
-        .pipe(gulp.dest('build/.tmp'));
-});
-
-gulp.task('templates', function () {
-    return gulp.src(['app/*.html', ,'!app/index.html'])
-        .pipe(minifyHTML())
-        .pipe(templateCache('templates.js',
-                            {
-                                module: 'rsvp',
-                                standAlone: false
-                            }))
-        .pipe(gulp.dest('build/.tmp'));
-});
-
-gulp.task('css', function () {
-	return gulp.src('app/css/*.css')
-        .pipe(concat('all.css'))
-		.pipe(cssmin())
-		.pipe(gulp.dest('build/.tmp'));
-});
+// Server for production
+gulp.task('serve-prod', gulp.series('default', function() {
+    connect.server({
+        base: 'build',
+        port: 8010
+    });
+}));
