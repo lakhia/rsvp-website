@@ -48,6 +48,19 @@ app.run(['$rootScope', '$http', '$state', '$stateParams',
             scope.changed = 0;
             scope.offset = parseInt($stateParams.offset) || 0;
 
+            if (!localStorage.length) {
+                $state.go("login");
+            } else {
+                // Fetch data using http GET
+                scope.msg = "";
+                $http({
+                    url: url,
+                    method: "GET",
+                    timeout: 8000,
+                    params: {offset: scope.offset}
+                }).success(handleSuccess).error(error);
+            }
+
             scope.onChange = function() {
                 scope.msg = "";
                 scope.changed = true;
@@ -60,15 +73,6 @@ app.run(['$rootScope', '$http', '$state', '$stateParams',
                 return output + ", " + input;
             }
 
-            // Fetch data using http GET
-            function fetchData() {
-                $http({
-                    url: url,
-                    method: "GET",
-                    timeout: 8000,
-                    params: {offset: scope.offset}
-                }).success(handleSuccess).error(error);
-            }
             // Network request handlers
             function handleSuccess(response) {
                 scope.data = response.data;
@@ -102,11 +106,6 @@ app.run(['$rootScope', '$http', '$state', '$stateParams',
                 $http.post(url + "?offset=" + scope.offset,
                            scope.data, {timeout:8000})
                     .success(handleSuccess).error(error);
-            }
-            if (!localStorage.length) {
-                $state.go("login");
-            } else {
-                fetchData();
             }
         }
     }
