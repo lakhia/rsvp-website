@@ -22,7 +22,7 @@ function print_filling($db, $from, $offset, $msg = "") {
 
     if ($details) {
         // Get RSVP and family
-        $query = "SELECT thaali, CONCAT(firstName, ' ', lastName) AS name, " .
+        $query = "SELECT thaali_id as thaali, CONCAT(firstName, ' ', lastName) AS name, " .
             "adults, kids, size, area, here, filled, lessRice FROM rsvps " .
             "LEFT JOIN `family` on family.thaali = rsvps.thaali_id " .
             "WHERE `rsvp` = 1 AND `date` = '" . $from . "' ORDER BY thaali;";
