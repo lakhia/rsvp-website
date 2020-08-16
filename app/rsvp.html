@@ -12,7 +12,7 @@
       <th class="col-xs-5">Details</th>
       <th class="col-xs-1">Less Rice</th>
       <th class="col-xs-1">RSVP</th>
-      <th class="col-xs-2">&nbsp;</th>
+      <th class="col-xs-1">Size / Count</th>
     </tr>
   </thead>
   <tbody>
@@ -31,6 +31,10 @@
         </button>
       </td>
       <td>
+        <select ng-hide="value.niyaz" ng_model="value.size" ng-disabled="value.readonly || !value.rsvp"
+           ng-change="onSizeChange(key)">
+          <option ng-repeat="size in sizes track by $index" ng-value="size">{{size}}</option>
+        </select>
         <div ng-show="value.niyaz" class="form-inline">
           <input ng-disabled="value.readonly || !value.rsvp" type="text" ng-model="value.adults"
           class="minWidth form-control" ng-change="onCountChange(key)">

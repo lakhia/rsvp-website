@@ -61,22 +61,23 @@ function family_post($db, $thaali) {
             $lastName = Helper::get_if_defined($i->lastName, '');
             $firstName = Helper::get_if_defined($i->firstName, '');
             $phone = Helper::get_if_defined($i->phone, '');
-            $size = Helper::get_if_defined($i->size, '');
+            $size = strtoupper(Helper::get_if_defined($i->size, 'M'));
             $area = Helper::get_if_defined($i->area, '');
             $resp = Helper::get_if_defined($i->resp, '');
 
+            $sizes = array("XS", "S", "M", "L", "XL");
+            if (!in_array($size, $sizes)) {
+                $size = "M";
+            }
             if ($lastName == '' || $firstName == '') {
                 $msg .= ", name is required";
                 continue;
             }
-            if ($size == 'M') {
-                $i->size = '';
-            }
             // Insert or update
-            $query = "insert into family" .
+            $query = "INSERT INTO family" .
 	        "(thaali, lastName, firstName, size, area, email, phone, resp) " .
                 "values($i->thaali, '$lastName', '$firstName', '$size'," .
-                "'$area','$email', '$phone', '$resp')" .
+                "'$area', '$email', '$phone', '$resp')" .
                 "on duplicate KEY " .
                 "update lastName='$lastName', firstName='$firstName'," .
                 "size='$size', area='$area', email='$email', " .

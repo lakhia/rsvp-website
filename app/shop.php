@@ -59,11 +59,11 @@ function calculate($db, &$data, &$total) {
 }
 
 /* Compute total RSVP in 3 different ways:
-       Count, normalized for size, and adjusted for less rice 
+       Count, normalized for size, and adjusted for less rice
 */
 function total_rsvp_for_date($db, $date) {
     // Get total RSVP for given date
-    $query = "SELECT size, lessRice FROM `rsvps` " .
+    $query = "SELECT rsvps.size, lessRice FROM `rsvps` " .
         "LEFT JOIN `family` on family.thaali = rsvps.thaali_id " .
         "WHERE `rsvp` = 1 AND `date` = '" . $date . "';";
     $result = $db->query($query);

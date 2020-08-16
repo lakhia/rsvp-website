@@ -14,6 +14,17 @@ if ($method_server == "POST") {
     details_get($db, $thaali_cookie, "");
 }
 
+function get_default_size($db, $thaali)
+{
+    $query = "SELECT size FROM family where thaali = " . $thaali;
+    $result = $db->query($query);
+    if (!$result || $result->num_rows != 1) {
+        return "M";
+    }
+    $row = $result->fetch_assoc();
+    return $row['size'];
+}
+
 // Get details for specific dates
 function details_get($db, $thaali, $msg)
 {
@@ -22,12 +33,14 @@ function details_get($db, $thaali, $msg)
     $to = Helper::get_week($offset + 7);
 
     // Make query
-    $query = "SELECT events.date, adults, kids, niyaz, enabled, details, rsvp, lessRice FROM events " .
+    $query = "SELECT events.date, adults, kids, niyaz, enabled, " .
+        " details, rsvp, size, lessRice FROM events " .
         "LEFT JOIN rsvps ON rsvps.date = events.date AND rsvps.thaali_id = " .
         $thaali . " WHERE details > '' AND events.date >= '" .
         $from . "' AND events.date < '" . $to . "' order by date;";
 
     $result = $db->query($query);
+    $default_size = get_default_size($db, $thaali);
 
     // Get cutoff time for disabling entry
     $cutoff = Helper::get_cutoff_time(1);
@@ -53,6 +66,9 @@ function details_get($db, $thaali, $msg)
                 unset($row['kids']);
             }
         }
+        if (!$row['size']) {
+            $row['size'] = $default_size;
+        }
         if (!$row["lessRice"]) {
             unset($row['lessRice']);
         }
@@ -72,38 +88,38 @@ function details_post($db, $thaali)
     $cutoff = Helper::get_cutoff_time(1);
     $data = json_decode(file_get_contents('php://input'), true);
 
-    foreach ($data as $k => $v) {
+    foreach ($data as $date => $v) {
 
         // Editing is only allowed for dates past cutoff
-        if ($k < $cutoff) {
+        if ($date < $cutoff) {
             continue;
         }
 
-        // Retrieve items
-        $response = Helper::get_if_defined($v['rsvp']) ? 1 : 0;
-        $lessRice = Helper::get_if_defined($v['lessRice'], 0);
-        $adults = intval(Helper::get_if_defined($v['adults'], 0));
-        $kids = intval(Helper::get_if_defined($v['kids'], 0));
-
         // Validate
-        if ($adults < 0) {
-            $adults = 0;
-        }
-        if ($kids < 0) {
-            $kids = 0;
-        }
-        if (!$response) {
-            $lessRice = 0;
-        }
-        if (isset($v['adults']) && $adults + $kids == 0) {
+        if (isset($v['adults'])) {
             // If adults is set then this was Niyaz RSVP
-            $response = 0;
+            if ($v['adults'] < 0) {
+                $v['adults'] = 0;
+            }
+            if ($v['kids'] < 0) {
+                $v['kids'] = 0;
+            }
+            if ($v['adults'] + $v['kids'] == 0) {
+                $v['rsvp'] = False;
+            }
+        }
+        // Retrieve changes from dict
+        list($changes, $cols, $vals) = Helper::dict_to_sql_assignment($v, array("size"));
+
+        // Set size to default if not set
+        if (isset($v['rsvp']) and $v['rsvp'] and !isset($v['size'])) {
+            $cols .= ", size";
+            $vals .= ", \"" . get_default_size($db, $thaali) . "\"";
         }
 
-        $result = $db->query("insert into rsvps(date, thaali_id, rsvp, lessRice, adults, kids) " .
-                             "values(\"$k\", $thaali, $response, $lessRice, $adults, $kids) " .
-                             "on duplicate KEY update rsvp=$response, lessRice=$lessRice, " .
-                             "adults=$adults, kids=$kids");
+        $result = $db->query("insert into rsvps(date, thaali_id, " . $cols . ") " .
+                             "values(\"$date\", $thaali, " . $vals . ") " .
+                             "on duplicate KEY update " . $changes . ";");
         if (!$result) {
             $msg =  $db->error;
         } else {

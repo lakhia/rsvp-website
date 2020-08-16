@@ -23,7 +23,7 @@ function print_filling($db, $from, $offset, $msg = "") {
     if ($details) {
         // Get RSVP and family
         $query = "SELECT thaali_id as thaali, CONCAT(firstName, ' ', lastName) AS name, " .
-            "adults, kids, size, area, here, filled, lessRice FROM rsvps " .
+            "adults, kids, rsvps.size, area, here, filled, lessRice FROM rsvps " .
             "LEFT JOIN `family` on family.thaali = rsvps.thaali_id " .
             "WHERE `rsvp` = 1 AND `date` = '" . $from . "' ORDER BY thaali;";
         $result = $db->query($query);
@@ -34,13 +34,9 @@ function print_filling($db, $from, $offset, $msg = "") {
             if ($details['niyaz']) {
                 $totalA += $row['adults'];
                 $totalK += $row['kids'];
-                $row['size'] = $row['adults'] . " / " . $row['kids']; 
+                $row['size'] = $row['adults'] . " / " . $row['kids'];
                 unset($row['adults']);
-                unset($row['kids']); 
-            } else {
-                if ($row['size'] == 'M') {
-                    unset($row['size']);
-                }
+                unset($row['kids']);
             }
 
             // Convert lessRice boolean to text

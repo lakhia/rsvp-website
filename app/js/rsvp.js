@@ -1,6 +1,7 @@
 /* RSVP controller */
 app.controller("rsvpController", ["$scope", "$rootScope",
 function($scope, $rootScope) {
+    $scope.sizes = ["XS", "S", "M", "L", "XL"];
 
     $scope.init = function() {
         $scope.greet = localStorage.getItem('greet');
@@ -41,7 +42,6 @@ function($scope, $rootScope) {
         if (dateData.lessRice) {
             delete dateData.lessRice;
         } else {
-            dateData.rsvp = 1;
             dateData.lessRice = $scope.raw[id].lessRice;
         }
         onPostChange(id);
@@ -52,9 +52,15 @@ function($scope, $rootScope) {
         var raw = $scope.raw[id];
         dateData.adults = raw.adults;
         dateData.kids = raw.kids;
-        dateData.rsvp = 1;
         localStorage.setItem('adults', raw.adults);
         localStorage.setItem('kids', raw.kids);
+        onPostChange(id);
+    }
+
+    $scope.onSizeChange = function(id) {
+        var dateData = onPreChange(id);
+        var raw = $scope.raw[id];
+        dateData.size = raw.size;
         onPostChange(id);
     }
 

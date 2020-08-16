@@ -69,6 +69,29 @@ class Helper
         return false;
     }
 
+    // dict to SQL assignment
+    public static function dict_to_sql_assignment($dict, $strings)
+    {
+        $changes = "";
+        $cols = "";
+        $vals = "";
+        foreach ($dict as $key => $val) {
+            $cols .= ", " . $key;
+            $changes .= ", " . $key . " = ";
+            if ($val == False) {
+                $val = 0;
+            }
+            if (in_array($key, $strings)) {
+                $changes .= "\"$val\"";
+                $vals .= ", \"" . $val . "\"";
+            } else {
+                $changes .= $val;
+                $vals .= ", " . $val;
+            }
+        }
+        return array(substr($changes, 2), substr($cols, 2), substr($vals, 2));
+    }
+
     // Response via json contains data, message and date
     public static function print_to_json($data, $msg, $date=NULL, $other=NULL)
     {
