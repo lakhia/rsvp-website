@@ -30,15 +30,26 @@ if ($method_server == "POST") {
 
 // Get dump in CSV format
 function dump_get($db, $table, $cols) {
+    header('Content-Type: text/csv');
     header('Content-Disposition: attachment; filename=' . $table . '.csv');
 
     // Open output file
     $output = fopen('php://output', 'w');
-
     fputcsv($output, $cols);
 
     // Make query
-    $query = "SELECT * FROM  " . $table . ";";
+    $where = "";
+    foreach ($cols as $col) {
+        if (array_key_exists($col, $_GET)) {
+            if ($where != "") {
+                $where .= " AND ";
+            } else {
+                $where .= " WHERE ";
+            }
+            $where .= $col . " LIKE \"" . $_GET[$col] . "\"";
+        }
+    }
+    $query = "SELECT * FROM  " . $table . $where . ";";
     $result = $db->query($query);
 
     // Output rows

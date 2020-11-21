@@ -3,39 +3,40 @@
 
 <h3>RSVP for {{ getDisplayDate(date) }}</h3>
 <br>
-<div class="item1"><b>Order By: </b>
+<div class="col-xs-2"><b>Order By: </b>
   <select ng_model="sortColumn">
     <option value='thaali'>Thaali</option>
     <option value='area'>Area</option>
     <option value='size'>Size</option>
     <option value='name'>Name</option>
-    <option ng-hide="o.niyaz" value='here'>Here </option>
-    <option ng-hide="o.niyaz" value='filled'>Filled </option>
-    <option ng-hide="o.niyaz" value='lessRice'>Rice Qty </option>
+    <option ng-hide="o.niyaz" value='here'>Here</option>
+    <option ng-hide="o.niyaz" value='filled'>Filled</option>
+    <option ng-hide="o.niyaz" value='lessRice'>Rice Qty</option>
   </select>
 </div>
-<div class="item2">
-    <div>{{ firstLine(o) }}</div>
-    <span>{{ secondLine(o) }}</span>
+<div class="pull-right text-right col-xs-7">
+    {{ firstLine(o) }}<br>
+    {{ secondLine(o) }}
 </div>
 
 <table class="table-striped table">
   <thead>
     <tr>
       <th>Thaali</th>
-      <th ng-hide="o.niyaz">Here</th>
-      <th ng-hide="o.niyaz">Filled</th>
-      <th>Name</th>
       <th>Area</th>
-      <th>Size</th>
-      <th ng-hide="o.niyaz">Less Rice</th>
+      <th class="col-xs-1">Size</th>
+      <th class="col-xs-1" ng-hide="o.niyaz">Less Rice</th>
+      <th class="col-xs-1" ng-hide="o.niyaz">Here</th>
+      <th class="col-xs-1" ng-hide="o.niyaz">Filled</th>
+      <th>Name</th>
     </tr>
   </thead>
   <tbody id="rTab">
-     <br>
-     <br>
     <tr ng-repeat="item in data | orderBy: sorterFunc">
       <td>{{ item["thaali"] }}</td>
+      <td>{{ item["area"] }}</td>
+      <td>{{ item["size"] }}</td>
+      <td ng-hide="niyaz">{{ item["lessRice"] }}</td>
       <td ng-hide="o.niyaz">
         <input type="checkbox" ng-model='item.here' ng_true_value=1 ng_false_value=0 ng-change="onChange()"/>
       </td>
@@ -43,12 +44,7 @@
         <input type="checkbox" ng-model='item.filled' ng_true_value=1 ng_false_value=0 ng-change="onChange()"/>
       </td>
       <td>{{ item["name"] }}</td>
-      <td>{{ item["area"] }}</td>
-      <td>{{ item["size"] }}</td>
-      <td ng-hide="niyaz">{{ item["lessRice"] }}</td>
     </tr>
-    <br>
-    <br>
   </tbody>
 </table>
 

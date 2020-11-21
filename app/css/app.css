@@ -63,10 +63,6 @@ h3 { font-size: 140%; text-align: center }
     background: transparent;
     border: 0px solid;
 }
-
-.item1{float:left; width:20%;}
-.item2{float:right; text-align:right; width:30%;}
-
 .gone { display: none }
 
 @media print {

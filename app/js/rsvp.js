@@ -82,8 +82,10 @@ function($scope, $rootScope) {
             delete dateData.rsvp;
         } else {
             dateData.rsvp = raw.rsvp;
-            dateData.adults = raw.adults;
-            dateData.kids = raw.kids;
+            if (raw.niyaz) {
+                dateData.adults = raw.adults;
+                dateData.kids = raw.kids;
+            }
         }
         onPostChange(id);
     }

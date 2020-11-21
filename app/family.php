@@ -18,7 +18,7 @@ if ($method_server == "POST") {
 // Get details for all families
 function family_get($db, $thaali, $msg)
 {
-    $offset = Helper::get_if_defined($_GET['offset'], 0);
+    $offset = Helper::get_if_defined($_GET['offset'], 1);
     $end = $offset + 10;
 
     // Make query

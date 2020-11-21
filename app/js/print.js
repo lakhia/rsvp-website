@@ -21,13 +21,15 @@ function($scope, $rootScope) {
             return "Adults: " + other.adults + ", Kids: " + other.kids;
         } else {
             var sum = $scope.data.reduce(function(prev, elem) {
-                if (elem.here == '0' && elem.filled == '0') {
-                    return prev + 1;
-                } else {
-                    return prev;
+                if (elem.filled == '0') {
+                    prev[0]++;
+                    if (elem.here == '0') {
+                        prev[1]++;
+                    }
                 }
-            }, 0);
-            return "Not here: " + sum + " / " + $scope.data.length;
+                return prev;
+            }, [0, 0]);
+            return "Not here: " + sum[1] + ", not filled: " + sum[0] + ", total: " + $scope.data.length;
         }
     }
     $scope.secondLine = function(other) {
@@ -35,14 +37,18 @@ function($scope, $rootScope) {
         if (other.niyaz == "1") {
             return "Thaals: " + (other.adults / 8 + other.kids / 16).toFixed(1);
         } else {
-            var sum = $scope.data.reduce(function(prev, elem) {
+            var sizes = $scope.data.reduce(function(prev, elem) {
                 if (elem.filled == '0') {
-                    return prev + 1;
-                } else {
-                    return prev;
+                    if (prev[elem.size]) {
+                        prev[elem.size]++;
+                    } else {
+                        prev[elem.size] = 1;
+                    }
                 }
-            }, 0);
-            return "Not filled: " + sum + " / " + $scope.data.length;
+                return prev;
+            }, {});
+            return "Sizes: " + JSON.stringify(sizes, null, 1).replace(/"/g, '')
+                .replace('{', '').replace('}', '');
         }
     }
 

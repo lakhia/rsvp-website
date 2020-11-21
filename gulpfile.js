@@ -1,7 +1,7 @@
 var gulp = require('gulp'),
     concat = require('gulp-concat'),
     connect = require('gulp-connect-php'),
-    cssmin = require('gulp-cssmin'),
+    cleanCSS = require('gulp-clean-css'),
     fileInsert = require("gulp-file-insert"),
     htmlReplace = require('gulp-html-replace'),
     inlineSource = require('gulp-inline-source'),
@@ -59,7 +59,7 @@ gulp.task('js', gulp.series('templates', function() {
 gulp.task('css', function () {
 	return gulp.src('app/css/*.css')
         .pipe(concat('all.css'))
-		.pipe(cssmin())
+		.pipe(cleanCSS())
 		.pipe(gulp.dest('build/.tmp'));
 });
 

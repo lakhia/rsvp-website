@@ -17,12 +17,12 @@
       <td>{{ est.menu }}</td>
       <td>
       <span ng-repeat="ingred in est['ingred']">
-        <span class="col-xs-2">
+        <span class="col-xs-4">
           <input type="text" ng-model="ingred.multiplier" class="trans" ng-change="onChange()"
               placeholder="0.0">
         </span>
-        <span class="col-xs-2">{{ ingred.unit }}</span>
-        <span class="col-xs-3">
+        <span class="col-xs-4">{{ ingred.unit }}</span>
+        <span class="col-xs-4">
           <input type="text" ng-model="ingred.name" class="trans" ng-change="onChange()"
               placeholder="ingredient" ng-keyup="querySuggest(ingred, $event)">
           <span class="sugg" ng-bind="ingred.sug"></span>

@@ -8,9 +8,9 @@
   },
   "devDependencies": {
     "gulp-angular-templatecache": "^2.2.7",
+    "gulp-clean-css": "^4.3.0",
     "gulp-concat": "^2.6.1",
     "gulp-connect-php": "1.0.3",
-    "gulp-cssmin": "^0.2.0",
     "gulp-file-insert": "^2.0.0",
     "gulp-html-replace": "^1.6.2",
     "gulp-inline-source": "^4.0.0",

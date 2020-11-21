@@ -6,7 +6,7 @@ if (!Helper::verify_token($db, $email_cookie, $thaali_cookie)) {
     die('{ "msg": "Login failed, please logout and login again" }');
 }
 $offset = Helper::get_if_defined($_GET['offset'], 0);
-$len = Helper::get_if_defined($_GET['len'], 6);
+$len = Helper::get_if_defined($_GET['len'], 7);
 shopping_get($db, $offset, $len);
 
 // Get details for shopping
@@ -33,9 +33,7 @@ function shopping_get($db, $offset, $len, $msg = "")
         if (!isset($row)) {
             $row = $result->fetch_assoc();
         }
-        if ($d != $row['date']) {
-            $rows[$d] = array();
-        } else {
+        if ($d == $row['date']) {
             $shop = calculate($db, $row, $total);
             $rows[$d] = $shop;
             unset($row);
@@ -50,10 +48,9 @@ function shopping_get($db, $offset, $len, $msg = "")
 
 /* Top level function to calculate ingredients for a single date */
 function calculate($db, &$data, &$total) {
-    $date = $data['date'];
     $result = array();
     if ($data['enabled'] && !$data['niyaz']) {
-        $count = total_rsvp_for_date($db, $date);
+        $count = total_rsvp_for_date($db, $data['date']);
         $ingredients = get_ingredients($db, $data['details'], $count, $total);
         $result['ingred'] = $ingredients;
         $result['count'] = $count;
@@ -71,17 +68,21 @@ function total_rsvp_for_date($db, $date) {
         "WHERE `rsvp` = 1 AND `date` = '" . $date . "';";
     $result = $db->query($query);
 
-    $count = array('rsvps' => 0);
+    $count = array('count' => 0);
     while($row = $result->fetch_assoc()) {
         // Count RSVPs
-        $count['rsvps']++;
+        $count['count']++;
 
         // Count normalized thaali
         $size = $row['size'];
-        if ($size == 'L') {
+        if ($size == 'XL') {
+            $size = 2;
+        } else if ($size == 'L') {
             $size = 1.5;
         } else if ($size == 'S') {
             $size = 0.5;
+        } else if ($size == 'XS') {
+            $size = 0.25;
         } else {
             $size = 1.0;
         }
@@ -114,6 +115,7 @@ function get_ingredients($db, $fullmenu, &$count, &$total) {
                  "LEFT JOIN ingredients on ingred_id = ingredients.id " .
                  "WHERE menu = '" . $menu . "';";
         $result = $db->query($query);
+        $ingredients[$menu] = array();
         while($row = $result->fetch_assoc()) {
             if (!isset($ingredients[$menu])) {
                 $ingredients[$menu] = array();
@@ -139,14 +141,14 @@ function adjust_for_count(&$i, &$count, &$total) {
     } else {
         $total[$key] += $quant;
     }
-    return round($quant, 2) . " " . $i['unit'] . " " . $ingred;
+    return round($quant, 1) . " " . $i['unit'] . " " . $ingred;
 }
 
 /* Output total values in same format */
 function compute_total(&$total) {
     $new_total = array();
     foreach($total as $key => $value) {
-        array_push($new_total, round($value, 2) . " " . $key);
+        array_push($new_total, round($value, 1) . " " . $key);
     }
     return $new_total;
 }

@@ -11,15 +11,15 @@
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="(key, value) in data">
-      <td>{{ getDisplayDate(key) }}</td>
+    <tr ng-repeat="(date, value) in data">
+      <td>{{ getDisplayDate(date) }}</td>
       <td>
-      <span ng-repeat="(item, quant) in value['ingred']">
-        <b class="col-xs-2">{{ item }}</b>
-        <span class="col-xs-4">
-          <span ng-repeat="q in quant">{{ q }}<br></span>
+      <div class="row" ng-repeat="(menu, ingred) in value['ingred']">
+        <b class="col-xs-5">{{ menu }}</b>
+        <span class="col-xs-offset-5 col-xs-7"  ng-repeat="q in ingred">{{ q }}
         </span>
-      </span>
+        <br><br>
+      </div>
       </td>
       <td>
         <span ng-repeat="(i, q) in value['count']">{{ i }}: {{ q }}<br></span>
