@@ -1,6 +1,7 @@
 <?php
 
 require_once('auxil.php');
+require_once('estimation.php');
 
 // If token is invalid, return an empty response
 if (!Helper::is_admin($email_cookie) ||
@@ -65,8 +66,7 @@ function family_post($db, $thaali) {
             $area = Helper::get_if_defined($i->area, '');
             $resp = Helper::get_if_defined($i->resp, '');
 
-            $sizes = array("XS", "S", "M", "L", "XL");
-            if (!in_array($size, $sizes)) {
+            if (!in_array($size, Estimation::$sizes)) {
                 $size = "M";
             }
             if ($lastName == '' || $firstName == '') {

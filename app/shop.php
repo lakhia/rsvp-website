@@ -1,5 +1,6 @@
 <?php
 require_once('auxil.php');
+require_once('estimation.php');
 
 // If token is invalid, return an empty response
 if (!Helper::verify_token($db, $email_cookie, $thaali_cookie)) {
@@ -34,7 +35,7 @@ function shopping_get($db, $offset, $len, $msg = "")
             $row = $result->fetch_assoc();
         }
         if ($d == $row['date']) {
-            $shop = calculate($db, $row, $total);
+            $shop = ingredients_for_date($db, $row, $total);
             $rows[$d] = $shop;
             unset($row);
         }
@@ -46,12 +47,12 @@ function shopping_get($db, $offset, $len, $msg = "")
     Helper::print_to_json($rows, $msg, $from);
 }
 
-/* Top level function to calculate ingredients for a single date */
-function calculate($db, &$data, &$total) {
+/* Calculate ingredients for a single date */
+function ingredients_for_date($db, &$data, &$total) {
     $result = array();
     if ($data['enabled'] && !$data['niyaz']) {
         $count = total_rsvp_for_date($db, $data['date']);
-        $ingredients = get_ingredients($db, $data['details'], $count, $total);
+        $ingredients = Estimation::get_ingredients($db, $data['details'], $count, $total);
         $result['ingred'] = $ingredients;
         $result['count'] = $count;
     }
@@ -74,18 +75,7 @@ function total_rsvp_for_date($db, $date) {
         $count['count']++;
 
         // Count normalized thaali
-        $size = $row['size'];
-        if ($size == 'XL') {
-            $size = 2;
-        } else if ($size == 'L') {
-            $size = 1.5;
-        } else if ($size == 'S') {
-            $size = 0.5;
-        } else if ($size == 'XS') {
-            $size = 0.25;
-        } else {
-            $size = 1.0;
-        }
+        $size = Estimation::get_factor_from_size($row['size'], 10) / 10;
         if (!isset($count['normalized'])) {
             $count['normalized'] = $size;
         } else {
@@ -94,55 +84,16 @@ function total_rsvp_for_date($db, $date) {
 
         // Count rice
         if ($row['lessRice']) {
-            $size = round($size/3.0, 2);
+            $size = 0;
         }
-        if (!isset($count['lessRice'])) {
-            $count['lessRice'] = $size;
-        } else {
-            $count['lessRice'] += $size;
+        if (!isset($count['rice+bread'])) {
+            $count['rice+bread'] = 0;
         }
+        $count['rice+bread'] += $size;
     }
     return $count;
 }
 
-/* For each menu, compute all the ingredients and ingredient totals */
-function get_ingredients($db, $fullmenu, &$count, &$total) {
-    $ingredients = array();
-    foreach (explode(",", $fullmenu) as $menu) {
-        $menu = trim($menu);
-        $query = "SELECT name, multiplier, rice, unit FROM cooking " .
-                 "LEFT JOIN menus on menu_id = id " .
-                 "LEFT JOIN ingredients on ingred_id = ingredients.id " .
-                 "WHERE menu = '" . $menu . "';";
-        $result = $db->query($query);
-        $ingredients[$menu] = array();
-        while($row = $result->fetch_assoc()) {
-            if (!isset($ingredients[$menu])) {
-                $ingredients[$menu] = array();
-            }
-            array_push($ingredients[$menu], adjust_for_count($row, $count, $total));
-        }
-    }
-    return $ingredients;
-}
-
-/* Compute ingredient entry and ingredient totals from cumulative RSVP responses */
-function adjust_for_count(&$i, &$count, &$total) {
-    if ($i['rice']) {
-        $quant = Helper::get_if_defined($count['lessRice'], 0);
-    } else {
-        $quant = Helper::get_if_defined($count['normalized'], 0);
-    }
-    $ingred = $i['name'];
-    $quant *= $i['multiplier'];
-    $key = $i['unit'] . " " . $ingred;
-    if (!isset($total[$key])) {
-        $total[$key] = $quant;
-    } else {
-        $total[$key] += $quant;
-    }
-    return round($quant, 1) . " " . $i['unit'] . " " . $ingred;
-}
 
 /* Output total values in same format */
 function compute_total(&$total) {

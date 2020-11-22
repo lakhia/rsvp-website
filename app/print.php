@@ -1,6 +1,6 @@
 <?php
-
 require_once('auxil.php');
+require_once('estimation.php');
 
 // If token is invalid, return an empty response
 if (!Helper::verify_token($db, $email_cookie, $thaali_cookie)) {
@@ -40,11 +40,10 @@ function print_filling($db, $from, $offset, $msg = "") {
             }
 
             // Convert lessRice boolean to text
-            if ($row["lessRice"]  == 1) {
-                $row["lessRice"] = "Less";
-            } else {
-                unset($row["lessRice"]);
+            if ($row["lessRice"] == 1) {
+                $row["bread+rice"] = "No";
             }
+            unset($row["lessRice"]);
 
             $rows[] = $row;
         }
@@ -54,7 +53,9 @@ function print_filling($db, $from, $offset, $msg = "") {
     if (isset($rows)) {
         $save = Helper::is_save_available($offset) && !$details['niyaz'];
         $other = array("save" => $save, "niyaz" => $details['niyaz'],
-                       "adults" => $totalA, "kids" => $totalK);
+                       "adults" => $totalA, "kids" => $totalK,
+                       "serving" =>
+                        Estimation::get_serving_guidance($db, $details['details']));
     } else {
         $rows = NULL;
         $msg = "No responses available for " . $from;
