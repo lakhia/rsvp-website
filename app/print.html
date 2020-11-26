@@ -12,7 +12,6 @@
         <option value='area'>Area</option>
         <option value='size'>Size</option>
         <option value='name'>Name</option>
-        <option ng-hide="o.niyaz" value='here'>Here</option>
         <option ng-hide="o.niyaz" value='filled'>Filled</option>
         <option ng-hide="o.niyaz" value='bread+rice'>Rice / bread</option>
       </select>
@@ -35,7 +34,6 @@
       <th>Area</th>
       <th class="col-xs-1">Size</th>
       <th class="col-xs-1" ng-hide="o.niyaz">Rice / bread</th>
-      <th class="col-xs-1" ng-hide="o.niyaz">Here</th>
       <th class="col-xs-1" ng-hide="o.niyaz">Filled</th>
       <th>Name</th>
     </tr>
@@ -46,9 +44,6 @@
       <td>{{ item["area"] }}</td>
       <td>{{ item["size"] }}</td>
       <td ng-hide="niyaz">{{ item["bread+rice"] }}</td>
-      <td ng-hide="o.niyaz">
-        <input type="checkbox" ng-model='item.here' ng_true_value=1 ng_false_value=0 ng-change="onChange()"/>
-      </td>
       <td ng-hide="o.niyaz">
         <input type="checkbox" ng-model='item.filled' ng_true_value=1 ng_false_value=0 ng-change="onChange()"/>
       </td>

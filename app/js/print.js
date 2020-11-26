@@ -29,7 +29,7 @@ function($scope, $rootScope) {
                 }
                 return prev;
             }, [0, 0]);
-            return "Not here: " + sum[1] + ", not filled: " + sum[0] + ", total: " + $scope.data.length;
+            return "Not filled: " + sum[0] + ", total: " + $scope.data.length;
         }
     }
     $scope.secondLine = function(other) {
