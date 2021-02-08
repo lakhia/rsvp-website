@@ -8,28 +8,24 @@
   <thead>
     <tr>
       <th class="col-xs-0">Num</th>
-      <th class="col-xs-3">Last name</th>
-      <th class="col-xs-3">First name</th>
+      <th class="col-xs-2">Name</th>
       <th class="col-xs-0">Size</th>
-      <th class="col-xs-1">Area</th>
+      <th class="col-xs-0">Area</th>
       <th class="col-xs-3">Email</th>
-      <th class="col-xs-2">Phone</th>
-      <th class="col-xs-1">Resp</th>
+      <th class="col-xs-3">Phone / POC</th>
+      <th class="col-xs-0">Resp</th>
     </tr>
   </thead>
   <tbody>
     <tr ng-repeat="family in data">
       <td>
-        <input type="text" ng-model="family.thaali" class="trans"
-               placeholder="thaali" ng-change="onChange()"/>
-      </td>
-      <td>
-        <input type="text" ng-model="family.lastName" class="trans"
-               placeholder="Last name" ng-change="onChange()"/>
+        {{ family.thaali }}
       </td>
       <td>
         <input type="text" ng-model="family.firstName" class="trans"
                placeholder="First name" ng-change="onChange()"/>
+        <input type="text" ng-model="family.lastName" class="trans"
+               placeholder="Last name" ng-change="onChange()"/>
       </td>
       <td>
         <input type="text" ng-model="family.size" class="minWidth trans"
@@ -45,7 +41,9 @@
       </td>
       <td>
         <input type="text" ng-model="family.phone" class="trans"
-               placeholder="Phone" ng-change="onChange()"/>
+               placeholder="Phone" ng-change="onChange()"/><br>
+        <input type="text" ng-model="family.poc" class="trans"
+               placeholder="POC" ng-change="onChange()"/>
       </td>
       <td>
         <input type="text" ng-model="family.resp" class="trans"

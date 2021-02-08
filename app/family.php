@@ -65,6 +65,7 @@ function family_post($db, $thaali) {
             $size = strtoupper(Helper::get_if_defined($i->size, 'M'));
             $area = Helper::get_if_defined($i->area, '');
             $resp = Helper::get_if_defined($i->resp, '');
+            $poc = Helper::get_if_defined($i->poc, '');
 
             if (!in_array($size, Estimation::$sizes)) {
                 $size = "M";
@@ -75,13 +76,13 @@ function family_post($db, $thaali) {
             }
             // Insert or update
             $query = "INSERT INTO family" .
-	        "(thaali, lastName, firstName, size, area, email, phone, resp) " .
+	        "(thaali, lastName, firstName, size, area, email, phone, poc, resp) " .
                 "values($i->thaali, '$lastName', '$firstName', '$size'," .
-                "'$area', '$email', '$phone', '$resp')" .
+                "'$area', '$email', '$phone', '$poc', '$resp')" .
                 "on duplicate KEY " .
                 "update lastName='$lastName', firstName='$firstName'," .
                 "size='$size', area='$area', email='$email', " .
-                "phone='$phone', resp='$resp'";
+                "phone='$phone', poc='$poc', resp='$resp'";
         }
         $result = $db->query($query);
         if (!$result) {
