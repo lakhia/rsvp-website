@@ -22,7 +22,7 @@
       <td>
         <input ng-hide="value.niyaz || !value.enabled" type="checkbox" ng-model='value.lessRice'
          ng-disabled="value.readonly || !value.rsvp"
-         ng_true_value=1 ng_false_value=0 ng-change="onRiceChange(key)"/>
+         ng-checked="value.lessRice==1" ng-change="onRiceChange(key)"/>
       </td>
       <td>
         <button class="rsvpBtn btn" ng-show="value.enabled" ng-disabled="value.readonly"

@@ -103,6 +103,10 @@ sub html {
         $line =~ s/greet/gr/g;
         $line =~ s/menuToggle/mT/g;
         $line =~ s/minWidth/m/g;
+        $line =~ s/filterNames/fN/g;
+        $line =~ s/filterFunc/fF/g;
+        $line =~ s/sortColumn/sC/g;
+        $line =~ s/sorterFunc/sF/g;
         $line =~ s/ }}/}}/g;
         $line =~ s/\{\{ /{{/g;
         print OUT $line;

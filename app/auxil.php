@@ -101,7 +101,7 @@ class Helper
             "data" => $data,
             "other" => $other
         );
-        echo json_encode($response);
+        echo json_encode($response, JSON_NUMERIC_CHECK);
     }
 
     // Get cutoff date where RSVP becomes readonly and cannot be modified
