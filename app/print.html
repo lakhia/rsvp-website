@@ -35,8 +35,8 @@
       <th class="col-xs-2"><input ng-model='filterNames.area' type="text" class="trans" placeholder="Area"></th>
       <th class="col-xs-1"><input ng-model='filterNames.size' type="text" class="trans" placeholder="Size"></th>
       <th class="col-xs-1" ng-hide="o.niyaz">Rice / bread</th>
-      <th class="col-xs-1" ng-hide="o.niyaz">Here</th>
-      <th class="col-xs-1" ng-hide="o.niyaz">Filled</th>
+      <th class="col-xs-1" ng-hide="o.niyaz"><input ng-model='filterNames.here' type="text" class="trans" placeholder="Here"></th>
+      <th class="col-xs-1" ng-hide="o.niyaz"><input ng-model='filterNames.filled' type="text" class="trans" placeholder="Filled"></th>
       <th><input type="text" ng-model='filterNames.name' class="trans" placeholder="Name"></th>
     </tr>
   </thead>
@@ -47,7 +47,7 @@
       <td>{{ item["size"] }}</td>
       <td ng-hide="niyaz">{{ item["bread+rice"] }}</td>
       <td ng-hide="o.niyaz">
-        <input type="checkbox" ng-model='item.here' ng_true_value=1 ng_false_value=0 ng-change="onChange()"/>
+        <input type="checkbox" ng-model='item.here' ng-checked="item.here==1"  ng-change="onChange()"/>
       </td>
       <td ng-hide="o.niyaz">
         <input type="checkbox" ng-model='item.filled' ng-checked="item.filled==1" ng-change="onChange()"/>

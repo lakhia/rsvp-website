@@ -21,6 +21,20 @@ function($scope, $rootScope) {
                 return false;
             }
         }
+        if ($scope.filterNames.here) {
+            if ((!item.here && $scope.filterNames.here.toUpperCase() == 'Y') ||
+                (item.here && $scope.filterNames.here.toUpperCase() == 'N')) {
+                item.filtered = true;
+                return false;
+            }
+        }
+        if ($scope.filterNames.filled) {
+            if ((!item.filled && $scope.filterNames.filled.toUpperCase() == 'Y') ||
+                (item.filled && $scope.filterNames.filled.toUpperCase() == 'N')) {
+                item.filtered = true;
+                return false;
+            }
+        }
         if ($scope.filterNames.area) {
             if (item.area != $scope.filterNames.area) {
                 item.filtered = true;
