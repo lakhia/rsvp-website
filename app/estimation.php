@@ -7,10 +7,10 @@ class Estimation
     private static function get_all_ingredients($db, $fullmenu) {
         $ingredients = array();
         foreach (explode(",", $fullmenu) as $menu) {
-            $menu = trim($menu);
-            if (strpos($menu, "Niyaz") !== false) {
-                continue;
+            if (strpos($menu, ":")) {
+                $menu = substr($menu, 1 + strpos($menu, ":"));
             }
+            $menu = trim($menu);
             $query = "SELECT name, multiplier, rice, unit FROM cooking " .
                      "LEFT JOIN menus on menu_id = id " .
                      "LEFT JOIN ingredients on ingred_id = ingredients.id " .

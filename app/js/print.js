@@ -58,9 +58,9 @@ function($scope, $rootScope) {
                 if (!elem.filtered) {
                     if (!elem.filled) {
                         prev[0]++;
-                        if (!elem.here) {
-                            prev[1]++;
-                        }
+                    }
+                    if (!elem.here) {
+                        prev[1]++;
                     }
                 }
                 return prev;
@@ -75,18 +75,19 @@ function($scope, $rootScope) {
         } else {
             var sizes = $scope.data.reduce(function(prev, elem) {
                 if (!elem.filtered) {
-                    if (elem.filled == 0) {
-                        if (prev[elem.size]) {
-                            prev[elem.size]++;
-                        } else {
-                            prev[elem.size] = 1;
-                        }
+                    if (prev[elem.size]) {
+                        prev[elem.size]++;
+                    } else {
+                        prev[elem.size] = 1;
                     }
                 }
                 return prev;
             }, {});
-            return "Sizes: " + JSON.stringify(sizes, null, 1).replace(/"/g, '')
-                .replace('{', '').replace('}', '');
+            return "XS: " + (sizes['XS'] || 0)
+               + ", S: " + (sizes['S'] || 0)
+               + ", M: " + (sizes['M'] || 0)
+               + ", L: " + (sizes['L'] || 0)
+               + ", XL: " + (sizes['XL'] || 0);
         }
     }
 
