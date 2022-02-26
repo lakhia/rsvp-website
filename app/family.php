@@ -32,7 +32,7 @@ function family_get($db, $thaali, $msg)
         if (!isset($row)) {
             $row = $result->fetch_assoc();
         }
-        if ($i != $row["thaali"]) {
+        if (!isset($row["thaali"]) || $i != $row["thaali"]) {
             $k = array("thaali" => $i);
             $rows[] = $k;
         } else {

@@ -73,6 +73,8 @@ sub html {
         $line =~ s/getClass/gC/g;
         $line =~ s/on(..)[a-zA-Z]*Change/o$1/g;
         $line =~ s/onChange/oC/g;
+        $line =~ s/onSizeChange/oSC/g;
+        $line =~ s/onFilterChange/oFC/g;
         $line =~ s/getDisplayDate/gD/g;
         $line =~ s/getRawDate/gR/g;
         $line =~ s/changed/cg/g;
@@ -100,7 +102,6 @@ sub html {
         $line =~ s/menuBig/mB/g;
         $line =~ s/gone/gn/ig;
         $line =~ s/hideRow/hR/g;
-        $line =~ s/greet/gr/g;
         $line =~ s/menuToggle/mT/g;
         $line =~ s/minWidth/m/g;
         $line =~ s/filterNames/fN/g;

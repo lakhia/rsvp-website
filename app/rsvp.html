@@ -31,7 +31,7 @@
         </button>
       </td>
       <td>
-        <select ng-hide="value.niyaz" ng_model="value.size" ng-disabled="value.readonly || !value.rsvp"
+        <select ng-hide="!value.enabled || value.niyaz" ng_model="value.size" ng-disabled="value.readonly || !value.rsvp"
            ng-change="onSizeChange(key)">
           <option ng-repeat="size in sizes track by $index" ng-value="size">{{size}}</option>
         </select>

@@ -16,21 +16,21 @@ function($scope, $rootScope) {
             }
         }
         if ($scope.filterNames.size) {
-            if (item.size != $scope.filterNames.size.toUpperCase()) {
+            if (item.size != $scope.filterNames.size) {
                 item.filtered = true;
                 return false;
             }
         }
         if ($scope.filterNames.here) {
-            if ((!item.here && $scope.filterNames.here.toUpperCase() == 'Y') ||
-                (item.here && $scope.filterNames.here.toUpperCase() == 'N')) {
+            if ((!item.here && $scope.filterNames.here == 'Y') ||
+                (item.here && $scope.filterNames.here == 'N')) {
                 item.filtered = true;
                 return false;
             }
         }
         if ($scope.filterNames.filled) {
-            if ((!item.filled && $scope.filterNames.filled.toUpperCase() == 'Y') ||
-                (item.filled && $scope.filterNames.filled.toUpperCase() == 'N')) {
+            if ((!item.filled && $scope.filterNames.filled == 'Y') ||
+                (item.filled && $scope.filterNames.filled == 'N')) {
                 item.filtered = true;
                 return false;
             }
@@ -62,10 +62,11 @@ function($scope, $rootScope) {
                     if (!elem.here) {
                         prev[1]++;
                     }
+                    prev[2]++;
                 }
                 return prev;
-            }, [0, 0]);
-            return "Not here: " + sum[1] + ", not filled: " + sum[0] + ", total: " + $scope.data.length;
+            }, [0, 0, 0]);
+            return "Not here: " + sum[1] + ", not filled: " + sum[0] + ", total: " + sum[2];
         }
     }
     $scope.secondLine = function(other) {
@@ -98,5 +99,12 @@ function($scope, $rootScope) {
             item.here = 0;
             item.filled = 0;
         });
+    }
+
+    $scope.onFilterChange = function() {
+        $scope.filterNames.area = $scope.filterNames.area.toUpperCase();
+        $scope.filterNames.size = $scope.filterNames.size.toUpperCase();
+        $scope.filterNames.here = $scope.filterNames.here.toUpperCase();
+        $scope.filterNames.filled = $scope.filterNames.filled.toUpperCase();
     }
 }]);

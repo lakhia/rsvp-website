@@ -34,7 +34,7 @@ function shopping_get($db, $offset, $len, $msg = "")
         if (!isset($row)) {
             $row = $result->fetch_assoc();
         }
-        if ($d == $row['date']) {
+        if (isset($row['date']) && $d == $row['date']) {
             $shop = ingredients_for_date($db, $row, $total);
             $rows[$d] = $shop;
             unset($row);

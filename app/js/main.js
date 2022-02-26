@@ -19,7 +19,7 @@ function($scope, $cookies, $rootScope, $state, $stateParams) {
     }
 
     function handleResponse(response) {
-        if (!response.msg) {
+        if (!response.msg && response.data) {
             localStorage.setItem('greet', response.data);
             $state.go("home", {offset:0});
         }

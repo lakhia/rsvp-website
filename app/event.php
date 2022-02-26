@@ -40,7 +40,7 @@ function event_get($db, $msg)
         if (!isset($row)) {
             $row = $result->fetch_assoc();
         }
-        if ($d != $row["date"]) {
+        if (!isset($row["date"]) || $d != $row["date"]) {
             $rows[] = array("date" => $d);
         } else {
             $rows[] = $row;

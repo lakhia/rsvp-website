@@ -112,7 +112,7 @@ function details_post($db, $thaali)
         list($changes, $cols, $vals) = Helper::dict_to_sql_assignment($v, array("size"));
 
         // Set size to default if not set
-        if (isset($v['rsvp']) and $v['rsvp'] and !isset($v['size'])) {
+        if (!isset($v['size'])) {
             $cols .= ", size";
             $vals .= ", \"" . get_default_size($db, $thaali) . "\"";
         }

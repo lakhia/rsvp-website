@@ -8,12 +8,15 @@ if (!Helper::verify_token($db, $email_cookie, $thaali_cookie)) {
 }
 
 // Start dump for special report
-$offset = Helper::get_if_defined($_GET['offset'], 0);
-$day = Helper::get_day($offset);
-dump_get($db, $day);
+$date = Helper::get_if_defined($_GET['date'], 0);
+if ($date == 0) {
+   $offset = Helper::get_if_defined($_GET['offset'], 0);
+   $date = Helper::get_day($offset);
+}
+dump_get($db, $date);
 
 // Get dump in CSV format
-function dump_get($db, $day) {
+function dump_get($db, $date) {
     header('Content-Type: text/csv');
     header('Content-Disposition: attachment; filename=ohbat.csv');
 
@@ -27,7 +30,7 @@ function dump_get($db, $day) {
                 CASE WHEN rsvp = 1 THEN 'Yes' ELSE 'No' END AS rsvp
               FROM family
               LEFT JOIN rsvps
-              ON thaali_id=thaali AND date=\"" . $day . "\"
+              ON thaali_id=thaali AND date=\"" . $date . "\"
               WHERE thaali < 400";
     $result = $db->query($query);
 

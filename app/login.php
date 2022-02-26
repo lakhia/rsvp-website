@@ -3,8 +3,13 @@
 require_once("auxil.php");
 
 $data = json_decode(file_get_contents('php://input'), false);
-$thaali = Helper::get_if_defined($data->pass, '');
-$email = Helper::get_if_defined($data->email, '');
+if ($data) {
+  $thaali = Helper::get_if_defined($data->pass, '');
+  $email = Helper::get_if_defined($data->email, '');
+} else {
+  $thaali = '';
+  $email = '';
+}
 
 // Get name from credentials
 $name = Helper::get_name($db, $email, $thaali);
