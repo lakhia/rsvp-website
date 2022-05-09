@@ -32,9 +32,9 @@
   <thead>
     <tr>
       <th class="col-xs-1">Thaali</th>
-      <th class="col-xs-2"><input ng-model='filterNames.area' type="text" class="trans" ng-change="onFilterChange()" placeholder="Area"></th>
+      <th class="col-xs-1"><input ng-model='filterNames.area' type="text" class="trans" ng-change="onFilterChange()" placeholder="Area"></th>
       <th class="col-xs-1"><input ng-model='filterNames.size' type="text" class="trans" ng-change="onFilterChange()" placeholder="Size"></th>
-      <th class="col-xs-1" ng-hide="o.niyaz">Rice / bread</th>
+      <th class="col-xs-1" ng-hide="o.niyaz"><input ng-model='filterNames.rice' type="text" class="trans" ng-change="onFilterChange()" placeholder="Rice/ Bread"></th>
       <th class="col-xs-1" ng-hide="o.niyaz"><input ng-model='filterNames.here' type="text" class="trans" ng-change="onFilterChange()" placeholder="Here"></th>
       <th class="col-xs-1" ng-hide="o.niyaz"><input ng-model='filterNames.filled' type="text" class="trans" ng-change="onFilterChange()" placeholder="Filled"></th>
       <th><input type="text" ng-model='filterNames.name' class="trans" ng-change="onFilterChange()" placeholder="Name"></th>

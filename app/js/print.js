@@ -21,6 +21,13 @@ function($scope, $rootScope) {
                 return false;
             }
         }
+        if ($scope.filterNames.rice) {
+            if (($scope.filterNames.rice.startsWith("N") && !item["bread+rice"]) ||
+                ($scope.filterNames.rice.startsWith("Y") && item["bread+rice"])) {
+              item.filtered = true;
+              return false;
+            }
+        }
         if ($scope.filterNames.here) {
             if ((!item.here && $scope.filterNames.here == 'Y') ||
                 (item.here && $scope.filterNames.here == 'N')) {
@@ -106,5 +113,6 @@ function($scope, $rootScope) {
         $scope.filterNames.size = $scope.filterNames.size.toUpperCase();
         $scope.filterNames.here = $scope.filterNames.here.toUpperCase();
         $scope.filterNames.filled = $scope.filterNames.filled.toUpperCase();
+        $scope.filterNames.rice = $scope.filterNames.rice.toUpperCase();
     }
 }]);
