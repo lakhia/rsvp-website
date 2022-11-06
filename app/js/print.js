@@ -5,7 +5,7 @@ function($scope, $rootScope) {
     $scope.init = function() {
         $rootScope.init($scope, "print.php", null);
         $scope.sortColumn = 'thaali';
-        $scope.filterNames = {};
+        $scope.filterNames = {'area': "", 'rice': "", 'here': "", 'size': "", 'filled': ""};
     }
 
     $scope.filterFunc = function(item) {

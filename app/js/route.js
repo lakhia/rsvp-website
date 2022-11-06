@@ -20,6 +20,11 @@ app.config(['$stateProvider','$urlRouterProvider',
         templateUrl: 'print.html',
         controller: 'printController',
       })
+      .state('plan', {
+        url: "/plan/",
+        templateUrl: 'plan.html',
+        controller: 'planController',
+      })
       .state('event', {
         url: "/event/{offset}",
         templateUrl: 'event.html',

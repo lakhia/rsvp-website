@@ -20,6 +20,8 @@
     <tr ng-repeat="family in data">
       <td>
         {{ family.thaali }}
+        <input type="text" ng-model="family.its" class="trans"
+               placeholder="ITS ID" ng-change="onChange()"/>
       </td>
       <td>
         <input type="text" ng-model="family.firstName" class="trans"
