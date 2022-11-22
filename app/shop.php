@@ -6,15 +6,18 @@ require_once('estimation.php');
 if (!Helper::verify_token($db, $email_cookie, $thaali_cookie)) {
     die('{ "msg": "Login failed, please logout and login again" }');
 }
-$offset = Helper::get_if_defined($_GET['offset'], 0);
-$len = Helper::get_if_defined($_GET['len'], 7);
-shopping_get($db, $offset, $len);
+
+shopping_get($db);
 
 // Get details for shopping
-function shopping_get($db, $offset, $len, $msg = "")
+function shopping_get($db)
 {
-    $from = Helper::get_week($offset);
-    $to = Helper::get_week($offset + $len);
+    $offset = Helper::get_if_defined($_GET['offset'], 0);
+    $date = Helper::get_if_defined($_GET['date'], "");
+    $len = Helper::get_if_defined($_GET['len'], 7);
+
+    $from = Helper::get_week($date, $offset);
+    $to = Helper::get_week($date, $offset + $len);
 
     // Make query
     $query = "SELECT * FROM events WHERE date >= '" .
@@ -44,7 +47,7 @@ function shopping_get($db, $offset, $len, $msg = "")
     // Save totals
     $rows['Total']['ingred'][''] = compute_total($total);
 
-    Helper::print_to_json($rows, $msg, $from);
+    Helper::print_to_json($rows, "", $from);
 }
 
 /* Calculate ingredients for a single date */

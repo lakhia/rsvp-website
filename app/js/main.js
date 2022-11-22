@@ -47,6 +47,7 @@ app.run(['$rootScope', '$http', '$state', '$stateParams',
             scope.date = "";
             scope.changed = 0;
             scope.offset = parseInt($stateParams.offset) || 0;
+            scope.date = $stateParams.date || "";
 
             if (!localStorage.length) {
                 $state.go("login");
@@ -57,7 +58,7 @@ app.run(['$rootScope', '$http', '$state', '$stateParams',
                     url: url,
                     method: "GET",
                     timeout: 8000,
-                    params: {offset: scope.offset}
+                    params: {offset: scope.offset, date: scope.date}
                 }).success(handleSuccess).error(error);
             }
 

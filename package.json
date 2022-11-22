@@ -7,14 +7,14 @@
     "gulp": "^4.0.2"
   },
   "devDependencies": {
-    "gulp-angular-templatecache": "^2.2.7",
+    "gulp-angular-templatecache": "^3.0.1",
     "gulp-clean-css": "^4.3.0",
     "gulp-concat": "^2.6.1",
     "gulp-connect-php": "1.0.3",
     "gulp-file-insert": "^2.0.0",
     "gulp-html-replace": "^1.6.2",
     "gulp-inline-source": "^4.0.0",
-    "gulp-livereload": "^4.0.1",
+    "gulp-livereload": "^4.0.2",
     "gulp-minify": "3.1.0",
     "gulp-minify-html": "^1.0.6",
     "gulp-uglify": "^3.0.2"

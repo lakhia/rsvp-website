@@ -29,8 +29,9 @@ function get_default_size($db, $thaali)
 function details_get($db, $thaali, $msg)
 {
     $offset = Helper::get_if_defined($_GET['offset'], 0);
-    $from = Helper::get_week($offset);
-    $to = Helper::get_week($offset + 7);
+    $date = Helper::get_if_defined($_GET['date'], "");
+    $from = Helper::get_week($date, $offset);
+    $to = Helper::get_week($date, $offset + 7);
 
     // Make query
     $query = "SELECT events.date, adults, kids, niyaz, enabled, " .

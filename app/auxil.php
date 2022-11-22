@@ -129,9 +129,13 @@ class Helper
     }
 
     // Get beginning week date in mysql format
-    public static function get_week($offset)
+    public static function get_week($date, $offset)
     {
-        $date = new DateTime();
+        if (!$date) {
+            $date = new DateTime();
+        } else {
+            $date = DateTime::createFromFormat("Y-m-d", $date);
+        }
 
         // Saturday is cutoff to show next week
         $day = $date->format("w");

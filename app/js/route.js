@@ -6,7 +6,7 @@ app.config(['$stateProvider','$urlRouterProvider',
   function($stateProvider, $urlRouterProvider) {
     $stateProvider
       .state("home", {
-        url: "/{offset}",
+        url: "/rsvp/{offset}/{date}",
         templateUrl: 'rsvp.html',
         controller: 'rsvpController',
       })
@@ -23,7 +23,6 @@ app.config(['$stateProvider','$urlRouterProvider',
       .state('plan', {
         url: "/plan/",
         templateUrl: 'plan.html',
-        controller: 'planController',
       })
       .state('event', {
         url: "/event/{offset}",
