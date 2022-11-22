@@ -5,11 +5,6 @@ var app = angular.module("rsvp", ['ui.router', 'ngCookies',
 app.config(['$stateProvider','$urlRouterProvider',
   function($stateProvider, $urlRouterProvider) {
     $stateProvider
-      .state("home", {
-        url: "/rsvp/{offset}/{date}",
-        templateUrl: 'rsvp.html',
-        controller: 'rsvpController',
-      })
       .state('login', {
         url: "/login/{out}",
         templateUrl: 'login.html',
@@ -43,6 +38,16 @@ app.config(['$stateProvider','$urlRouterProvider',
         url: "/measure/{offset}",
         templateUrl: 'measure.html',
         controller: 'measureController',
+      })
+      .state("h", {
+        url: "/{offset}",
+        templateUrl: 'rsvp.html',
+        controller: 'rsvpController',
+      })
+      .state("home", {
+        url: "/{offset}/{date}",
+        templateUrl: 'rsvp.html',
+        controller: 'rsvpController',
       });
 
       $urlRouterProvider.otherwise('/');

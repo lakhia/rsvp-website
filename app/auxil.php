@@ -133,15 +133,16 @@ class Helper
     {
         if (!$date) {
             $date = new DateTime();
+            $day = $date->format("w");
+            if ($day == 6) {
+                // Saturday is cutoff to show next week
+                $day = -1;
+            }
         } else {
             $date = DateTime::createFromFormat("Y-m-d", $date);
+            $day = 1;
         }
 
-        // Saturday is cutoff to show next week
-        $day = $date->format("w");
-        if ($day == 6) {
-            $day = -1;
-        }
         return self::get_offset($date, $offset + 1 - $day);
     }
 

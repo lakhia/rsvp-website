@@ -44,7 +44,6 @@ app.run(['$rootScope', '$http', '$state', '$stateParams',
 
         // Init scope, setup common functions, fetch data
         $rootScope.init = function(scope, url, handleResponse) {
-            scope.date = "";
             scope.changed = 0;
             scope.offset = parseInt($stateParams.offset) || 0;
             scope.date = $stateParams.date || "";
@@ -105,7 +104,7 @@ app.run(['$rootScope', '$http', '$state', '$stateParams',
             }
             // Submit
             scope.submit = function() {
-                $http.post(url + "?offset=" + scope.offset,
+                $http.post(url + "?offset=" + scope.offset + "&date=" + scope.date,
                            scope.data, {timeout:8000})
                     .success(handleSuccess).error(error);
             }

@@ -76,7 +76,7 @@ function details_get($db, $thaali, $msg)
         $rows[] = $row;
     }
     if (isset($rows)) {
-        Helper::print_to_json($rows, $msg);
+        Helper::print_to_json($rows, $msg, $date);
     } else {
         die('{ "msg": "No details available for week of ' . $from . '" }');
     }
