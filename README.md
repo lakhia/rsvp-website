@@ -21,7 +21,7 @@
 
   On the backend, it currently requires:
 
-  * PHP 5.5
+  * PHP 8.1
   * MySQL 5.7
   * Web server
 

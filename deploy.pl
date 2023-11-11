@@ -74,9 +74,11 @@ sub html {
         $line =~ s/on(..)[a-zA-Z]*Change/o$1/g;
         $line =~ s/onChange/oC/g;
         $line =~ s/onSizeChange/oSC/g;
+        $line =~ s/onCheckboxClick/oCC/g;
         $line =~ s/onFilterChange/oFC/g;
         $line =~ s/getDisplayDate/gD/g;
         $line =~ s/getRawDate/gR/g;
+        $line =~ s/getSizes/gSz/g;
         $line =~ s/changed/cg/g;
         $line =~ s/rsvpLabel/rL/g;
         $line =~ s/....Line//g;

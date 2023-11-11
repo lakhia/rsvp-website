@@ -42,17 +42,6 @@ CREATE TABLE rsvps
 -- Dummy data
 --
 
-insert into rsvps
-  ( date, thaali_id, rsvp, size)
-  values
-  ( "2022-01-18", 35, 1, "L");
-insert into rsvps
-  ( date, thaali_id, rsvp, size )
-  values
-  ( "2022-01-18", 33, 1, "XL" )
-  ON DUPLICATE KEY UPDATE
-  rsvp=1;
-
 insert into family
   ( thaali, lastName, firstName, email, phone, area )
   values

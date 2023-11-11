@@ -46,7 +46,8 @@ function dump_get($db, $table, $cols) {
             } else {
                 $where .= " WHERE ";
             }
-            $where .= $col . " LIKE \"" . $_GET[$col] . "\"";
+            $value = preg_replace("/[^-_%a-zA-Z0-9]+/", "", $_GET[$col]);
+            $where .= $col . " LIKE \"" . $value . "\"";
         }
     }
     $query = "SELECT * FROM  " . $table . $where . ";";
