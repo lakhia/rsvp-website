@@ -24,6 +24,15 @@ function($scope, $cookies, $rootScope, $state, $stateParams) {
             $state.go("home", {offset:0});
         }
     }
+}])
+
+app.controller("sidebarController", ["$scope", "$cookies", "$state",
+    function($scope, $cookies, $state) {
+
+    $scope.init = function() {
+        $scope.cookies = $cookies;
+        $scope.menuBig = localStorage.getItem('menuBig') == "1";
+    }
 
     $scope.getClass = function(name) {
         if ($state.current.name == name) {
