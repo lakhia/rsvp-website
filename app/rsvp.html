@@ -33,7 +33,7 @@
       <td>
         <select ng-hide="!value.enabled || value.niyaz" ng_model="value.size" ng-disabled="value.readonly || !value.rsvp"
            ng-change="onSizeChange(key)">
-          <option ng-repeat="size in sizes track by $index" ng-value="size">{{size}}</option>
+          <option ng-repeat="size in getSizes(value.size)" ng-value="size">{{size}}</option>
         </select>
         <div ng-show="value.niyaz" class="form-inline">
           <input ng-disabled="value.readonly || !value.rsvp" type="text" ng-model="value.adults"

@@ -6,12 +6,33 @@ require_once("auxil.php");
 if (!Helper::verify_token($db, $email_cookie, $thaali_cookie)) {
     die('{ "msg": "Login failed, please logout and login again" }');
 }
+$default_size = get_default_size($db, $thaali_cookie);
+$eligible_sizes = get_eligible_sizes($email_cookie, $default_size);
 
 // POST or GET?
 if ($method_server == "POST") {
-    details_post($db, $thaali_cookie);
+    details_post($db, $thaali_cookie, $eligible_sizes, $default_size);
 } else {
-    details_get($db, $thaali_cookie, "");
+    details_get($db, $thaali_cookie, $eligible_sizes, $default_size, "");
+}
+
+function get_eligible_sizes($email, $size)
+{
+    $admin = Helper::is_admin($email);
+    $result = ["XS", "S"];
+    if (!$admin && $size == "XS") {
+        return $result;
+    }
+    $result[] = "M";
+    if (!$admin && $size == "S") {
+        return $result;
+    }
+    $result[] = "L";
+    if (!$admin && $size == "M") {
+        return $result;
+    }
+    $result[] = "XL";
+    return $result;
 }
 
 function get_default_size($db, $thaali)
@@ -26,7 +47,7 @@ function get_default_size($db, $thaali)
 }
 
 // Get details for specific dates
-function details_get($db, $thaali, $msg)
+function details_get($db, $thaali, $eligible_sizes, $default_size, $msg)
 {
     $offset = Helper::get_if_defined($_GET['offset'], 0);
     $date = Helper::get_if_defined($_GET['date'], "");
@@ -41,7 +62,6 @@ function details_get($db, $thaali, $msg)
         $from . "' AND events.date < '" . $to . "' order by date;";
 
     $result = $db->query($query);
-    $default_size = get_default_size($db, $thaali);
 
     // Get cutoff time for disabling entry
     $cutoff = Helper::get_cutoff_time(1);
@@ -76,14 +96,14 @@ function details_get($db, $thaali, $msg)
         $rows[] = $row;
     }
     if (isset($rows)) {
-        Helper::print_to_json($rows, $msg, $date);
+        Helper::print_to_json($rows, $msg, $date, $eligible_sizes);
     } else {
         die('{ "msg": "No details available for week of ' . $from . '" }');
     }
 }
 
 // Post update to details
-function details_post($db, $thaali)
+function details_post($db, $thaali, $eligible_sizes, $default_size)
 {
     // Get cutoff time for disabling entry
     $cutoff = Helper::get_cutoff_time(1);
@@ -115,7 +135,12 @@ function details_post($db, $thaali)
         // Set size to default if not set
         if (!isset($v['size'])) {
             $cols .= ", size";
-            $vals .= ", \"" . get_default_size($db, $thaali) . "\"";
+            $vals .= ", \"" . $default_size . "\"";
+        } else {
+            if (!in_array($v['size'], $eligible_sizes)) {
+                $msg = "You picked a size too large for your family, please try again!";
+                break;
+            }
         }
 
         $result = $db->query("insert into rsvps(date, thaali_id, " . $cols . ") " .
@@ -128,7 +153,7 @@ function details_post($db, $thaali)
         }
     }
 
-    details_get($db, $thaali, $msg);
+    details_get($db, $thaali, $eligible_sizes, $default_size, $msg);
 }
 
 ?>

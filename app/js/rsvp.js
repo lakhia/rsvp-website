@@ -1,7 +1,7 @@
 /* RSVP controller */
 app.controller("rsvpController", ["$scope", "$rootScope",
 function($scope, $rootScope) {
-    $scope.sizes = ["XS", "S", "M", "L", "XL"];
+    $scope.o = [];
 
     $scope.init = function() {
         $scope.greet = localStorage.getItem('greet');
@@ -55,6 +55,16 @@ function($scope, $rootScope) {
         localStorage.setItem('adults', raw.adults);
         localStorage.setItem('kids', raw.kids);
         onPostChange(id);
+    }
+
+    $scope.getSizes = function(currentSize) {
+        if ($scope.o.includes(currentSize)) {
+            return $scope.o;
+        } else {
+            dupSizes = [...$scope.o];
+            dupSizes.push(currentSize);
+            return dupSizes;
+        }
     }
 
     $scope.onSizeChange = function(id) {
