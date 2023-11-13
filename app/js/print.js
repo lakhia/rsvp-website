@@ -3,9 +3,20 @@ app.controller("printController", ["$scope", '$rootScope',
 function($scope, $rootScope) {
 
     $scope.init = function() {
-        $rootScope.init($scope, "print.php", null);
+        $rootScope.init($scope, "print.php", handleResponse);
         $scope.sortColumn = 'thaali';
         $scope.filterNames = {'area': "", 'rice': "", 'here': "", 'size': "", 'filled': ""};
+    }
+
+    function handleResponse(response) {
+        $scope.raw = response.data;
+        $scope.data = [];
+    }
+
+    $scope.onCheckboxClick = function(item) {
+        $scope.data.push({"thaali": item.thaali, "filled": item.filled ? 1 : 0, 
+            "here": item.here ? 1 : 0});
+        $scope.onChange();
     }
 
     $scope.filterFunc = function(item) {
@@ -61,7 +72,7 @@ function($scope, $rootScope) {
         if (other.niyaz) {
             return "Adults: " + other.adults + ", Kids: " + other.kids;
         } else {
-            var sum = $scope.data.reduce(function(prev, elem) {
+            var sum = $scope.raw.reduce(function(prev, elem) {
                 if (!elem.filtered) {
                     if (!elem.filled) {
                         prev[0]++;
@@ -81,7 +92,7 @@ function($scope, $rootScope) {
         if (other.niyaz) {
             return "Thaals: " + (other.adults / 8 + other.kids / 16).toFixed(1);
         } else {
-            var sizes = $scope.data.reduce(function(prev, elem) {
+            var sizes = $scope.raw.reduce(function(prev, elem) {
                 if (!elem.filtered) {
                     if (prev[elem.size]) {
                         prev[elem.size]++;
@@ -102,9 +113,11 @@ function($scope, $rootScope) {
     $scope.reset = function(nodes) {
         $scope.msg = "";
         $scope.changed = true;
-        angular.forEach($scope.data, function(item) {
+        $scope.data = [];
+        angular.forEach($scope.raw, function(item) {
             item.here = 0;
             item.filled = 0;
+            $scope.onCheckboxClick(item);
         });
     }
 
