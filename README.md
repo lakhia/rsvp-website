@@ -17,7 +17,7 @@
 
   Mysql needs to be setup. Run:
   
-  *  mysql -v -u root < database_*.sql
+  *  mysql -v -u root < migration/*.sql
 
   On the backend, it currently requires:
 
