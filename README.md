@@ -3,37 +3,39 @@
   This project is to collect RSVP responses so that cooking and filling teams
   can plan accordingly.
 
-# Requirements
+# System Requirements
 
-  The website uses the following on the client side:
+## Front-end
 
-  * HTML
-  * CSS
-  * Javascript
-  * [Angular](https://angularjs.org/) 1.2.x or higher
-  * [Angular ui-router](https://github.com/angular-ui/ui-router/wiki)
+The website uses the following on the client side:
 
-# Setup
+* HTML
+* CSS
+* Javascript
+* [Angular](https://angularjs.org/) 1.2.x or higher
+* [Angular ui-router](https://github.com/angular-ui/ui-router/wiki)
 
-  Mysql needs to be setup. Run:
-  
-  *  mysql -v -u root < migration/*.sql
+## Back-end
 
-  On the backend, it currently requires:
+On the backend, it currently requires:
 
-  * PHP 8.1
-  * MySQL 5.7
-  * Web server
+* PHP 8.1
+* MySQL 5.7
+* Web server
 
-  Use build system:
+# Dev Environment Setup
 
-  * Install [node](https://nodejs.org/en/download/package-manager/)
-  * Install [npm](https://docs.npmjs.com/getting-started/installing-node)
-  * Install all project dependencies using: npm install
-  * Run `gulp serve &` which will serve local files at:
-     * http://127.0.0.1:8010
-  * Make changes to files under app/ directory. Any changes are detected and
-    send reload event to browser
+## Pre-requisites
+1. Install [mysql](https://dev.mysql.com/downloads/mysql/) and run `mysql -v -u root < migration/*.sql` to bootstrap the database
+2. Install php - MacOS (Homebrew) - `brew install php`
+3. Install [node](https://nodejs.org/en/download/package-manager/)
+4. Install [npm](https://docs.npmjs.com/getting-started/installing-node)
+
+## Build and run
+
+1. Install all project dependencies using: npm install
+2. Run `gulp serve &` which will serve local files at: [http://127.0.0.1:8010](http://127.0.0.1:8010)
+3. Make changes to files under app/ directory. Any changes are detected andsend reload event to browser
 
 # Deployment
 
