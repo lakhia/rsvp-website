@@ -42,8 +42,7 @@ On the backend, it currently requires:
   * When ready to deploy, run "gulp" and publish all files in build directory
     except for hidden .tmp sub-directory
   * Run deployment squasher:
-     cd rsvp; perl deploy.pl <site_admin_email> <qa>
-    Note that "qa" will default to empty string for production. 
+    `cd rsvp; perl deploy.pl <dbhost> <dbusername> <dbpassword> <dbname> <adminemail> 
 
 # Files
 
@@ -58,3 +57,11 @@ On the backend, it currently requires:
   * Uses angular-ui-router to route to different parts of the app
   * Uses bootstrap to style buttons, tables, etc.
   * Uses loading-bar to show progress bar at top
+
+# Note about admin email
+
+Using the `adminemail` for login with ANY thaali number allows you to assume the role of any thaali number. You can make changes on their behalf without being subjected to the limitations of the regular user.
+
+Keep the `adminemail` safe.
+
+_We want to move away from this approach in the long-term, PRs are welcome_
