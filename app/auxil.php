@@ -63,8 +63,22 @@ class Helper
     // to always be passed in.
     public static function is_admin($email)
     {
-        if ($email == "admin@sfjamaat.org") {
-            return true;
+        global $db; // Refers to the global variable declared in oo_db.php
+        $sql = "SELECT resp FROM `family` WHERE `email` = '$email' LIMIT 1;";
+        $result = $db->query($sql) or die("{ msg: 'Can't determine if user is Admin' }");
+        if (!$result || $result->num_rows != 1) {
+            return false;
+        }
+        $row = $result->fetch_assoc();
+
+        if(!$row['resp']) {
+            return false;
+        }
+        $responsibilities = explode(',', $row['resp']);
+        foreach($responsibilities as $resp) {
+            if ($resp == 'A') { // A for Admin
+                return true;
+            }
         }
         return false;
     }
