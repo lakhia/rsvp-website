@@ -40,28 +40,17 @@ CREATE TABLE rsvps
 
 --
 -- Dummy data
+-- Create dummy families
+-- These can be replaced with real families
 --
-
 insert into family
   ( thaali, lastName, firstName, email, phone, area )
   values
-  ( 36, 'Yamani', 'Ali Akber', 'lakhia@gmail.com', '510-565-7861' , 'Masjid');
+  ( 1, 'Anonymous', 'Mumin bhai', 'randomemail@gmail.com', '000-000-0000' , 'Area1');
 insert into family
   ( thaali, lastName, firstName, email, phone, area  )
   values
-  ( 5, 'Pedhiwala', 'Mohammed', 'mpedhiwala@gmail.com', '510-494-1520', 'Masjid' );
-insert into family
-  ( thaali, lastName, firstName, email, phone, area  )
-  values
-  ( 6, 'Bootwala', 'Mustafa', 'mabootwala@gmail.com', '650-676-8849', 'Ardenwood' );
-insert into family
-  ( thaali, lastName, firstName, email, phone , area )
-  values
-  ( 7, 'Patanwala', 'Aliasgar', 'apatanwala@gmail.com', '650-276-8037','Sacramento' );
-insert into family
-  ( thaali, lastName, firstName, email, phone , area )
-  values
-  ( 8, 'Partapurwala', 'Murtaza', 'murtazap@gmail.com', '510-579-4909', 'Sacramento' );
+  ( 2, 'Anonymous', 'Mumina behen', 'randomemail@gmail.com', '000-000-0000', 'Area1' );
 
 insert into events
   ( date, details)

@@ -5,9 +5,11 @@ use File::Find;
 use Cwd;
 
 # Global variables
-my $webpass = (shift or '');
-my $mysqlpass = (shift or '');
+my $dbhost = (shift or '');
+my $dbusername = (shift or '');
+my $dbpassword = (shift or '');
 my $dbname = (shift or '');
+my $adminemail = (shift or '');
 
 find (\&wanted, 'build');
 
@@ -20,7 +22,8 @@ sub wanted {
     } elsif (m/aux/) {
         aux($_);
         return;
-    } elsif (m/index\.html/) {
+    }
+    elsif (m/index\.html/) {
         html($_);
         return;
     }
@@ -33,9 +36,11 @@ sub oo {
     open OUT, ">$_.backup" or die "Cannot open $!";
     while ($line = <IN>) {
         if ($line =~ m/dbhost =/) {
-            $line =~ s/127.0.0.1/mysql-1.sfjamaat.org/;
+            $line =~ s/127.0.0.1/$dbhost/;
+        } elsif ($line =~ m/dbusername =/) {
+            $line =~ s/sffaiz/$dbusername/;
         } elsif ($line =~ m/dbpassword =/) {
-            $line =~ s/sffaiz-pass/$mysqlpass/;
+            $line =~ s/sffaiz-pass/$dbpassword/;
         } elsif ($line =~ m/dbname =/ and $dbname) {
             $line =~ s/sffaiz/$dbname/;
         }
@@ -47,14 +52,14 @@ sub oo {
 }
 
 sub aux {
-    return unless $webpass;
+    return unless $adminemail;
     my $line;
     $_ = shift;
     open IN, $_ or die "Cannot open $!";
     open OUT, ">$_.backup" or die "Cannot open $!";
     while ($line = <IN>) {
         if ($line =~ m/admin\@sfjamaat.org/) {
-            $line =~ s/admin\@sfjamaat.org/$webpass/;
+            $line =~ s/admin\@sfjamaat.org/$adminemail/;
         }
         print OUT $line;
     }

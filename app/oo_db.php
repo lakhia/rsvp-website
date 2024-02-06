@@ -20,7 +20,6 @@ class DB {
         // convention is to use $db or $mysqli for the db handle
         $this->mysqli = new mysqli($this->dbhost, $this->dbusername,
                                    $this->dbpassword, $this->dbname);
-
         if ($this->mysqli->connect_errno) {
             $this->log_error($this->mysqli->connect_error);
             throw new Exception($this->mysqli->connect_error);
