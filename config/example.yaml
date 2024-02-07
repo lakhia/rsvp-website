@@ -1,0 +1,13 @@
+db:
+  host: "localhost"
+  name: "sffaiz"
+  password: "sffaiz-pass"
+email:
+  admin: "admin@sfjamaat.org"
+  contact: "fmb@sfjamaat.org"
+  secretary: "secretary@sfjamaat.org"
+links:
+  planning: "https://form.jotform.com/222676794136163"
+  feedback: "https://goo.gl/forms/PTUd1L9ASeVIeNB92"
+app:
+  name: "Faiz SF"
