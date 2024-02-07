@@ -35,26 +35,25 @@ On the backend, it currently requires:
 
 1. Install all project dependencies using: npm install
 2. Run `gulp serve &` which will serve local files at: [http://127.0.0.1:8010](http://127.0.0.1:8010)
-3. Make changes to files under app/ directory. Any changes are detected andsend reload event to browser
+3. Make changes to files under app/ directory. Any changes are detected and send reload event to browser
 
 # Deployment
 
-  * When ready to deploy, run "gulp" and publish all files in build directory
+  * When ready to deploy, run "gulp" and publish all files in `build/` directory
     except for hidden .tmp sub-directory
-  * Run deployment squasher:
-     cd rsvp; perl deploy.pl <site_admin_email> <qa>
-    Note that "qa" will default to empty string for production. 
+  * Run deployment squasher and templater:
+     cd rsvp; perl deploy.pl config.yaml
+    For an example configuration, see `config/example.yaml`
 
 # Files
 
-  * database_*.sql used to setup database
-  * app/index.html is the single web page
-  * app/js/main.js is the main angular controllers
-  * other app/js/*.js files contain view-specific controllers
-  * app/*.php files serve JSON
+  * `migration/*.sql` used to setup and migrate database
+  * `app/*.html` where `index.html` is the main web application and the other files are specific views for individual routes
+  * `app/js/*.js` where `main.js` has the main controllers and the remaining files has view specific angular controllers
+  * `app/*.php` are backend PHP files that serve JSON to the front-end
 
 # Internal dependencies
 
-  * Uses angular-ui-router to route to different parts of the app
-  * Uses bootstrap to style buttons, tables, etc.
-  * Uses loading-bar to show progress bar at top
+  * Uses `angular-ui-router` to route to different parts of the app
+  * Uses `bootstrap` to style buttons, tables, etc.
+  * Uses `loading-bar` to show progress bar at top

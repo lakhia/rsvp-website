@@ -3,11 +3,15 @@
 use strict;
 use File::Find;
 use Cwd;
+use YAML qw(LoadFile);
+use Data::Dumper qw(Dumper);
 
 # Global variables
-my $webpass = (shift or '');
-my $mysqlpass = (shift or '');
-my $dbname = (shift or '');
+my $config_file = shift or die "Usage: $0 YAML-FILE \n\n(see config/example.yaml)\n";
+my $config = LoadFile($config_file);
+
+# uncomment for debugging config
+#print Dumper $config; 
 
 find (\&wanted, 'build');
 
@@ -15,10 +19,10 @@ sub wanted {
     return unless -f $_;
 
     if (m/oo_db.php/) {
-        oo($_);
+        db_config($_);
         return;
     } elsif (m/aux/) {
-        aux($_);
+        php_helper($_);
         return;
     } elsif (m/index\.html/) {
         html($_);
@@ -26,18 +30,18 @@ sub wanted {
     }
 }
 
-sub oo {
+sub db_config {
     my $line;
     $_ = shift;
     open IN, $_ or die "Cannot open $!";
     open OUT, ">$_.backup" or die "Cannot open $!";
     while ($line = <IN>) {
         if ($line =~ m/dbhost =/) {
-            $line =~ s/127.0.0.1/mysql-1.sfjamaat.org/;
+            $line =~ s/127.0.0.1/$config->{'db'}->{'host'}/;
         } elsif ($line =~ m/dbpassword =/) {
-            $line =~ s/sffaiz-pass/$mysqlpass/;
-        } elsif ($line =~ m/dbname =/ and $dbname) {
-            $line =~ s/sffaiz/$dbname/;
+            $line =~ s/sffaiz-pass/$config->{'db'}->{'password'}/;
+        } elsif ($line =~ m/dbname =/) {
+            $line =~ s/sffaiz/$config->{'db'}->{'name'}/;
         }
         print OUT $line;
     }
@@ -46,16 +50,13 @@ sub oo {
     rename "$_.backup", $_;
 }
 
-sub aux {
-    return unless $webpass;
+sub php_helper {
     my $line;
     $_ = shift;
     open IN, $_ or die "Cannot open $!";
     open OUT, ">$_.backup" or die "Cannot open $!";
     while ($line = <IN>) {
-        if ($line =~ m/admin\@sfjamaat.org/) {
-            $line =~ s/admin\@sfjamaat.org/$webpass/;
-        }
+        $line =~ s/admin\@sfjamaat.org/$config->{'email'}->{'admin'}/;
         print OUT $line;
     }
     close OUT;
@@ -69,6 +70,14 @@ sub html {
     open IN, $_ or die "Cannot open $!";
     open OUT, ">$_.backup" or die "Cannot open $!";
     while ($line = <IN>) {
+        # Template values
+        $line =~ s/APP_NAME/$config->{'app'}->{'name'}/;
+        $line =~ s/FEEDBACK_URL/$config->{'links'}->{'feedback'}/;
+        $line =~ s/PLANNING_URL/$config->{'links'}->{'planning'}/;
+        $line =~ s/ADMIN_EMAIL/$config->{'email'}->{'admin'}/;
+        $line =~ s/CONTACT_EMAIL/$config->{'email'}->{'contact'}/;
+        $line =~ s/SECRETARY_EMAIL/$config->{'email'}->{'secretary'}/;
+
         # Javascript methods
         $line =~ s/getClass/gC/g;
         $line =~ s/on(..)[a-zA-Z]*Change/o$1/g;

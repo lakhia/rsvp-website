@@ -1,5 +1,7 @@
 node_modules/
 build/
 .DS_Store
+config/*.yaml
+!config/example.yaml
 rsvp.sublime-project
 rsvp.sublime-workspace
