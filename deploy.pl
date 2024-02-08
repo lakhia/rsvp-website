@@ -77,6 +77,7 @@ sub html {
         $line =~ s/ADMIN_EMAIL/$config->{'email'}->{'admin'}/;
         $line =~ s/CONTACT_EMAIL/$config->{'email'}->{'contact'}/;
         $line =~ s/SECRETARY_EMAIL/$config->{'email'}->{'secretary'}/;
+        $line =~ s/SECRETARY_TITLE/$config->{'title'}->{'secretary'}/;
 
         # Javascript methods
         $line =~ s/getClass/gC/g;
