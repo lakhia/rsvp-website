@@ -1,6 +1,7 @@
 db:
   host: "localhost"
   name: "sffaiz"
+  username: "sffaiz"
   password: "sffaiz-pass"
 email:
   admin: "admin@sfjamaat.org"

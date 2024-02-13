@@ -40,6 +40,8 @@ sub db_config {
             $line =~ s/127.0.0.1/$config->{'db'}->{'host'}/;
         } elsif ($line =~ m/dbpassword =/) {
             $line =~ s/sffaiz-pass/$config->{'db'}->{'password'}/;
+        } elsif ($line =~ m/dbusername =/) {
+            $line =~ s/sffaiz/$config->{'db'}->{'username'}/;
         } elsif ($line =~ m/dbname =/) {
             $line =~ s/sffaiz/$config->{'db'}->{'name'}/;
         }
