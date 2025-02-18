@@ -113,7 +113,7 @@ app.run(['$rootScope', '$http', '$state', '$stateParams',
             }
             // Submit
             scope.submit = function() {
-                $http.post(url + "?offset=" + scope.offset + "&date=" + scope.date,
+                $http.post(url + "?offset=" + scope.offset,
                            scope.data, {timeout:8000})
                     .success(handleSuccess).error(error);
             }
