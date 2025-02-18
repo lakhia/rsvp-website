@@ -135,6 +135,10 @@ function event_post($db)
 {
     $msg = "";
     $data = json_decode(file_get_contents('php://input'), false);
+    $stmt = $db->prepare("INSERT INTO events (date, details, enabled, niyaz) " .
+                         "VALUES (?, ?, ?, ?) " .
+                         "ON DUPLICATE KEY UPDATE " .
+                         "details = ?, enabled = ?, niyaz = ?");
 
     foreach ($data as $i) {
         $date = $i->date;
@@ -151,17 +155,19 @@ function event_post($db)
         $details = Helper::get_if_defined($i->details, "");
         if ($details == "") {
             $query = "DELETE FROM events WHERE date = '$date';";
+            if (!$db->query($query)) {
+                $msg =  $db->error;
+                break;
+            }
         } else {
             $details = fix_details($details);
-            $query = "INSERT INTO events(date, details, enabled, niyaz) " .
-                     "VALUES(\"$date\", \"$details\", $enabled, $niyaz) " .
-                     "ON DUPLICATE KEY " .
-                     "UPDATE details=\"$details\", enabled=$enabled, niyaz=$niyaz";
-        }
-        $result = $db->query($query);
-        if (!$result) {
-            $msg =  $db->error;
-            break;
+            $stmt->bind_param("ssiisii",
+                              $date, $details, $enabled, $niyaz, 
+                              $details, $enabled, $niyaz);
+            if (!$stmt->execute()) {
+                $msg = $stmt->error;
+                break;
+            }
         }
     }
     if (!$msg) {
