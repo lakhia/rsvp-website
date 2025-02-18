@@ -143,13 +143,14 @@ function details_post($db, $thaali, $eligible_sizes, $default_size)
             }
         }
 
-        $result = $db->query("insert into rsvps(date, thaali_id, " . $cols . ") " .
-                             "values(\"$date\", $thaali, " . $vals . ") " .
-                             "on duplicate KEY update " . $changes . ";");
-        if (!$result) {
-            $msg =  $db->error;
-        } else {
+        $stmt = $db->prepare("INSERT INTO rsvps (date, thaali_id, $cols) " .
+                             "VALUES (?, ?, $vals) " .
+                             "ON DUPLICATE KEY UPDATE $changes");
+        $stmt->bind_param("si", $date, $thaali);
+        if ($stmt->execute()) {
             $msg = "Thank you, changes have been saved!";
+        } else {
+            $msg = $stmt->error;
         }
     }
 

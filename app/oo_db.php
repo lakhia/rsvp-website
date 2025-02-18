@@ -29,6 +29,10 @@ class DB {
         }
     }
 
+    public function prepare($query_string) {
+        return $this->mysqli->prepare($query_string);
+    }
+
     public function query($query_string) {
         if (!$this->connected) {
             return false;
