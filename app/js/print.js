@@ -90,7 +90,7 @@ function($scope, $rootScope) {
     $scope.secondLine = function(other) {
         if (!other) return "";
         if (other.niyaz) {
-            return "Thaals: " + (other.adults / 8 + other.kids / 16).toFixed(1);
+            return "Thaals: " + (other.adults / 8 + other.kids / 10).toFixed(1);
         } else {
             var sizes = $scope.raw.reduce(function(prev, elem) {
                 if (!elem.filtered) {
