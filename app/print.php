@@ -85,17 +85,13 @@ function print_post($db, $from, $offset)
     $save = Helper::is_save_available($offset);
 
     if ($save) {
+        $stmt = $db->prepare("UPDATE rsvps SET here = ?, filled = ? WHERE thaali_id = ? AND date = ?");
         foreach ($data as $i) {
             $thaali_id = $i->thaali;
-
-            $query = "UPDATE rsvps set here='". $i->here .
-               "',  filled = '" . $i->filled . "'  " .
-               "WHERE  thaali_id = '" . $thaali_id .
-               "' and date = '" . $from . "'";
-
-            $result = $db->query($query);
+            $stmt->bind_param("iiis", $i->here, $i->filled, $thaali_id, $from);
+            $result = $stmt->execute();
             if (!$result) {
-                $msg =   $db->error ;
+                $msg = $stmt->error;
                 break;
             };
         };

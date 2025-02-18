@@ -6,16 +6,18 @@ class Estimation
 
     private static function get_all_ingredients($db, $fullmenu) {
         $ingredients = array();
+        $stmt = $db->prepare("SELECT name, multiplier, rice, unit FROM cooking " .
+                             "LEFT JOIN menus on menu_id = id " .
+                             "LEFT JOIN ingredients on ingred_id = ingredients.id " .
+                             "WHERE menu = ?");
         foreach (explode(",", $fullmenu) as $menu) {
             if (strpos($menu, ":")) {
                 $menu = substr($menu, 1 + strpos($menu, ":"));
             }
             $menu = trim($menu);
-            $query = "SELECT name, multiplier, rice, unit FROM cooking " .
-                     "LEFT JOIN menus on menu_id = id " .
-                     "LEFT JOIN ingredients on ingred_id = ingredients.id " .
-                     "WHERE menu = '" . $menu . "';";
-            $result = $db->query($query);
+            $stmt->bind_param("s", $menu);
+            $stmt->execute();
+            $result = $stmt->get_result();
             $ingredients[$menu] = array();
             while($row = $result->fetch_assoc()) {
                 if (!isset($ingredients[$menu])) {

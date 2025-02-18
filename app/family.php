@@ -53,11 +53,21 @@ function family_get($db, $thaali, $msg)
 function family_post($db, $thaali) {
     $msg = "";
     $data = json_decode(file_get_contents('php://input'), false);
+    $stmt = $db->prepare("INSERT INTO family " .
+                         "(thaali, its, lastName, firstName, size, area, email, phone, poc, resp) " .
+                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " .
+                         "ON DUPLICATE KEY UPDATE " .
+                         "its = ?, lastName = ?, firstName = ?, size = ?, " .
+                         "area = ?, email = ?, phone = ?, poc = ?, resp = ?");
+
     foreach ($data as $i) {
         $email = Helper::get_if_defined($i->email, '');
         if ($email == '') {
             // No email means delete user because they cannot login without it
             $query = "DELETE FROM family WHERE thaali = " . $i->thaali;
+            if (!$db->query($query)) {
+                $msg .= ", Error: " . $db->error;
+            }
         } else {
             $lastName = Helper::get_if_defined($i->lastName, '');
             $firstName = Helper::get_if_defined($i->firstName, '');
@@ -75,19 +85,14 @@ function family_post($db, $thaali) {
                 $msg .= ", name is required";
                 continue;
             }
-            // Insert or update
-            $query = "INSERT INTO family" .
-                "(thaali, its, lastName, firstName, size, area, email, phone, poc, resp) " .
-                "values($i->thaali, '$its', '$lastName', '$firstName', '$size'," .
-                "'$area', '$email', '$phone', '$poc', '$resp')" .
-                "on duplicate KEY " .
-                "update its='$its', lastName='$lastName', firstName='$firstName'," .
-                "size='$size', area='$area', email='$email', " .
-                "phone='$phone', poc='$poc', resp='$resp'";
-        }
-        $result = $db->query($query);
-        if (!$result) {
-            $msg .= ", Error: " . $db->error;
+            $stmt->bind_param("issssssssssssssssss", 
+                              $i->thaali, $its, $lastName, $firstName, $size, $area, 
+                              $email, $phone, $poc, $resp, 
+                              $its, $lastName, $firstName, $size, $area, 
+                              $email, $phone, $poc, $resp);
+            if (!$stmt->execute()) {
+                $msg .= ", Error: " . $stmt->error;
+            }
         }
     }
     if (!$msg) {
