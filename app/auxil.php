@@ -114,31 +114,10 @@ class Helper
             return '1970-1-1';
         }
 
-        // Get current date
-        $now = new DateTime();
-        $current_day = $now->format('w'); // 0 (Sunday) to 6 (Saturday)
+        $cutoff = strtotime('today 9pm');
+        $now = time();
 
-        // Create cutoff date
-        $cutoff_date = clone $now;
-
-        if ($current_day > 5) {
-            // If it's Saturday (6), or Sunday (0),
-            // cutoff is the Sunday of the next week
-            if ($current_day == 6) {
-                // If it's Saturday, add 8 days to get to next Sunday
-                $cutoff_date->modify('+8 day');
-            } else {
-                // If it's Sunday, add 7 days to get to next Sunday
-                $cutoff_date->modify('+7 days');
-            }
-        } else {
-            // If it's Monday (1) through Friday (5),
-            // cutoff is the upcoming Sunday
-            $days_until_sunday = 7 - $current_day;
-            $cutoff_date->modify('+' . $days_until_sunday . ' days');
-        }
-
-        return $cutoff_date->format('Y-m-d');
+        return date('Y-m-d', strtotime( ($now > $cutoff) ? '+2 day' : '+1 day' ) );
     }
 
     public static function is_save_available($offset)
