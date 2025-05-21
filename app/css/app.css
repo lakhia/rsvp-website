@@ -51,7 +51,7 @@ a.menu, a.menu:hover, a.menu:focus {
     margin-bottom: 15px;
 }
 h3 { font-size: 140%; text-align: center }
-.rsvpBtn { width:70px; padding:2px 2px }
+.rsvpBtn { width:70px; padding:2px }
 .msg { color:#b22; text-align: center; font-size: 85% }
 .No  { background: #b88 }
 .Yes { background: #8b8 }
