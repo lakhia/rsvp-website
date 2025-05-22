@@ -1,9 +1,8 @@
 {
   "scripts": {
-    "dev": "npm-run-all --parallel serve watch",
-    "serve": "php -S localhost:8010 -t app",
-    "watch": "chokidar 'app/**/*.{html,js,css}' -c 'echo File changed: {path}'",
-    
+    "dev": "npm-run-all --parallel serve:php serve",
+    "serve": "browser-sync start --proxy localhost:8010 --files 'app' --port 3000 --open",
+    "serve:php": "php -S localhost:8010 -t app",
     "build": "npm-run-all clean build:parallel build:index",
     "build:parallel": "npm-run-all --parallel build:js build:css build:php",
     "build:php": "cpx 'app/*.php' build/",
@@ -19,7 +18,7 @@
   "private": true,
   "version": "0.1.0",
   "devDependencies": {
-    "chokidar-cli": "^3.0.0",
+    "browser-sync": "^3.0.4",
     "clean-css": "^5.3.3",
     "cpx": "^1.5.0",
     "html-minifier": "^4.0.0",
