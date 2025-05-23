@@ -34,13 +34,13 @@ On the backend, it currently requires:
 ## Build and run
 
 1. Install all project dependencies using: npm install
-2. Run `gulp serve &` which will serve local files at: [http://127.0.0.1:8010](http://127.0.0.1:8010)
-3. Make changes to files under app/ directory. Any changes are detected and send reload event to browser
+2. Run `npm run dev` which will serve local files at: [http://127.0.0.1:3000](http://127.0.0.1:3000)
+3. Make changes to files under `app/` directory. Any changes are detected and send reload event to browser
 
 # Deployment
 
-  * When ready to deploy, run "gulp" and publish all files in `build/` directory
-    except for hidden .tmp sub-directory
+  * When ready to deploy, run "npm run build" and publish all files in
+    `build/` directory except for hidden .tmp sub-directory
   * Run deployment squasher and templater:
      cd rsvp; perl deploy.pl config.yaml
     For an example configuration, see `config/example.yaml`
