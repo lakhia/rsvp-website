@@ -19,12 +19,24 @@ function buildIndex() {
     `<style>${allCss}</style>`
   );
   
-  // Replace CDN placeholder
-  html = html.replace('#includeCDN', cdnHtml);
-  
+  // Remove build:remove sections with CDN
+  html = html.replace(
+      /<!-- build:remove -->[\s\S]*?<!-- endbuild -->/g, cdnHtml
+  );
+
   // Minify HTML
   const minified = minify(html, {
     collapseWhitespace: true,
+    removeComments: true,
+    removeAttributeQuotes: true,
+    removeEmptyAttributes: true,
+    removeRedundantAttributes: true,
+    removeScriptTypeAttributes: true,
+    removeStyleLinkTypeAttributes: true,
+    minifyJS: true,
+    minifyCSS: true,
+    useShortDoctype: true,
+    removeOptionalTags: true,
     removeComments: true,
     minifyJS: true,
     minifyCSS: true
