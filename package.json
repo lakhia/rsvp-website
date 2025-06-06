@@ -9,7 +9,7 @@
     "build": "npm-run-all clean build:parallel build:index",
     "build:dev": "npm-run-all clean build:parallel build:index",
     "build:parallel": "npm-run-all --parallel build:js build:css build:php",
-    "build:php": "cpx 'app/*.php' build/",
+    "build:php": "cpx 'app/*.php' build/ && cpx 'app/lib/fpdf/**/*' build/lib/fpdf/",
     "build:templates": "html-minifier --collapse-whitespace --remove-comments --input-dir app --output-dir build/.tmp --file-ext html && node scripts/generate-templates.js",
     "build:js": "npm-run-all build:templates && node scripts/build-js.js",
     "build:css": "node scripts/build-css.js",

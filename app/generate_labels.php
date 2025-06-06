@@ -1,0 +1,118 @@
+<?php
+require "lib/fpdf/fpdf.php";
+require_once "auxil.php";
+
+// If token is invalid, return an empty response
+if (!Helper::verify_token($db, $email_cookie, $thaali_cookie)) {
+    die('{ "msg": "Login failed, please logout and login again" }');
+}
+// Check for a 'date' parameter
+if (!isset($_GET["date"])) {
+    die(
+        "Error: Date parameter missing. Please provide a date (e.g. ?date=2025-06-15)."
+    );
+}
+
+$filter_date = $_GET["date"];
+$event_query =
+    'SELECT details, enabled from events where date="' . $filter_date . '";';
+$result = $db->query($event_query);
+if (!$result || $result->num_rows != 1) {
+    die("Error: Seems like there is no event on the day selected.");
+}
+$row = $result->fetch_assoc();
+if (!$row["enabled"]) {
+    die("Error: Seems like the event is not enabled.");
+}
+$dish = $row["details"];
+// Get RSVP and family
+$query =
+    "SELECT thaali_id as thaali, CONCAT(firstName, ' ', lastName) AS name, " .
+    "rsvps.size, area FROM rsvps LEFT JOIN `family` on family.thaali = rsvps.thaali_id " .
+    "WHERE `rsvp` = 1 AND `date` = '" .
+    $filter_date .
+    "' ORDER BY rsvps.size, area;";
+$result = $db->query($query);
+
+while ($row = $result->fetch_assoc()) {
+    $data[] = [
+        "id" => $row["thaali"],
+        "dish" => $dish,
+        "area" => $row["area"],
+        "name" => $row["name"],
+        "size" => $row["size"],
+        "date" => $filter_date,
+    ];
+}
+
+// Create PDF
+$pdf = new FPDF("P", "in", "Letter");
+$pdf->SetMargins(0, 0);
+$pdf->AddPage();
+$pdf->SetFont("Arial", "", 9); // Font size adjusted for label size
+
+// Avery 5160 specs
+$labelWidth = 2.625;
+$labelHeight = 1;
+$marginLeft = 0.1875;
+$marginTop = 0.5;
+$spaceX = 0.125;
+$spaceY = 0;
+
+$x = $marginLeft;
+$y = $marginTop;
+$col = 0;
+$row = 0;
+
+foreach ($data as $index => $label) {
+    // Optional debug border
+    // $pdf->Rect($x, $y, $labelWidth, $labelHeight);
+
+    // Position cursor
+    $pdf->SetXY($x + 0.1, $y + 0.1);
+
+    // Line 1: ID | City (bold)
+    $pdf->SetFont("Arial", "B", 14);
+    $pdf->Cell(
+        $labelWidth - 0.2,
+        0.15,
+        $label["id"] . " | " . $label["area"] . " | " . $label["size"],
+        0,
+        2,
+        "C"
+    );
+    $pdf->Cell($labelWidth - 0.2, 0.02, "", 0, 2);
+    // Line 2: Dish Name (Size) (regular)
+    $pdf->SetFont("Arial", "", 10);
+    // Line 3: Name
+    $pdf->Cell($labelWidth - 0.2, 0.02, "", 0, 2);
+    $pdf->Cell($labelWidth - 0.2, 0.13, $label["dish"], 0, 2, "C");
+    $pdf->Cell($labelWidth - 0.2, 0.02, "", 0, 2);
+    // Line 4: Date
+    $pdf->Cell($labelWidth - 0.2, 0.15, $label["date"], 0, 2, "C");
+
+    // Move to next label
+    $col++;
+    if ($col >= 3) {
+        $col = 0;
+        $row++;
+        $x = $marginLeft;
+        $y += $labelHeight + $spaceY;
+    } else {
+        $x += $labelWidth + $spaceX;
+    }
+
+    // New page if needed
+    if ($row >= 10) {
+        $pdf->AddPage();
+        $x = $marginLeft;
+        $y = $marginTop;
+        $col = 0;
+        $row = 0;
+    }
+}
+
+// Output the PDF automatically
+$pdf->Output("D", "labels.pdf"); // 'D' triggers download
+exit();
+?>
