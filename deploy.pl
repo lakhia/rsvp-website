@@ -117,6 +117,7 @@ sub html {
         $line =~ s/onCheckboxClick/oCC/g;
         $line =~ s/onFilterChange/oFC/g;
         $line =~ s/getDisplayDate/gD/g;
+        $line =~ s/generateLabels/gLB/g;
         $line =~ s/getRawDate/gR/g;
         $line =~ s/getSizes/gSz/g;
         $line =~ s/changed/cg/g;
