@@ -135,4 +135,8 @@ function($scope, $rootScope) {
         $scope.filterNames.filled = $scope.filterNames.filled.toUpperCase();
         $scope.filterNames.rice = $scope.filterNames.rice.toUpperCase();
     }
+
+    $scope.generateLabels = function () {
+      window.location.href = "generate_labels.php?date=" + encodeURIComponent($scope.date);
+    };
 }]);

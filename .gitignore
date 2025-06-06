@@ -4,3 +4,4 @@ build/
 rsvp.sublime-project
 rsvp.sublime-workspace
 .env
+production_dump.sql
