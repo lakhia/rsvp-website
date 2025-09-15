@@ -1,6 +1,6 @@
 /* RSVP controller */
-app.controller("rsvpController", ["$scope", "$rootScope",
-function($scope, $rootScope) {
+app.controller("rsvpController", ["$scope", "$rootScope", "sizeService",
+function($scope, $rootScope, sizeService) {
     $scope.o = [];
 
     $scope.init = function() {
@@ -14,6 +14,19 @@ function($scope, $rootScope) {
 
     function handleResponse(response) {
         $scope.raw = response.data;
+        if ($scope.raw) {
+            Object.values($scope.raw).forEach(function(item) {
+                if (item.size) {
+                    item.displaySize = sizeService.sizeToDisplay(item.size);
+                }
+            });
+            // Convert available sizes to display format
+            if ($scope.o && $scope.o.length) {
+                $scope.displaySizes = $scope.o.map(function(size) {
+                    return sizeService.sizeToDisplay(size);
+                });
+            }
+        }
         $scope.data = {};
     }
 
@@ -58,11 +71,17 @@ function($scope, $rootScope) {
     }
 
     $scope.getSizes = function(currentSize) {
-        if ($scope.o.includes(currentSize)) {
-            return $scope.o;
+        var currentDisplaySize = sizeService.sizeToDisplay(currentSize);
+        if (!$scope.displaySizes) {
+            $scope.displaySizes = $scope.o.map(function(size) {
+                return sizeService.sizeToDisplay(size);
+            });
+        }
+        if ($scope.displaySizes.includes(currentDisplaySize)) {
+            return $scope.displaySizes;
         } else {
-            dupSizes = [...$scope.o];
-            dupSizes.push(currentSize);
+            var dupSizes = [...$scope.displaySizes];
+            dupSizes.push(currentDisplaySize);
             return dupSizes;
         }
     }
@@ -70,6 +89,8 @@ function($scope, $rootScope) {
     $scope.onSizeChange = function(id) {
         var dateData = onPreChange(id);
         var raw = $scope.raw[id];
+        // Convert display size back to database size
+        raw.size = sizeService.displayToSize(raw.displaySize);
         dateData.size = raw.size;
         onPostChange(id);
     }

@@ -1,6 +1,6 @@
 /* Printout controller */
-app.controller("printController", ["$scope", '$rootScope',
-function($scope, $rootScope) {
+app.controller("printController", ["$scope", '$rootScope', 'sizeService',
+function($scope, $rootScope, sizeService) {
 
     $scope.init = function() {
         $rootScope.init($scope, "print.php", handleResponse);
@@ -10,6 +10,11 @@ function($scope, $rootScope) {
 
     function handleResponse(response) {
         $scope.raw = response.data;
+        if ($scope.raw) {
+            $scope.raw.forEach(function(item) {
+                item.displaySize = sizeService.sizeToDisplay(item.size);
+            });
+        }
         $scope.data = [];
     }
 
@@ -103,9 +108,9 @@ function($scope, $rootScope) {
                 return prev;
             }, {});
             return "XS: " + (sizes['XS'] || 0)
-               + ", S: " + (sizes['S'] || 0)
-               + ", M: " + (sizes['M'] || 0)
-               + ", L: " + (sizes['L'] || 0)
+               + ", SM: " + (sizes['S'] || 0)
+               + ", MD: " + (sizes['M'] || 0)
+               + ", LG: " + (sizes['L'] || 0)
                + ", XL: " + (sizes['XL'] || 0);
         }
     }
