@@ -44,7 +44,7 @@
     <tr ng-repeat="item in raw | orderBy: sorterFunc | filter: filterFunc">
       <td>{{ item["thaali"] }}</td>
       <td>{{ item["area"] }}</td>
-      <td>{{ item["size"] }}</td>
+      <td>{{ item["displaySize"] }}</td>
       <td ng-hide="o.niyaz">{{ item["bread+rice"] }}</td>
       <td ng-hide="o.niyaz">
         <input type="checkbox" ng-model='item.here' ng-checked="item.here==1"  ng-change="onCheckboxClick(item)"/>
