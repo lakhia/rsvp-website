@@ -7,19 +7,23 @@ class DB {
     private $mysqli;
     private $thread_id;
 
-    private $dbhost =       "127.0.0.1";
-    private $dbusername =   "sffaiz";
-    private $dbpassword =   "sffaiz-pass";
-    private $dbname =       "sffaiz";
-
-    public $connected =    false;
-    public $error =        "";
-    public $error_data =   null;
+    private $dbhost;
+    private $dbusername;
+    private $dbpassword;
+    private $dbname;
+    public $connected = false;
+    public $error = "";
+    public $error_data = null;
 
     public function __construct() {
+        $this->dbhost = getenv('DB_HOST') ?: 'db';
+        $this->dbusername = getenv('DB_USERNAME') ?: 'sffaiz';
+        $this->dbpassword = getenv('DB_PASSWORD') ?: 'sffaiz-pass';
+        $this->dbname = getenv('DB_DATABASE') ?: 'sffaiz';
+
         // convention is to use $db or $mysqli for the db handle
         $this->mysqli = new mysqli($this->dbhost, $this->dbusername,
-                                   $this->dbpassword, $this->dbname);
+                                 $this->dbpassword, $this->dbname);
 
         if ($this->mysqli->connect_errno) {
             $this->log_error($this->mysqli->connect_error);
@@ -46,7 +50,7 @@ class DB {
         } else {
             // the query failed, log it
             $this->log_error("{$this->mysqli->errno}:{$this->mysqli->error}",
-                             $query_string);
+                           $query_string);
             return false;
         }
     }
