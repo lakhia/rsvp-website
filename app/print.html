@@ -33,8 +33,8 @@
     <tr>
       <th class="col-xs-1">Thaali</th>
       <th class="col-xs-1"><input ng-model='filterNames.area' type="text" class="trans" ng-change="onFilterChange()" placeholder="Area"></th>
-      <th class="col-xs-1"><input ng-model='filterNames.size' type="text" class="trans" ng-change="onFilterChange()" placeholder="Size"></th>
       <th class="col-xs-1" ng-hide="o.niyaz"><input ng-model='filterNames.rice' type="text" class="trans" ng-change="onFilterChange()" placeholder="Rice/ Bread"></th>
+      <th class="col-xs-1"><input ng-model='filterNames.size' type="text" class="trans" ng-change="onFilterChange()" placeholder="Size"></th>
       <th class="col-xs-1" ng-hide="o.niyaz"><input ng-model='filterNames.here' type="text" class="trans" ng-change="onFilterChange()" placeholder="Here"></th>
       <th class="col-xs-1" ng-hide="o.niyaz"><input ng-model='filterNames.filled' type="text" class="trans" ng-change="onFilterChange()" placeholder="Filled"></th>
       <th><input type="text" ng-model='filterNames.name' class="trans" ng-change="onFilterChange()" placeholder="Name"></th>
@@ -42,10 +42,10 @@
   </thead>
   <tbody id="rTab">
     <tr ng-repeat="item in raw | orderBy: sorterFunc | filter: filterFunc">
-      <td>{{ item["thaali"] }}</td>
+      <td class="text-right">{{ item["thaali"] }}</td>
       <td>{{ item["area"] }}</td>
-      <td>{{ item["size"] }}</td>
       <td ng-hide="o.niyaz">{{ item["bread+rice"] }}</td>
+      <td><span class="badge">{{ item["size"] }}</span></td>
       <td ng-hide="o.niyaz">
         <input type="checkbox" ng-model='item.here' ng-checked="item.here==1"  ng-change="onCheckboxClick(item)"/>
       </td>
