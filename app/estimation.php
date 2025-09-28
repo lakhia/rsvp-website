@@ -2,7 +2,7 @@
 
 class Estimation
 {
-    public static $sizes = array("XS", "S", "M", "L", "XL");
+    public static $sizes = array("XS", "SM", "MD", "LG", "XL");
 
     private static function get_all_ingredients($db, $fullmenu) {
         $ingredients = array();
@@ -87,9 +87,9 @@ class Estimation
     static function get_factor_from_size($size, $multiplier) {
         if ($size == 'XL') {
             $factor = 2;
-        } else if ($size == 'L') {
+        } else if ($size == 'LG') {
             $factor = 1.5;
-        } else if ($size == 'S') {
+        } else if ($size == 'SM') {
             $factor = 0.5;
         } else if ($size == 'XS') {
             $factor = 0.25;
