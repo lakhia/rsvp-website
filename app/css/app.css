@@ -1,12 +1,12 @@
 .hideRow {
- opacity: 0; visibility: hidden;
- transition: visibility .2s linear, opacity .2s linear;
+  opacity: 0; visibility: hidden;
+  transition: visibility .2s linear, opacity .2s linear;
 }
 .sugg {
-  position: absolute;
-  left: 90px;
-  color: #faa;
-  z-index: 5;
+   position: absolute;
+   left: 90px;
+   color: #faa;
+   z-index: 5;
 }
 
 a.menu, a.menu:hover, a.menu:focus {
@@ -64,6 +64,192 @@ h3 { font-size: 140%; text-align: center }
     border: 0px solid;
 }
 .gone { display: none }
+
+/* Badge styles */
+.badge-thaali, .badge-area {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: pre;
+    vertical-align: middle;
+    background-color: #6c757d;
+    border-radius: 50%;
+}
+
+/* Summary stats */
+.validation-error {
+    margin: 10px 0;
+    padding: 8px 15px;
+    font-size: 14px;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.validation-error .glyphicon {
+    margin-right: 8px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.summary-stats {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 5px;
+}
+
+.stat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.stat-badge .glyphicon {
+    font-size: 11px;
+    opacity: 0.9;
+}
+
+.stat-badge-rsvp {
+    background-color: #343a40;  /* dark gray */
+}
+
+.stat-badge-tiffin {
+    background-color: #2c662c;  /* dark green */
+}
+
+.stat-badge-togo {
+    background-color: #236c82;  /* dark blue */
+}
+
+.stat-badge-done {
+    background-color: #1a4775;  /* dark navy */
+}
+
+.stat-badge-remains {
+    background-color: #c27608;  /* dark orange */
+}
+
+/* Clickable column headers */
+.clickable-header {
+    position: relative;
+    cursor: pointer;
+}
+
+.clickable-header:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.header-icon {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Size distribution visualization */
+.size-dist {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 5px;
+}
+
+.size-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 4px;
+    color: white;
+    min-width: 70px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.size-badge:hover {
+    transform: scale(1.1);
+}
+
+/* Custom size colors for better contrast */
+.size-badge.label-primary,
+.size-label.label-primary {  /* XL */
+    background-color: #2c3e50;  /* Dark blue-gray */
+}
+
+.size-badge.label-success,
+.size-label.label-success {  /* LG */
+    background-color: #16a085;  /* Deep green-cyan */
+}
+
+.size-badge.label-info,
+.size-label.label-info {     /* MD */
+    background-color: #8e44ad;  /* Rich purple */
+}
+
+.size-badge.label-warning,
+.size-label.label-warning {  /* SM */
+    background-color: #d35400;  /* Deep orange */
+}
+
+.size-badge.label-danger,
+.size-label.label-danger {   /* XS */
+    background-color: #c0392b;  /* Deep red */
+}
+
+/* Additional styling for table size labels */
+.size-label {
+    display: inline-block;
+    min-width: 32px;
+    text-align: center;
+    padding: 4px 8px;
+    line-height: 20px;
+    vertical-align: middle;
+    margin: 1px 0;  /* To match checkbox row height */
+}
+
+@media (max-width: 576px) {
+    .summary-stats {
+        padding: 6px;
+        gap: 6px;
+    }
+    .stat-badge {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+    .stat-badge .glyphicon {
+        font-size: 10px;
+    }
+}
 
 @media print {
   td { padding: 3px !important; }

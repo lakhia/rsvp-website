@@ -1,78 +1,183 @@
-
 <div ng-init="init()">
 
-<h3>RSVP for {{ getDisplayDate(date) }}</h3>
-<br>
+<!-- 3. Panel Component -->
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">RSVP for {{ getDisplayDate(date) }}</h3>
+  </div>
+  <div class="panel-body">
 
-<table class="table table-bordered">
-<tr>
-    <td class="col-xs-2"><b>Order By: </b>
-      <select ng_model="sortColumn">
-        <option value='thaali'>Thaali</option>
-        <option value='area'>Area</option>
-        <option value='size'>Size</option>
-        <option value='name'>Name</option>
-        <option ng-hide="o.niyaz" value='here'>Here</option>
-        <option ng-hide="o.niyaz" value='filled'>Filled</option>
-        <option ng-hide="o.niyaz" value='bread+rice'>Rice / bread</option>
-      </select>
-    </td>
-    <td colspan="5" class="text-right">
-        {{ firstLine(o) }}<br>
-        {{ secondLine(o) }}
-    </td>
-</tr>
-<tr ng-repeat="(menu, ingred) in o.serving">
-    <td class="col-xs-2">{{ menu }}</td>
-    <td class="col-xs-1"  ng-repeat="q in ingred">{{ q }}</td>
-</tr>
-</table>
+    <!-- Validation Error -->
+    <div class="alert alert-danger validation-error" ng-show="statsError">
+      <span class="glyphicon glyphicon-exclamation-sign"></span>
+      {{ statsError }}
+    </div>
 
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th class="col-xs-1">Thaali</th>
-      <th class="col-xs-1"><input ng-model='filterNames.area' type="text" class="trans" ng-change="onFilterChange()" placeholder="Area"></th>
-      <th class="col-xs-1" ng-hide="o.niyaz"><input ng-model='filterNames.rice' type="text" class="trans" ng-change="onFilterChange()" placeholder="Rice/ Bread"></th>
-      <th class="col-xs-1"><input ng-model='filterNames.size' type="text" class="trans" ng-change="onFilterChange()" placeholder="Size"></th>
-      <th class="col-xs-1" ng-hide="o.niyaz"><input ng-model='filterNames.here' type="text" class="trans" ng-change="onFilterChange()" placeholder="Here"></th>
-      <th class="col-xs-1" ng-hide="o.niyaz"><input ng-model='filterNames.filled' type="text" class="trans" ng-change="onFilterChange()" placeholder="Filled"></th>
-      <th><input type="text" ng-model='filterNames.name' class="trans" ng-change="onFilterChange()" placeholder="Name"></th>
-    </tr>
-  </thead>
-  <tbody id="rTab">
-    <tr ng-repeat="item in raw | orderBy: sorterFunc | filter: filterFunc">
-      <td class="text-right">{{ item["thaali"] }}</td>
-      <td>{{ item["area"] }}</td>
-      <td ng-hide="o.niyaz">{{ item["bread+rice"] }}</td>
-      <td><span class="badge">{{ item["size"] }}</span></td>
-      <td ng-hide="o.niyaz">
-        <input type="checkbox" ng-model='item.here' ng-checked="item.here==1"  ng-change="onCheckboxClick(item)"/>
-      </td>
-      <td ng-hide="o.niyaz">
-        <input type="checkbox" ng-model='item.filled' ng-checked="item.filled==1" ng-change="onCheckboxClick(item)"/>
-      </td>
-      <td>{{ item["name"] }}</td>
-    </tr>
-  </tbody>
-</table>
+    <!-- Summary Stats -->
+    <div class="summary-stats" ng-hide="o.niyaz">
+      <span class="stat-badge stat-badge-rsvp">
+        {{ stats.total }} RSVP
+      </span>
+      <span class="stat-badge stat-badge-tiffin">
+        {{ stats.tiffin }}
+        <span class="glyphicon glyphicon-leaf"></span>
+        TIFFIN
+      </span>
+      <span class="stat-badge stat-badge-togo">
+        {{ stats.togo }}
+        <span class="glyphicon glyphicon-eye-open"></span>
+        TOGO
+      </span>
+      <span class="stat-badge stat-badge-done">
+        {{ stats.done }}
+        <span class="glyphicon glyphicon-thumbs-up"></span>
+        DONE
+      </span>
+      <span class="stat-badge stat-badge-remains">
+        {{ stats.remains }}
+        <span class="glyphicon glyphicon-thumbs-down"></span>
+        REMAINS
+      </span>
+    </div>
 
-<div class="msg">&nbsp;{{ msg }}</div>
-<br>
-<div class="noPrnt text-center">
-  <button class="btn btn-default" ng-click="next(-1)">
-    <span class="glyphicon glyphicon-chevron-left"></span>  Prev
-  </button>&nbsp;&nbsp;
-  <button class="btn btn-default" ng-show="o.save" ng-click="reset(document.getElementsByTagName('input'))">
-      Reset
-  </button>&nbsp;&nbsp;
-  <button class="btn btn-primary" ng-disabled="!changed" ng-show="o.save" ng-click="submit()">
-    <span class="glyphicon glyphicon-save"></span>  Save
-    &nbsp;&nbsp;
-  </button>
-  <button class="btn btn-default" ng-click="next(1)">Next  <span
-    class="glyphicon glyphicon-chevron-right"></span>
-  </button>
+    <!-- Size Distribution -->
+    <div class="size-dist">
+      <span class="size-badge" ng-repeat="size in ['XL', 'LG', 'MD', 'SM', 'XS']"
+            ng-class="{
+              'label-primary': size === 'XL',
+              'label-success': size === 'LG',
+              'label-info': size === 'MD',
+              'label-warning': size === 'SM',
+              'label-danger': size === 'XS'
+            }">
+        {{size}}: {{sizeStats[size]}}
+      </span>
+    </div>
+
+    <!-- First Table -->
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <tr>
+          <td class="col-xs-2">
+            <select ng_model="sortColumn" class="form-control input-sm">
+              <option value='thaali'>Thaali</option>
+              <option value='area'>Area</option>
+              <option value='size'>Size</option>
+              <option value='name'>Name</option>
+              <option ng-hide="o.niyaz" value='here'>Here</option>
+              <option ng-hide="o.niyaz" value='filled'>Filled</option>
+              <option ng-hide="o.niyaz" value='bread+rice'>Rice / bread</option>
+            </select>
+          </td>
+          <td colspan="5" class="text-right">
+            <span ng-repeat="(menu, ingred) in o.serving">
+              {{ menu }}:
+              <span ng-repeat="q in ingred" class="label label-info" style="margin-right: 5px">{{ q }}</span>
+            </span>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Main Table -->
+    <div class="table-responsive">
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th class="col-xs-1">
+              <input ng-model='filterNames.thaali' type="text" class="form-control"
+                     ng-change="onFilterChange()" placeholder="Thaali">
+            </th>
+            <th class="col-xs-1">
+              <input ng-model='filterNames.area' type="text" class="form-control"
+                     ng-change="onFilterChange()" placeholder="Area">
+            </th>
+            <th class="col-xs-1" ng-hide="o.niyaz">
+              <div class="clickable-header" ng-click="toggleAllHere()">
+                <input ng-model='filterNames.here' type="text" class="form-control"
+                       ng-change="onFilterChange()" placeholder="TIFFIN" ng-click="$event.stopPropagation()">
+                <span class="header-icon glyphicon glyphicon-leaf"></span>
+              </div>
+            </th>
+            <th class="col-xs-1">
+              <input ng-model='filterNames.size' type="text" class="form-control"
+                     ng-change="onFilterChange()" placeholder="Size">
+            </th>
+            <th class="col-xs-1" ng-hide="o.niyaz">
+              <input ng-model='filterNames.rice' type="text" class="form-control"
+                     ng-change="onFilterChange()" placeholder="Rice/Bread">
+            </th>
+            <th class="col-xs-1" ng-hide="o.niyaz">
+              <div class="clickable-header" ng-click="toggleAllFilled()">
+                <input ng-model='filterNames.filled' type="text" class="form-control"
+                       ng-change="onFilterChange()" placeholder="DONE" ng-click="$event.stopPropagation()">
+                <span class="header-icon glyphicon glyphicon-thumbs-up"></span>
+              </div>
+            </th>
+            <th>
+              <input ng-model='filterNames.name' type="text" class="form-control"
+                     ng-change="onFilterChange()" placeholder="Name">
+            </th>
+          </tr>
+        </thead>
+        <tbody id="rTab">
+          <tr ng-repeat="item in raw | orderBy: sorterFunc | filter: filterFunc">
+            <td>
+              <span class="badge-thaali">{{ item["thaali"] }}</span>
+            </td>
+            <td>
+              <span class="badge-area">{{ item["area"].substring(0, 2) }}</span>
+            </td>
+            <td ng-hide="o.niyaz">
+              <input type="checkbox" ng-model='item.here' ng-checked="item.here==1"
+                     ng-click="onCheckboxClick(item, 'here')">
+            </td>
+            <!-- Size column with custom colors -->
+            <td>
+              <span class="label size-label"
+                    ng-class="{
+                      'label-danger': item.size === 'XS',
+                      'label-warning': item.size === 'SM',
+                      'label-info': item.size === 'MD',
+                      'label-success': item.size === 'LG',
+                      'label-primary': item.size === 'XL'
+                    }"
+                    data-toggle="tooltip"
+                    title="Thaali Size">
+                {{ item["size"] }}
+              </span>
+            </td>
+            <td ng-hide="o.niyaz">{{ item["bread+rice"] }}</td>
+            <td ng-hide="o.niyaz">
+              <input type="checkbox" ng-model='item.filled' ng-checked="item.filled==1"
+                     ng-click="onCheckboxClick(item, 'filled')">
+            </td>
+            <td>{{ item["name"] }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+  <div class="panel-footer">
+    <!-- 6. Enhanced Navigation Buttons -->
+    <div class="noPrnt text-center">
+      <div class="btn-group">
+        <button class="btn btn-default" ng-click="next(-1)">
+          <span class="glyphicon glyphicon-chevron-left"></span> Prev
+        </button>
+        <button class="btn btn-warning" ng-show="o.save" ng-click="reset(document.getElementsByTagName('input'))">
+          <span class="glyphicon glyphicon-refresh"></span> Reset
+        </button>
+        <button class="btn btn-success" ng-disabled="!changed" ng-show="o.save" ng-click="submit()">
+          <span class="glyphicon glyphicon-save"></span> Save
+        </button>
+        <button class="btn btn-default" ng-click="next(1)">
+          Next <span class="glyphicon glyphicon-chevron-right"></span>
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
-</div>
+
 </div>
