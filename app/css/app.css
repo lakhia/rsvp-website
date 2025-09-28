@@ -117,6 +117,36 @@ h3 { font-size: 140%; text-align: center }
     border-radius: 5px;
 }
 
+.stat-group {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: #f8f9fa;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.stat-group .stat-badge {
+    border-radius: 0;
+}
+
+.stat-group .stat-badge:first-child {
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+.stat-group .stat-badge:last-child {
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.stat-divider {
+    color: #6c757d;
+    padding: 0 2px;
+    font-weight: bold;
+    opacity: 0.5;
+}
+
 .stat-badge {
     display: inline-flex;
     align-items: center;
@@ -138,40 +168,16 @@ h3 { font-size: 140%; text-align: center }
     background-color: #343a40;  /* dark gray */
 }
 
-.stat-badge-tiffin {
-    background-color: #2c662c;  /* dark green */
-}
-
+.stat-badge-tiffin,
 .stat-badge-togo {
-    background-color: #236c82;  /* dark blue */
+    background-color: #b8860b;  /* dark goldenrod */
 }
 
-.stat-badge-done {
-    background-color: #1a4775;  /* dark navy */
-}
-
+.stat-badge-done,
 .stat-badge-remains {
-    background-color: #c27608;  /* dark orange */
+    background-color: #1a4775;  /* dark navy for both DONE/REMAINS */
 }
 
-/* Clickable column headers */
-.clickable-header {
-    position: relative;
-    cursor: pointer;
-}
-
-.clickable-header:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-}
-
-.header-icon {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    opacity: 0.5;
-    pointer-events: none;
-}
 
 /* Size distribution visualization */
 .size-dist {
@@ -256,4 +262,74 @@ h3 { font-size: 140%; text-align: center }
   body { font-size: 10px }
   .noPrnt { display: none !important; }
   .main { margin-left: 0 !important; }
+}
+
+/* Sort badges and column highlighting */
+.sort-row th {
+    padding: 4px !important;
+    text-align: center;
+    border-bottom: none !important;
+}
+
+.filter-row th {
+    padding-top: 0 !important;
+}
+
+.sort-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    justify-content: center;
+}
+
+.sort-badge:hover {
+    background: #dee2e6;
+    transform: translateY(-1px);
+}
+
+.sort-badge.sort-active {
+    background: #343a40;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.sort-indicator {
+    opacity: 0.7;
+}
+
+.sort-badge.sort-active .sort-indicator {
+    opacity: 1;
+}
+
+/* Column highlighting */
+.table > tbody > tr > td.sorted-column,
+.table > thead > tr > th.sorted-column {
+    background-color: rgba(0,0,0,0.03);
+    transition: background-color 0.3s ease;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > td.sorted-column {
+    background-color: rgba(0,0,0,0.05);
+}
+
+/* Menu info styling */
+.menu-info {
+    margin: 10px 0;
+}
+
+/* Make filter inputs and dropdown bold */
+select.form-control,
+input.form-control::placeholder {
+    font-weight: bold;
+}
+
+select.form-control option {
+    font-weight: bold;
 }

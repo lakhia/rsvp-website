@@ -18,26 +18,32 @@
       <span class="stat-badge stat-badge-rsvp">
         {{ stats.total }} RSVP
       </span>
-      <span class="stat-badge stat-badge-tiffin">
-        {{ stats.tiffin }}
-        <span class="glyphicon glyphicon-leaf"></span>
-        TIFFIN
-      </span>
-      <span class="stat-badge stat-badge-togo">
-        {{ stats.togo }}
-        <span class="glyphicon glyphicon-eye-open"></span>
-        TOGO
-      </span>
-      <span class="stat-badge stat-badge-done">
-        {{ stats.done }}
-        <span class="glyphicon glyphicon-thumbs-up"></span>
-        DONE
-      </span>
-      <span class="stat-badge stat-badge-remains">
-        {{ stats.remains }}
-        <span class="glyphicon glyphicon-thumbs-down"></span>
-        REMAINS
-      </span>
+      <div class="stat-group">
+        <span class="stat-badge stat-badge-tiffin">
+          {{ stats.tiffin }}
+          <span class="glyphicon glyphicon-leaf"></span>
+          TIFFIN
+        </span>
+        <span class="stat-divider">|</span>
+        <span class="stat-badge stat-badge-togo">
+          {{ stats.togo }}
+          <span class="glyphicon glyphicon-eye-open"></span>
+          TOGO
+        </span>
+      </div>
+      <div class="stat-group">
+        <span class="stat-badge stat-badge-done">
+          {{ stats.done }}
+          <span class="glyphicon glyphicon-thumbs-up"></span>
+          DONE
+        </span>
+        <span class="stat-divider">|</span>
+        <span class="stat-badge stat-badge-remains">
+          {{ stats.remains }}
+          <span class="glyphicon glyphicon-thumbs-down"></span>
+          REMAINS
+        </span>
+      </div>
     </div>
 
     <!-- Size Distribution -->
@@ -54,69 +60,83 @@
       </span>
     </div>
 
-    <!-- First Table -->
-    <div class="table-responsive">
-      <table class="table table-bordered">
-        <tr>
-          <td class="col-xs-2">
-            <select ng_model="sortColumn" class="form-control input-sm">
-              <option value='thaali'>Thaali</option>
-              <option value='area'>Area</option>
-              <option value='size'>Size</option>
-              <option value='name'>Name</option>
-              <option ng-hide="o.niyaz" value='here'>Here</option>
-              <option ng-hide="o.niyaz" value='filled'>Filled</option>
-              <option ng-hide="o.niyaz" value='bread+rice'>Rice / bread</option>
-            </select>
-          </td>
-          <td colspan="5" class="text-right">
-            <span ng-repeat="(menu, ingred) in o.serving">
-              {{ menu }}:
-              <span ng-repeat="q in ingred" class="label label-info" style="margin-right: 5px">{{ q }}</span>
-            </span>
-          </td>
-        </tr>
-      </table>
+    <!-- Menu Info -->
+    <div class="menu-info text-right">
+      <span ng-repeat="(menu, ingred) in o.serving">
+        {{ menu }}:
+        <span ng-repeat="q in ingred" class="label label-info" style="margin-right: 5px">{{ q }}</span>
+      </span>
     </div>
 
     <!-- Main Table -->
     <div class="table-responsive">
       <table class="table table-striped table-hover">
         <thead>
-          <tr>
+          <tr class="sort-row">
+            <th class="col-xs-1">
+              <span class="sort-badge" ng-class="{'sort-active': sortColumn === 'thaali'}" ng-click="setSortColumn('thaali')">
+                THAALI <span class="sort-indicator glyphicon" ng-class="{'glyphicon-chevron-up': sortColumn === 'thaali' && sortAscending, 'glyphicon-chevron-down': sortColumn === 'thaali' && !sortAscending}"></span>
+              </span>
+            </th>
+            <th class="col-xs-1">
+              <span class="sort-badge" ng-class="{'sort-active': sortColumn === 'area'}" ng-click="setSortColumn('area')">
+                AREA <span class="sort-indicator glyphicon" ng-class="{'glyphicon-chevron-up': sortColumn === 'area' && sortAscending, 'glyphicon-chevron-down': sortColumn === 'area' && !sortAscending}"></span>
+              </span>
+            </th>
+            <th class="col-xs-1" ng-hide="o.niyaz">
+              <span class="sort-badge" ng-class="{'sort-active': sortColumn === 'here'}" ng-click="setSortColumn('here')">
+                TIFFIN <span class="sort-indicator glyphicon" ng-class="{'glyphicon-chevron-up': sortColumn === 'here' && sortAscending, 'glyphicon-chevron-down': sortColumn === 'here' && !sortAscending}"></span>
+              </span>
+            </th>
+            <th class="col-xs-1">
+              <span class="sort-badge" ng-class="{'sort-active': sortColumn === 'size'}" ng-click="setSortColumn('size')">
+                SIZE <span class="sort-indicator glyphicon" ng-class="{'glyphicon-chevron-up': sortColumn === 'size' && sortAscending, 'glyphicon-chevron-down': sortColumn === 'size' && !sortAscending}"></span>
+              </span>
+            </th>
+            <th class="col-xs-1" ng-hide="o.niyaz">
+              <span class="sort-badge" ng-class="{'sort-active': sortColumn === 'bread+rice'}" ng-click="setSortColumn('bread+rice')">
+                RICE|BREAD <span class="sort-indicator glyphicon" ng-class="{'glyphicon-chevron-up': sortColumn === 'bread+rice' && sortAscending, 'glyphicon-chevron-down': sortColumn === 'bread+rice' && !sortAscending}"></span>
+              </span>
+            </th>
+            <th class="col-xs-1" ng-hide="o.niyaz">
+              <span class="sort-badge" ng-class="{'sort-active': sortColumn === 'filled'}" ng-click="setSortColumn('filled')">
+                DONE <span class="sort-indicator glyphicon" ng-class="{'glyphicon-chevron-up': sortColumn === 'filled' && sortAscending, 'glyphicon-chevron-down': sortColumn === 'filled' && !sortAscending}"></span>
+              </span>
+            </th>
+            <th>
+              <span class="sort-badge" ng-class="{'sort-active': sortColumn === 'name'}" ng-click="setSortColumn('name')">
+                NAME <span class="sort-indicator glyphicon" ng-class="{'glyphicon-chevron-up': sortColumn === 'name' && sortAscending, 'glyphicon-chevron-down': sortColumn === 'name' && !sortAscending}"></span>
+              </span>
+            </th>
+          </tr>
+          <tr class="filter-row">
             <th class="col-xs-1">
               <input ng-model='filterNames.thaali' type="text" class="form-control"
-                     ng-change="onFilterChange()" placeholder="Thaali">
+                     ng-change="onFilterChange()" placeholder="THAALI">
             </th>
             <th class="col-xs-1">
               <input ng-model='filterNames.area' type="text" class="form-control"
-                     ng-change="onFilterChange()" placeholder="Area">
+                     ng-change="onFilterChange()" placeholder="AREA">
             </th>
             <th class="col-xs-1" ng-hide="o.niyaz">
-              <div class="clickable-header" ng-click="toggleAllHere()">
-                <input ng-model='filterNames.here' type="text" class="form-control"
-                       ng-change="onFilterChange()" placeholder="TIFFIN" ng-click="$event.stopPropagation()">
-                <span class="header-icon glyphicon glyphicon-leaf"></span>
-              </div>
+              <input ng-model='filterNames.here' type="text" class="form-control"
+                     ng-change="onFilterChange()" placeholder="TIFFIN">
             </th>
             <th class="col-xs-1">
               <input ng-model='filterNames.size' type="text" class="form-control"
-                     ng-change="onFilterChange()" placeholder="Size">
+                     ng-change="onFilterChange()" placeholder="SIZE">
             </th>
             <th class="col-xs-1" ng-hide="o.niyaz">
               <input ng-model='filterNames.rice' type="text" class="form-control"
-                     ng-change="onFilterChange()" placeholder="Rice/Bread">
+                     ng-change="onFilterChange()" placeholder="RICE|BREAD">
             </th>
             <th class="col-xs-1" ng-hide="o.niyaz">
-              <div class="clickable-header" ng-click="toggleAllFilled()">
-                <input ng-model='filterNames.filled' type="text" class="form-control"
-                       ng-change="onFilterChange()" placeholder="DONE" ng-click="$event.stopPropagation()">
-                <span class="header-icon glyphicon glyphicon-thumbs-up"></span>
-              </div>
+              <input ng-model='filterNames.filled' type="text" class="form-control"
+                     ng-change="onFilterChange()" placeholder="DONE">
             </th>
             <th>
               <input ng-model='filterNames.name' type="text" class="form-control"
-                     ng-change="onFilterChange()" placeholder="Name">
+                     ng-change="onFilterChange()" placeholder="NAME">
             </th>
           </tr>
         </thead>

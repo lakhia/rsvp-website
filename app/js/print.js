@@ -5,7 +5,60 @@ function($scope, $rootScope) {
     $scope.init = function() {
         $rootScope.init($scope, "print.php", handleResponse);
         $scope.sortColumn = 'thaali';
+        $scope.sortAscending = true;
         $scope.filterNames = {'thaali': "", 'area': "", 'rice': "", 'here': "", 'size': "", 'filled': ""};
+    }
+
+    $scope.setSortColumn = function(column) {
+        if ($scope.sortColumn === column) {
+            // If clicking the same column, toggle direction
+            $scope.sortAscending = !$scope.sortAscending;
+        } else {
+            // New column, default to ascending
+            $scope.sortColumn = column;
+            $scope.sortAscending = true;
+        }
+        // Update sort indicator icon
+        updateSortIndicator();
+    }
+
+    function updateSortIndicator() {
+        var indicators = document.getElementsByClassName('sort-indicator');
+        for (var i = 0; i < indicators.length; i++) {
+            if (indicators[i].parentElement.classList.contains('sort-active')) {
+                indicators[i].classList.remove('glyphicon-chevron-up', 'glyphicon-chevron-down');
+                indicators[i].classList.add($scope.sortAscending ? 'glyphicon-chevron-up' : 'glyphicon-chevron-down');
+            }
+        }
+        // Update column highlighting
+        highlightSortedColumn();
+    }
+
+    function highlightSortedColumn() {
+        // Remove previous highlighting
+        var cells = document.getElementsByClassName('sorted-column');
+        while(cells.length > 0) {
+            cells[0].classList.remove('sorted-column');
+        }
+        
+        // Add highlighting to the sorted column
+        var columnIndex = -1;
+        var headers = document.querySelectorAll('table thead th');
+        for (var i = 0; i < headers.length; i++) {
+            var input = headers[i].querySelector('input');
+            if (input && input.getAttribute('ng-model').split('.')[1] === $scope.sortColumn) {
+                columnIndex = i;
+                headers[i].classList.add('sorted-column');
+                break;
+            }
+        }
+        
+        if (columnIndex !== -1) {
+            var rows = document.querySelectorAll('table tbody tr');
+            rows.forEach(function(row) {
+                row.cells[columnIndex].classList.add('sorted-column');
+            });
+        }
     }
 
     function handleResponse(response) {
@@ -172,7 +225,55 @@ function($scope, $rootScope) {
     }
 
     $scope.sorterFunc = function(item) {
-        return item[$scope.sortColumn];
+        var value = item[$scope.sortColumn];
+        var sortValue;
+        
+        switch($scope.sortColumn) {
+            case 'size':
+                // Size order: XL > LG > MD > SM > XS
+                var sizeOrder = { 'XL': 5, 'LG': 4, 'MD': 3, 'SM': 2, 'XS': 1 };
+                sortValue = sizeOrder[value] || 0;
+                break;
+                
+            case 'area':
+                // Area/Group: alphabetical, case-insensitive but preserving
+                sortValue = value.toLowerCase();
+                break;
+                
+            case 'thaali':
+                // Thaali: numeric, positive whole numbers
+                sortValue = parseInt(value) || 0;
+                break;
+                
+            case 'here':
+            case 'filled':
+            case 'bread+rice':
+                // Boolean values
+                sortValue = value ? 1 : 0;
+                break;
+                
+            case 'name':
+                // Names: alphanumeric, case-insensitive but preserving
+                sortValue = value.toLowerCase();
+                break;
+                
+            default:
+                sortValue = value;
+        }
+        
+        // Handle ascending/descending for all types
+        if (typeof sortValue === 'string') {
+            // For strings, we need to handle reverse sort differently
+            return $scope.sortAscending ? sortValue : 
+                   String.fromCharCode(65535) // High Unicode value
+                   .repeat(sortValue.length) // Same length as original
+                   .split('')
+                   .map((c, i) => String.fromCharCode(65535 - sortValue.charCodeAt(i)))
+                   .join('');
+        } else {
+            // For numeric values and booleans
+            return $scope.sortAscending ? sortValue : -sortValue;
+        }
     }
 
     $scope.firstLine = function(other) {
