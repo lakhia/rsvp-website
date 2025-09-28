@@ -19,16 +19,16 @@ if ($method_server == "POST") {
 function get_eligible_sizes($email, $size)
 {
     $admin = Helper::is_admin($email);
-    $result = ["XS", "S"];
+    $result = ["XS", "SM"];
     if (!$admin && $size == "XS") {
         return $result;
     }
-    $result[] = "M";
-    if (!$admin && $size == "S") {
+    $result[] = "MD";
+    if (!$admin && $size == "SM") {
         return $result;
     }
-    $result[] = "L";
-    if (!$admin && $size == "M") {
+    $result[] = "LG";
+    if (!$admin && $size == "MD") {
         return $result;
     }
     $result[] = "XL";
@@ -40,7 +40,7 @@ function get_default_size($db, $thaali)
     $query = "SELECT size FROM family where thaali = " . $thaali;
     $result = $db->query($query);
     if (!$result || $result->num_rows != 1) {
-        return "M";
+        return "MD";
     }
     $row = $result->fetch_assoc();
     return $row['size'];

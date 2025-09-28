@@ -7,10 +7,10 @@
 <table class="table table-striped">
   <thead>
     <tr>
-      <th class="col-xs-0">Num</th>
+      <th class="col-xs-1">Num</th>
+      <th class="col-xs-1">Area</th>
       <th class="col-xs-2">Name</th>
       <th class="col-xs-0">Size</th>
-      <th class="col-xs-0">Area</th>
       <th class="col-xs-3">Email</th>
       <th class="col-xs-3">Phone / POC</th>
       <th class="col-xs-0">Resp</th>
@@ -24,6 +24,10 @@
                placeholder="ITS ID" ng-change="onChange()"/>
       </td>
       <td>
+        <input type="area" ng-model="family.area" class="trans"
+               placeholder="Area" ng-change="onChange()"/>
+      </td>
+      <td>
         <input type="text" ng-model="family.firstName" class="trans"
                placeholder="First name" ng-change="onChange()"/>
         <input type="text" ng-model="family.lastName" class="trans"
@@ -32,10 +36,6 @@
       <td>
         <input type="text" ng-model="family.size" class="minWidth trans"
                placeholder="M" ng-change="onChange()"/>
-      </td>
-      <td>
-        <input type="area" ng-model="family.area" class="trans"
-               placeholder="Area" ng-change="onChange()"/>
       </td>
       <td>
         <input type="email" ng-model="family.email" class="trans"
