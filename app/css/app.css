@@ -324,6 +324,33 @@ h3 { font-size: 140%; text-align: center }
     margin: 10px 0;
 }
 
+/* Custom Header Styling */
+.header-custom {
+    background: linear-gradient(135deg, #1a4775 0%, #2c662c 100%) !important;
+    color: white !important;
+    padding: 15px !important;
+    border-bottom: none !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-icon {
+    font-size: 20px;
+    opacity: 0.9;
+}
+
+.panel-title {
+    font-size: 18px !important;
+    font-weight: 500 !important;
+    margin: 0 !important;
+    letter-spacing: 0.5px;
+}
+
 /* Make filter inputs and dropdown bold */
 select.form-control,
 input.form-control::placeholder {
