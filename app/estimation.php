@@ -80,7 +80,7 @@ class Estimation
         } else {
             $total[$key] += $quant;
         }
-        return round($quant, 1) . " " . $ingredient['unit'] . " " . $ingred;
+        return round($quant, 2) . " " . $ingredient['unit'] . " " . $ingred;
     }
 
     /* Given thaali size, return factor */
@@ -96,7 +96,7 @@ class Estimation
         } else {
             $factor = 1.0;
         }
-        return round($multiplier * $factor, 1);
+        return round($multiplier * $factor, 2);
     }
 }
 
