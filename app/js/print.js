@@ -1,6 +1,7 @@
 /* Printout controller */
 app.controller("printController", ["$scope", '$rootScope',
 function($scope, $rootScope) {
+    warnedDate = "";
 
     $scope.init = function() {
         $rootScope.init($scope, "print.php", handleResponse);
@@ -14,6 +15,12 @@ function($scope, $rootScope) {
     }
 
     $scope.onCheckboxClick = function(item) {
+        if (!warnedDate) {
+            warnedDate = new Date().toLocaleDateString("en-CA")
+            if ($scope.date != warnedDate) {
+                alert("Warning: Are you sure you wish to modify this date: " + $scope.date);
+            }
+        }
         $scope.data.push({"thaali": item.thaali, "filled": item.filled ? 1 : 0, 
             "here": item.here ? 1 : 0});
         $scope.onChange();
