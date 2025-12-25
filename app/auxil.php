@@ -4,6 +4,7 @@ header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Content-Type: application/json; charset=UTF-8");
 
 require_once 'oo_db.php';
+require_once 'config.php';
 
 $db = new DB();
 
@@ -108,16 +109,17 @@ class Helper
     // unless you are admin
     public static function get_cutoff_time($override_admin)
     {
+        // Set timezone from config
+        date_default_timezone_set(Config::TIMEZONE);
+
         // If admin override is enabled, then return a very old date so that
         // everything is modifiable
         if ($override_admin && self::is_admin($_COOKIE['email'])) {
             return '1970-1-1';
         }
 
-        $cutoff = strtotime('today 9pm');
-        $now = time();
-
-        return date('Y-m-d', strtotime( ($now > $cutoff) ? '+2 day' : '+1 day' ) );
+        // Cutoff logic injected at deploy-time based on RSVP_CUTOFF_MODE
+        {{CUTOFF_TIME_IMPLEMENTATION}}
     }
 
     public static function is_save_available($offset)

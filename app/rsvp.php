@@ -16,23 +16,32 @@ if ($method_server == "POST") {
     details_get($db, $thaali_cookie, $eligible_sizes, $default_size, "");
 }
 
+/**
+ * Determines which thaali sizes a user is eligible to select for their RSVP
+ *
+ * Size selection logic is injected at deploy-time based on SIZE_SELECTION_MODE:
+ * - "any": Users can select any size from THAALI_SIZES
+ * - "downgrade-only": Users can only select sizes smaller than or equal to their default size
+ * - "plus-minus-one": Users can select one size up or down from their default size
+ *
+ * Admins always have access to all sizes regardless of the mode.
+ *
+ * @param string $email User's email address (used to check admin status)
+ * @param string $size User's default thaali size (e.g., "S", "M", "L")
+ * @return array Array of eligible size strings (e.g., ["S", "M", "L"])
+ */
 function get_eligible_sizes($email, $size)
 {
-    $admin = Helper::is_admin($email);
-    $result = ["XS", "S"];
-    if (!$admin && $size == "XS") {
-        return $result;
+    // THAALI_SIZES converted to array at deploy-time
+    $all_sizes = Config::THAALI_SIZES;
+
+    // Admins can always select any size
+    if (Helper::is_admin($email)) {
+        return $all_sizes;
     }
-    $result[] = "M";
-    if (!$admin && $size == "S") {
-        return $result;
-    }
-    $result[] = "L";
-    if (!$admin && $size == "M") {
-        return $result;
-    }
-    $result[] = "XL";
-    return $result;
+
+    // Size selection logic injected at deploy-time based on SIZE_SELECTION_MODE
+    {{SIZE_SELECTION_IMPLEMENTATION}}
 }
 
 function get_default_size($db, $thaali)
