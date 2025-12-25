@@ -25,25 +25,45 @@ On the backend, it currently requires:
 
 # Dev Environment Setup
 
-## Pre-requisites
-1. Install [mysql](https://dev.mysql.com/downloads/mysql/) and run `mysql -v -u root < migration/*.sql` to bootstrap the database
-2. Install php - MacOS (Homebrew) - `brew install php`
-3. Install [node](https://nodejs.org/en/download/package-manager/)
-4. Install [npm](https://docs.npmjs.com/getting-started/installing-node)
+## Prerequisites
+- Install [Docker](https://docs.docker.com/get-docker/) and Docker Compose
 
-## Build and run
+## First-time Setup
+1. Copy the example environment file to create your local configuration:
+   ```bash
+   cp .env.example .env
+   ```
+2. Edit `.env` to customize database credentials, email addresses, and other settings
+3. Start the containers:
+   ```bash
+   docker-compose up -d --build
+   ```
 
-1. Install all project dependencies using: npm install
-2. Run `npm run dev` which will serve local files at: [http://127.0.0.1:3000](http://127.0.0.1:3000)
-3. Make changes to files under `app/` directory. Any changes are detected and send reload event to browser
+The application will be available at [http://localhost:8080](http://localhost:8080)
+
+## Daily Development Commands
+```bash
+docker-compose up -d --build  # Build and start containers
+docker-compose down           # Stop containers
+docker-compose down -v        # Stop and remove volumes (resets database)
+docker-compose logs app       # View application logs
+docker-compose logs db        # View database logs
+```
+
+## Configuration
+The Docker setup uses `.env` for all application configuration. This file is gitignored and should be created from `.env.example`. Key configuration sections include:
+- **Database**: Connection settings (DB_HOST, DB_NAME, DB_USERNAME, DB_PASSWORD, DB_ROOT_PASSWORD)
+- **Email**: Admin, contact, and secretary email addresses
+- **RSVP Settings**: Cutoff mode (daily/weekly), timezone, cutoff times
+- **Application**: App name, secretary title, external links
 
 # Deployment
 
   * When ready to deploy, run "npm run build" and publish all files in
     `build/` directory except for hidden .tmp sub-directory
   * Run deployment squasher and templater:
-     cd rsvp; perl deploy.pl config.yaml
-    For an example configuration, see `config/example.yaml`
+     cd rsvp; perl deploy.pl .env
+    For an example configuration, see `.env.example`
 
 # Files
 

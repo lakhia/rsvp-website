@@ -3,15 +3,14 @@
 use strict;
 use File::Find;
 use Cwd;
-use YAML qw(LoadFile);
-use Data::Dumper qw(Dumper);
 
 # Global variables
-my $config_file = shift or die "Usage: $0 YAML-FILE \n\n(see config/example.yaml)\n";
-my $config = LoadFile($config_file);
+my $env_file = shift or die "Usage: $0 ENV-FILE \n\n(see .env.example)\n";
+my %config = parse_env_file($env_file);
 
 # uncomment for debugging config
-#print Dumper $config; 
+#use Data::Dumper;
+#print Dumper(\%config);
 
 find (\&wanted, 'build');
 
@@ -30,6 +29,34 @@ sub wanted {
     }
 }
 
+sub parse_env_file {
+    my $file = shift;
+    my %env;
+
+    open my $fh, '<', $file or die "Cannot open $file: $!";
+
+    while (my $line = <$fh>) {
+        # Remove leading/trailing whitespace
+        $line =~ s/^\s+|\s+$//g;
+
+        # Skip empty lines and comments
+        next if $line eq '' || $line =~ /^#/;
+
+        # Parse KEY=VALUE
+        if ($line =~ /^([A-Z_]+)=(.*)$/) {
+            my ($key, $value) = ($1, $2);
+
+            # Remove quotes if present
+            $value =~ s/^["']|["']$//g;
+
+            $env{$key} = $value;
+        }
+    }
+
+    close $fh;
+    return %env;
+}
+
 sub db_config {
     my $line;
     $_ = shift;
@@ -37,13 +64,14 @@ sub db_config {
     open OUT, ">$_.backup" or die "Cannot open $!";
     while ($line = <IN>) {
         if ($line =~ m/dbhost =/) {
-            $line =~ s/127.0.0.1/$config->{'db'}->{'host'}/;
+            $line =~ s/127.0.0.1/$config{'DB_HOST'}/;
+            $line =~ s/'db'/'$config{'DB_HOST'}'/;
         } elsif ($line =~ m/dbpassword =/) {
-            $line =~ s/sffaiz-pass/$config->{'db'}->{'password'}/;
+            $line =~ s/sffaiz-pass/$config{'DB_PASSWORD'}/;
         } elsif ($line =~ m/dbusername =/) {
-            $line =~ s/sffaiz/$config->{'db'}->{'username'}/;
+            $line =~ s/sffaiz/$config{'DB_USERNAME'}/;
         } elsif ($line =~ m/dbname =/) {
-            $line =~ s/sffaiz/$config->{'db'}->{'name'}/;
+            $line =~ s/sffaiz/$config{'DB_NAME'}/;
         }
         print OUT $line;
     }
@@ -58,7 +86,7 @@ sub php_helper {
     open IN, $_ or die "Cannot open $!";
     open OUT, ">$_.backup" or die "Cannot open $!";
     while ($line = <IN>) {
-        $line =~ s/admin\@sfjamaat.org/$config->{'email'}->{'admin'}/;
+        $line =~ s/admin\@sfjamaat.org/$config{'EMAIL_ADMIN'}/;
         print OUT $line;
     }
     close OUT;
@@ -73,13 +101,13 @@ sub html {
     open OUT, ">$_.backup" or die "Cannot open $!";
     while ($line = <IN>) {
         # Template values
-        $line =~ s/APP_NAME/$config->{'app'}->{'name'}/;
-        $line =~ s/FEEDBACK_URL/$config->{'links'}->{'feedback'}/;
-        $line =~ s/PLANNING_URL/$config->{'links'}->{'planning'}/;
-        $line =~ s/ADMIN_EMAIL/$config->{'email'}->{'admin'}/;
-        $line =~ s/CONTACT_EMAIL/$config->{'email'}->{'contact'}/;
-        $line =~ s/SECRETARY_EMAIL/$config->{'email'}->{'secretary'}/;
-        $line =~ s/SECRETARY_TITLE/$config->{'title'}->{'secretary'}/;
+        $line =~ s/APP_NAME/$config{'APP_NAME'}/;
+        $line =~ s/FEEDBACK_URL/$config{'LINK_FEEDBACK'}/;
+        $line =~ s/PLANNING_URL/$config{'LINK_PLANNING'}/;
+        $line =~ s/ADMIN_EMAIL/$config{'EMAIL_ADMIN'}/;
+        $line =~ s/CONTACT_EMAIL/$config{'EMAIL_CONTACT'}/;
+        $line =~ s/SECRETARY_EMAIL/$config{'EMAIL_SECRETARY'}/;
+        $line =~ s/SECRETARY_TITLE/$config{'SECRETARY_TITLE'}/;
 
         # Javascript methods
         $line =~ s/getClass/gC/g;
@@ -112,7 +140,7 @@ sub html {
         $line =~ s/\w\w\.html//g;
         $line =~ s/loading-bar/lb/g;
         $line =~ s/[Ll]oadingBar/lB/g;
-        $line =~ s/&nbsp;/ /g;
+        $line =~ s/&nbsp;/ /g;
         $line =~ s/menuBig/mB/g;
         $line =~ s/gone/gn/ig;
         $line =~ s/hideRow/hR/g;

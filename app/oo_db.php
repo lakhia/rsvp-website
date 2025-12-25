@@ -19,7 +19,7 @@ class DB {
         $this->dbhost = getenv('DB_HOST') ?: 'db';
         $this->dbusername = getenv('DB_USERNAME') ?: 'sffaiz';
         $this->dbpassword = getenv('DB_PASSWORD') ?: 'sffaiz-pass';
-        $this->dbname = getenv('DB_DATABASE') ?: 'sffaiz';
+        $this->dbname = getenv('DB_NAME') ?: 'sffaiz';
 
         // convention is to use $db or $mysqli for the db handle
         $this->mysqli = new mysqli($this->dbhost, $this->dbusername,
