@@ -7,6 +7,7 @@ use Cwd;
 # Global variables
 my $env_file = shift or die "Usage: $0 ENV-FILE \n\n(see .env.example)\n";
 my %config = parse_env_file($env_file);
+my $root_dir = getcwd();  # Store root directory for template paths
 
 # uncomment for debugging config
 #use Data::Dumper;
@@ -20,8 +21,14 @@ sub wanted {
     if (m/oo_db.php/) {
         db_config($_);
         return;
+    } elsif (m/config\.php/) {
+        config($_);
+        return;
     } elsif (m/aux/) {
         php_helper($_);
+        return;
+    } elsif (m/rsvp\.php/) {
+        rsvp_config($_);
         return;
     } elsif (m/index\.html/) {
         html($_);
@@ -86,7 +93,26 @@ sub php_helper {
     open IN, $_ or die "Cannot open $!";
     open OUT, ">$_.backup" or die "Cannot open $!";
     while ($line = <IN>) {
+        # Existing email replacement
         $line =~ s/admin\@sfjamaat.org/$config{'EMAIL_ADMIN'}/;
+
+        # Template variable replacement for cutoff mode
+        if ($line =~ /\{\{CUTOFF_TIME_IMPLEMENTATION\}\}/) {
+            my $template_file = $config{'RSVP_CUTOFF_MODE'} eq 'weekly'
+                ? "$root_dir/deploy-templates/cutoff_weekly.php"
+                : "$root_dir/deploy-templates/cutoff_daily.php";
+
+            open TEMPLATE, $template_file or die "Cannot open template $template_file: $!\nMake sure RSVP_CUTOFF_MODE is set correctly in .env";
+
+            # Inject template with auto-generated comment
+            print OUT "        // Auto-generated: $config{'RSVP_CUTOFF_MODE'} mode (from .env)\n";
+            while (my $tpl_line = <TEMPLATE>) {
+                print OUT "        " . $tpl_line;
+            }
+            close TEMPLATE;
+            next;
+        }
+
         print OUT $line;
     }
     close OUT;
@@ -152,6 +178,96 @@ sub html {
         $line =~ s/sorterFunc/sF/g;
         $line =~ s/ }}/}}/g;
         $line =~ s/\{\{ /{{/g;
+        print OUT $line;
+    }
+    close OUT;
+    close IN;
+    rename "$_.backup", $_;
+}
+
+sub rsvp_config {
+    my $line;
+    $_ = shift;
+    open IN, $_ or die "Cannot open $!";
+    open OUT, ">$_.backup" or die "Cannot open $!";
+
+    while ($line = <IN>) {
+        # Template variable replacement for size selection
+        if ($line =~ /\{\{SIZE_SELECTION_IMPLEMENTATION\}\}/) {
+            my $mode = $config{'SIZE_SELECTION_MODE'};
+            my $template_file;
+
+            if ($mode eq 'any') {
+                $template_file = "$root_dir/deploy-templates/size_any.php";
+            } elsif ($mode eq 'downgrade-only') {
+                $template_file = "$root_dir/deploy-templates/size_downgrade.php";
+            } elsif ($mode eq 'plus-minus-one') {
+                $template_file = "$root_dir/deploy-templates/size_plus_minus_one.php";
+            } else {
+                die "Unknown SIZE_SELECTION_MODE: $mode\nValid values: any, downgrade-only, plus-minus-one";
+            }
+
+            open TEMPLATE, $template_file or die "Cannot open template $template_file: $!\nMake sure SIZE_SELECTION_MODE is set correctly in .env";
+
+            # Inject template with auto-generated comment
+            print OUT "    // Auto-generated: $mode mode (from .env)\n";
+            while (my $tpl_line = <TEMPLATE>) {
+                print OUT "    " . $tpl_line;
+            }
+            close TEMPLATE;
+            next;
+        }
+
+        print OUT $line;
+    }
+    close OUT;
+    close IN;
+    rename "$_.backup", $_;
+}
+
+sub config {
+    my $line;
+    $_ = shift;
+    open IN, $_ or die "Cannot open $!";
+    open OUT, ">$_.backup" or die "Cannot open $!";
+
+    my $cutoff_mode = $config{'RSVP_CUTOFF_MODE'};
+
+    while ($line = <IN>) {
+        # Skip weekly constants if in daily mode
+        if ($cutoff_mode eq 'daily' && $line =~ /const WEEKLY_/) {
+            print OUT "    // WEEKLY_* constants removed (daily mode active)\n" if $line =~ /WEEKLY_CUTOFF_DAY/;
+            next;
+        }
+
+        # Skip daily constants if in weekly mode
+        if ($cutoff_mode eq 'weekly' && $line =~ /const DAILY_/) {
+            print OUT "    // DAILY_* constants removed (weekly mode active)\n" if $line =~ /DAILY_CUTOFF_TIME/;
+            next;
+        }
+
+        # Cutoff configuration
+        if ($line =~ m/CUTOFF_MODE =/) {
+            $line =~ s/"daily"/"$config{'RSVP_CUTOFF_MODE'}"/;
+        } elsif ($line =~ m/TIMEZONE =/) {
+            $line =~ s/"America\/Los_Angeles"/"$config{'RSVP_TIMEZONE'}"/;
+        } elsif ($line =~ m/WEEKLY_CUTOFF_DAY =/) {
+            $line =~ s/"Thursday"/"$config{'RSVP_WEEKLY_CUTOFF_DAY'}"/;
+        } elsif ($line =~ m/WEEKLY_CUTOFF_TIME =/) {
+            $line =~ s/"23:00"/"$config{'RSVP_WEEKLY_CUTOFF_TIME'}"/;
+        } elsif ($line =~ m/WEEKLY_WEEK_START =/) {
+            $line =~ s/"Monday"/"$config{'RSVP_WEEKLY_WEEK_START'}"/;
+        } elsif ($line =~ m/DAILY_CUTOFF_TIME =/) {
+            $line =~ s/"21:00"/"$config{'RSVP_DAILY_CUTOFF_TIME'}"/;
+        } elsif ($line =~ m/DAILY_ADVANCE_DAYS =/) {
+            $line =~ s/1/$config{'RSVP_DAILY_ADVANCE_DAYS'}/;
+        } elsif ($line =~ m/const THAALI_SIZES = /) {
+            # Convert THAALI_SIZES from string to array
+            my @sizes = split(',', $config{'THAALI_SIZES'});
+            @sizes = map { s/^\s+|\s+$//gr } @sizes;  # Trim whitespace
+            my $sizes_array = '["' . join('", "', @sizes) . '"]';
+            $line =~ s/ = "[^"]+";/ = $sizes_array;/;
+        }
         print OUT $line;
     }
     close OUT;
