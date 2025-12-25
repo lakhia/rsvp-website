@@ -1,15 +1,21 @@
 {
   "scripts": {
     "dev": "npm-run-all --parallel serve:php serve",
+    "dev:docker": "npm-run-all build:dev deploy:dev --parallel serve:php:build serve:build watch:rebuild",
     "serve": "browser-sync start --proxy localhost:8010 --files 'app' --port 3000 --open",
     "serve:php": "php -S localhost:8010 -t app",
+    "serve:build": "browser-sync start --proxy localhost:8010 --files 'build' --port 3000 --no-open",
+    "serve:php:build": "php -S localhost:8010 -t build",
     "build": "npm-run-all clean build:parallel build:index",
+    "build:dev": "npm-run-all clean build:parallel build:index",
     "build:parallel": "npm-run-all --parallel build:js build:css build:php",
     "build:php": "cpx 'app/*.php' build/",
     "build:templates": "html-minifier --collapse-whitespace --remove-comments --input-dir app --output-dir build/.tmp --file-ext html && node scripts/generate-templates.js",
     "build:js": "npm-run-all build:templates && node scripts/build-js.js",
     "build:css": "node scripts/build-css.js",
     "build:index": "node scripts/build-index.js",
+    "deploy:dev": "perl deploy.pl .env",
+    "watch:rebuild": "chokidar 'app/**/*' -c 'npm run build:dev && npm run deploy:dev' --initial false",
     "serve-prod": "npm run build && php -S localhost:8010 -t build",
     "clean": "rimraf build/.tmp build/*.html build/*.php"
   },
@@ -19,6 +25,7 @@
   "version": "0.1.0",
   "devDependencies": {
     "browser-sync": "^3.0.4",
+    "chokidar-cli": "^3.0.0",
     "clean-css": "^5.3.3",
     "cpx": "^1.5.0",
     "html-minifier": "^4.0.0",

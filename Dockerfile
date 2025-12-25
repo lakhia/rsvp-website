@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     nodejs \
-    npm
+    npm \
+    perl
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -24,21 +25,28 @@ RUN a2enmod rewrite
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy application files
-COPY . /var/www/html/
+# Copy package files first for better Docker layer caching
+COPY package*.json ./
 
 # Install Node.js dependencies
 RUN npm install
+
+# Copy application files
+COPY . /var/www/html/
 
 # Set permissions
 RUN mkdir -p /var/www/html/storage \
     && chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage
 
-# Configure Apache
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Configure Apache to serve from build directory
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf \
-    && sed -i 's/\/var\/www\/html/\/var\/www\/html\/app/g' /etc/apache2/sites-available/000-default.conf
+    && sed -i 's/\/var\/www\/html/\/var\/www\/html\/build/g' /etc/apache2/sites-available/000-default.conf
 
 EXPOSE 80
 
-CMD ["apache2-foreground"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

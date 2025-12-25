@@ -7,20 +7,16 @@ class DB {
     private $mysqli;
     private $thread_id;
 
-    private $dbhost;
-    private $dbusername;
-    private $dbpassword;
-    private $dbname;
+    private $dbhost = "{{DB_HOST}}";
+    private $dbusername = "{{DB_USERNAME}}";
+    private $dbpassword = "{{DB_PASSWORD}}";
+    private $dbname = "{{DB_NAME}}";
+
     public $connected = false;
     public $error = "";
     public $error_data = null;
 
     public function __construct() {
-        $this->dbhost = getenv('DB_HOST') ?: 'db';
-        $this->dbusername = getenv('DB_USERNAME') ?: 'sffaiz';
-        $this->dbpassword = getenv('DB_PASSWORD') ?: 'sffaiz-pass';
-        $this->dbname = getenv('DB_DATABASE') ?: 'sffaiz';
-
         // convention is to use $db or $mysqli for the db handle
         $this->mysqli = new mysqli($this->dbhost, $this->dbusername,
                                  $this->dbpassword, $this->dbname);

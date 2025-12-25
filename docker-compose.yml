@@ -3,27 +3,26 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    entrypoint: ["/var/www/html/docker-entrypoint-dev.sh"]
+    environment:
+      - SHELL=/bin/bash
     ports:
-      - "0.0.0.0:8080:80"
+      - "0.0.0.0:3000:3000"  # Browser-sync with live reload
+      - "0.0.0.0:8010:8010"  # PHP backend (optional, for debugging)
     volumes:
       - .:/var/www/html
     depends_on:
       - db
-    environment:
-      DB_HOST: db
-      DB_DATABASE: sffaiz
-      DB_USERNAME: sffaiz
-      DB_PASSWORD: sffaiz-pass
 
   db:
     image: mysql:8.0
     ports:
       - "0.0.0.0:3306:3306"
     environment:
-      MYSQL_DATABASE: sffaiz
-      MYSQL_USER: sffaiz
-      MYSQL_PASSWORD: sffaiz-pass
-      MYSQL_ROOT_PASSWORD: root-password
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
       - ./migration:/docker-entrypoint-initdb.d

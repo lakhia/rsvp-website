@@ -1,0 +1,40 @@
+# Docker Compose for Production Mode Testing
+#
+# This file is for testing production builds locally.
+# It runs the full build process and serves optimized files via Apache.
+#
+# Usage:
+#   docker compose -f docker-compose.prod.yml up -d --build
+#   Access at: http://localhost:8080
+#
+# For development with live reload, use the default docker-compose.yml:
+#   docker compose up -d --build
+#   Access at: http://localhost:3000
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Uses default entrypoint from Dockerfile (docker-entrypoint.sh)
+    # No volume mounts - all files (including .env) are copied into the image
+    ports:
+      - "0.0.0.0:8080:80"  # Apache serving production build
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    ports:
+      - "0.0.0.0:3306:3306"
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./migration:/docker-entrypoint-initdb.d
+
+volumes:
+  mysql_data:

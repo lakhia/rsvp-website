@@ -1,59 +1,108 @@
 # About
 
-  This project is to collect RSVP responses so that cooking and filling teams
-  can plan accordingly.
+This project is an RSVP website for collecting meal responses so that cooking and filling teams can plan accordingly. It's a community jamaat application for managing thaali (meal) distribution.
 
 # System Requirements
 
-## Front-end
+* PHP 8.1+
+* MySQL 5.7+
+* Node.js (for build process)
+* Docker and Docker Compose (for containerized development)
 
-The website uses the following on the client side:
+# Development
 
-* HTML
-* CSS
-* Javascript
-* [Angular](https://angularjs.org/) 1.2.x or higher
-* [Angular ui-router](https://github.com/angular-ui/ui-router/wiki)
+## Local Development (without Docker)
 
-## Back-end
-
-On the backend, it currently requires:
-
-* PHP 8.1
-* MySQL 5.7
-* Web server
-
-# Dev Environment Setup
-
-## Pre-requisites
+*Prerequisites*
 1. Install [mysql](https://dev.mysql.com/downloads/mysql/) and run `mysql -v -u root < migration/*.sql` to bootstrap the database
 2. Install php - MacOS (Homebrew) - `brew install php`
 3. Install [node](https://nodejs.org/en/download/package-manager/)
 4. Install [npm](https://docs.npmjs.com/getting-started/installing-node)
 
-## Build and run
+### Setup
+```bash
+npm install                  # Install dependencies
+cp .env.example .env         # Create local configuration
+# Edit .env with your settings
+```
 
-1. Install all project dependencies using: npm install
-2. Run `npm run dev` which will serve local files at: [http://127.0.0.1:3000](http://127.0.0.1:3000)
-3. Make changes to files under `app/` directory. Any changes are detected and send reload event to browser
+### Commands
+```bash
+npm run dev                  # Start dev server at http://127.0.0.1:3000
+npm run build                # Build production files to build/ directory
+npm run serve-prod           # Build and serve production version
+```
+
+## Docker Development (Recommended)
+
+### First-time Setup
+1. Copy the example environment file:
+   ```bash
+   cp .env.example .env
+   ```
+2. Edit `.env` to customize database credentials, email addresses, and other settings
+3. Start the containers:
+   ```bash
+   docker compose up -d --build
+   ```
+
+The application will be available at [http://localhost:3000](http://localhost:3000) with live reload.
+
+### Development Mode (Default)
+The default setup runs in development mode with auto-rebuild and live reload:
+
+```bash
+docker compose up -d --build      # Start with live reload
+docker compose logs -f app        # Watch logs
+docker compose down               # Stop containers
+docker compose down -v            # Stop and remove volumes (resets database)
+```
+
+**Features:**
+- Auto-rebuilds on source file changes (JS, CSS, HTML, PHP)
+- Browser auto-reloads after rebuild completes
+- Template variable substitution from `.env` via `deploy.pl`
+- Access at [http://localhost:3000](http://localhost:3000)
+
+### Production Mode (Test Production Builds)
+To test the full production build locally:
+
+```bash
+docker compose -f docker-compose.prod.yml up -d --build
+docker compose -f docker-compose.prod.yml down
+```
+
+**Access:** [http://localhost:8080](http://localhost:8080) (Apache serving production build)
+
+## Configuration
+
+Both Docker and traditional deployments use the same `.env`-based configuration system:
+
+- `.env.example` - Template file (checked into git)
+- `.env` - Your local configuration (gitignored, create from .env.example)
+- `deploy.pl` - Script that processes `.env` and substitutes template variables
+
+Key configuration sections:
+- **Database**: DB_HOST, DB_NAME, DB_USERNAME, DB_PASSWORD, DB_ROOT_PASSWORD
+- **Email**: EMAIL_ADMIN, EMAIL_CONTACT, EMAIL_SECRETARY
+- **RSVP Settings**: RSVP_CUTOFF_MODE, RSVP_TIMEZONE, cutoff times
+- **Application**: APP_NAME, SECRETARY_TITLE, LINK_PLANNING, LINK_FEEDBACK
 
 # Deployment
 
-  * When ready to deploy, run "npm run build" and publish all files in
-    `build/` directory except for hidden .tmp sub-directory
-  * Run deployment squasher and templater:
-     cd rsvp; perl deploy.pl config.yaml
-    For an example configuration, see `config/example.yaml`
+## Pre-requisites
+Complete Local Development Prerequisites.
 
-# Files
+1. Build the production files:
+   ```bash
+   npm run build
+   ```
 
-  * `migration/*.sql` used to setup and migrate database
-  * `app/*.html` where `index.html` is the main web application and the other files are specific views for individual routes
-  * `app/js/*.js` where `main.js` has the main controllers and the remaining files has view specific angular controllers
-  * `app/*.php` are backend PHP files that serve JSON to the front-end
+2. Run the deployment script to substitute environment variables:
+   ```bash
+   perl deploy.pl .env
+   ```
 
-# Internal dependencies
+3. Deploy all files from the `build/` directory to your web server
 
-  * Uses `angular-ui-router` to route to different parts of the app
-  * Uses `bootstrap` to style buttons, tables, etc.
-  * Uses `loading-bar` to show progress bar at top
+For detailed architecture and development information, see [CLAUDE.md](CLAUDE.md).
