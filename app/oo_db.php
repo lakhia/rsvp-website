@@ -7,10 +7,10 @@ class DB {
     private $mysqli;
     private $thread_id;
 
-    private $dbhost = "{{DB_HOST}}";
-    private $dbusername = "{{DB_USERNAME}}";
-    private $dbpassword = "{{DB_PASSWORD}}";
-    private $dbname = "{{DB_NAME}}";
+    private $dbhost = "localhost";
+    private $dbusername = "sffaiz";
+    private $dbpassword = "sffaiz-pass";
+    private $dbname = "sffaiz";
 
     public $connected = false;
     public $error = "";

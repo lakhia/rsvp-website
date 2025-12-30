@@ -63,11 +63,16 @@ sub db_config {
     open IN, $_ or die "Cannot open $!";
     open OUT, ">$_.backup" or die "Cannot open $!";
     while ($line = <IN>) {
-        # Replace template variables with config values
-        $line =~ s/\{\{DB_HOST\}\}/$config{DB_HOST}/g;
-        $line =~ s/\{\{DB_USERNAME\}\}/$config{DB_USERNAME}/g;
-        $line =~ s/\{\{DB_PASSWORD\}\}/$config{DB_PASSWORD}/g;
-        $line =~ s/\{\{DB_NAME\}\}/$config{DB_NAME}/g;
+        # Replace special values with config values
+        if ($line =~ m/dbhost =/) {
+            $line =~ s/localhost/$config{DB_HOST}/;
+        } elsif ($line =~ m/dbpassword =/) {
+            $line =~ s/sffaiz-pass/$config{DB_PASSWORD}/;
+        } elsif ($line =~ m/dbusername =/) {
+            $line =~ s/sffaiz/$config{DB_USERNAME}/;
+        } elsif ($line =~ m/dbname =/) {
+            $line =~ s/sffaiz/$config{DB_NAME}/;
+        }
         print OUT $line;
     }
     close OUT;
