@@ -5,6 +5,7 @@ header("Content-Type: application/json; charset=UTF-8");
 
 require_once 'oo_db.php';
 require_once 'config.php';
+require_once 'cutoff.php';
 
 $db = new DB();
 
@@ -118,8 +119,14 @@ class Helper
             return '1970-1-1';
         }
 
-        // Cutoff logic injected at deploy-time based on RSVP_CUTOFF_MODE
-        {{CUTOFF_TIME_IMPLEMENTATION}}
+        // Cutoff logic selected based on config
+        $functionName = "cutoff_" . Config::CUTOFF_MODE;
+        if (function_exists($functionName)) {
+            return $functionName();
+        } else {
+            die("Cutoff selection not configured correctly: " .
+                Config::CUTOFF_MODE);
+        }
     }
 
     public static function is_save_available($offset)
