@@ -81,6 +81,7 @@ Both Docker and traditional deployments use the same `.env`-based configuration 
 - `.env.example` - Template file (checked into git)
 - `.env` - Your local configuration (gitignored, create from .env.example)
 - `deploy.pl` - Script that processes `.env` and substitutes template variables
+- `config.php` - Run-time configurations that allow you to swap out how cutoff times work and what sizes are available
 
 Key configuration sections:
 - **Database**: DB_HOST, DB_NAME, DB_USERNAME, DB_PASSWORD, DB_ROOT_PASSWORD
