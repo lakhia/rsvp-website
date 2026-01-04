@@ -137,6 +137,8 @@ function($scope, $rootScope) {
     }
 
     $scope.generateLabels = function () {
-      window.location.href = "generate_labels.php?date=" + encodeURIComponent($scope.date);
+      window.location.href = "generate_labels.php?date=" + encodeURIComponent($scope.date) +
+            "&sort=" + $scope.sortColumn + "&filterArea=" + $scope.filterNames.area +
+            "&filterSize=" + $scope.filterNames.size + "&filterHere=" + $scope.filterNames.here;
     };
 }]);
