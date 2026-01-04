@@ -53,7 +53,7 @@ function get_default_size($db, $thaali)
     $query = "SELECT size FROM family where thaali = " . $thaali;
     $result = $db->query($query);
     if (!$result || $result->num_rows != 1) {
-        return "M";
+        return "MD";
     }
     $row = $result->fetch_assoc();
     return $row['size'];

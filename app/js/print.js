@@ -110,9 +110,9 @@ function($scope, $rootScope) {
                 return prev;
             }, {});
             return "XS: " + (sizes['XS'] || 0)
-               + ", S: " + (sizes['S'] || 0)
-               + ", M: " + (sizes['M'] || 0)
-               + ", L: " + (sizes['L'] || 0)
+               + ", SM: " + (sizes['SM'] || 0)
+               + ", MD: " + (sizes['MD'] || 0)
+               + ", LG: " + (sizes['LG'] || 0)
                + ", XL: " + (sizes['XL'] || 0);
         }
     }
