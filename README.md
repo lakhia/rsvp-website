@@ -14,7 +14,7 @@ This project is an RSVP website for collecting meal responses so that cooking an
 ## Local Development (without Docker)
 
 *Prerequisites*
-1. Install [mysql](https://dev.mysql.com/downloads/mysql/) and run `mysql -v -u root < migration/*.sql` to bootstrap the database
+1. Install [mysql](https://dev.mysql.com/downloads/mysql/) and run `mysql -v -u root sffaiz < migration/*.sql` to bootstrap the database
 2. Install php - MacOS (Homebrew) - `brew install php`
 3. Install [node](https://nodejs.org/en/download/package-manager/)
 4. Install [npm](https://docs.npmjs.com/getting-started/installing-node)

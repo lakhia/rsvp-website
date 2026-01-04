@@ -2,11 +2,11 @@
 <div ng-init="init()">
 
 <h3>RSVP for {{ getDisplayDate(date) }}</h3>
-<br>
-<button ng-click="generateLabels()">Generate Labels</button>
-<br/>
 <table class="table table-bordered">
 <tr>
+    <td>
+      <button ng-click="generateLabels()">Generate Labels</button>
+    </td>
     <td class="col-xs-2"><b>Order By: </b>
       <select ng_model="sortColumn">
         <option value='thaali'>Thaali</option>
@@ -18,7 +18,7 @@
         <option ng-hide="o.niyaz" value='bread+rice'>Rice / bread</option>
       </select>
     </td>
-    <td colspan="5" class="text-right">
+    <td colspan="4" class="text-right">
         {{ firstLine(o) }}<br>
         {{ secondLine(o) }}
     </td>

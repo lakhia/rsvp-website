@@ -110,9 +110,9 @@ function($scope, $rootScope) {
                 return prev;
             }, {});
             return "XS: " + (sizes['XS'] || 0)
-               + ", S: " + (sizes['S'] || 0)
-               + ", M: " + (sizes['M'] || 0)
-               + ", L: " + (sizes['L'] || 0)
+               + ", SM: " + (sizes['SM'] || 0)
+               + ", MD: " + (sizes['MD'] || 0)
+               + ", LG: " + (sizes['LG'] || 0)
                + ", XL: " + (sizes['XL'] || 0);
         }
     }
@@ -137,6 +137,8 @@ function($scope, $rootScope) {
     }
 
     $scope.generateLabels = function () {
-      window.location.href = "generate_labels.php?date=" + encodeURIComponent($scope.date);
+      window.location.href = "generate_labels.php?date=" + encodeURIComponent($scope.date) +
+            "&sort=" + $scope.sortColumn + "&filterArea=" + $scope.filterNames.area +
+            "&filterSize=" + $scope.filterNames.size + "&filterHere=" + $scope.filterNames.here;
     };
 }]);

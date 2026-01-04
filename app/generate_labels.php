@@ -6,18 +6,16 @@ require_once "auxil.php";
 if (!Helper::verify_token($db, $email_cookie, $thaali_cookie)) {
     die('{ "msg": "Login failed, please logout and login again" }');
 }
-// Check for a 'date' parameter
-if (!isset($_GET["date"])) {
-    die(
-        "Error: Date parameter missing. Please provide a date (e.g. ?date=2025-06-15)."
-    );
-}
 
-$filter_date = $_GET["date"];
-// Sanitize string to prevent SQL injection
-$filter_date = preg_replace("/[^_a-zA-Z0-9-]+/", "", $filter_date);
-$event_query = 'SELECT details, enabled from events where date="' . $filter_date . '";';
+// Parameter handling
+$filterDate  = preg_replace("/[^_a-zA-Z0-9-]+/", "", $_GET["date"] ?? date('Y-m-d'));
+$filterArea  = $_GET['filterArea'] ?? '';
+$filterSize  = $_GET['filterSize'] ?? '';
+$filterHere  = $_GET['filterHere'] ?? '';
+$sort        = $_GET['sort'] ?? '';
 
+// Event details
+$event_query = 'SELECT details, enabled from events where date="' . $filterDate . '";';
 $result = $db->query($event_query);
 if (!$result || $result->num_rows != 1) {
     die("Error: Seems like there is no event on the day selected.");
@@ -28,14 +26,49 @@ if (!$row["enabled"]) {
 }
 $dish = $row["details"];
 
-// Get RSVP and family - sort order is optimized for labeling workflow
-$query =
-    "SELECT thaali_id as id, CONCAT(firstName, ' ', lastName) AS name, " .
-    "rsvps.size, area FROM rsvps LEFT JOIN `family` on family.thaali = rsvps.thaali_id " .
-    "WHERE `rsvp` = 1 AND `date` = '" .
-    $filter_date .
-    "' ORDER BY rsvps.size, area;";
-$result = $db->query($query);
+// Binding for prepare statement
+$where[] = "`rsvp` = 1";
+$where[] = "`date` = ?";
+$params[] = $filterDate;
+$types    = "s";
+
+// Optional params
+if ($filterArea !== '') {
+    $where[] = "area = ?";
+    $params[] = $filterArea;
+    $types   .= "s";
+}
+if ($filterSize !== '') {
+    $where[] = "rsvps.size = ?";
+    $params[] = $filterSize;
+    $types   .= "s";
+}
+if ($filterHere !== '') {
+    $where[] = "here = ?";
+    $params[] = $filterHere;
+    $types   .= "s";
+}
+$allowedSorts = [
+    'thaali' => 'thaali_id',
+    'size'   => 'rsvps.size',
+    'area'   => 'area'
+];
+$orderBy = $allowedSorts[$sort] ?? 'rsvps.size, area';
+
+// Run query
+$sql = "
+    SELECT thaali_id AS id, rsvps.size, area
+    FROM rsvps
+    LEFT JOIN `family` on family.thaali = rsvps.thaali_id
+    WHERE " . implode(" AND ", $where) . "
+    ORDER BY $orderBy
+";
+$stmt = $db->prepare($sql);
+if (!empty($params)) {
+    $stmt->bind_param($types, ...$params);
+}
+$stmt->execute();
+$result = $stmt->get_result();
 
 // Create PDF
 $pdf = new FPDF("P", "in", "Letter");
@@ -55,57 +88,69 @@ $spaceY = 0;
 $x = $marginLeft;
 $y = $marginTop;
 $col = 0;
-$grid_row = 0;
+$row = 0;
 
-while ($row = $result->fetch_assoc()) {
-    // Optional debug border
-    // $pdf->Rect($x, $y, $labelWidth, $labelHeight);
+while ($r = $result->fetch_assoc()) {
 
-    // Position cursor
-    $pdf->SetXY($x + 0.1, $y + 0.1);
+    drawLabel($pdf, $x, $y, $r, $dish, $filterDate, $labelWidth, $labelHeight, 0.1);
 
-    // Line 1: ID | City (bold)
-    $pdf->SetFont("Arial", "B", 14);
-    $pdf->Cell(
-        $labelWidth - 0.2,
-        0.15,
-        $row["id"] . " | " . $row["area"] . " | " . $row["size"],
-        0,
-        2,
-        "C"
-    );
-    $pdf->Cell($labelWidth - 0.2, 0.02, "", 0, 2);
-    // Line 2: Dish Name (Size) (regular)
-    $pdf->SetFont("Arial", "", 10);
-    // Line 3: Name
-    $pdf->Cell($labelWidth - 0.2, 0.02, "", 0, 2);
-    $pdf->Cell($labelWidth - 0.2, 0.13, $dish, 0, 2, "C");
-    $pdf->Cell($labelWidth - 0.2, 0.02, "", 0, 2);
-    // Line 4: Date
-    $pdf->Cell($labelWidth - 0.2, 0.15, $filter_date, 0, 2, "C");
-
-    // Move to next label
+    /* ---- Advance grid ---- */
     $col++;
+
     if ($col >= 3) {
         $col = 0;
-        $grid_row++;
+        $row++;
         $x = $marginLeft;
         $y += $labelHeight + $spaceY;
     } else {
         $x += $labelWidth + $spaceX;
     }
 
-    // New page if needed
-    if ($grid_row >= 10) {
+    /* ---- New page ---- */
+    if ($row >= 10) {
         $pdf->AddPage();
         $x = $marginLeft;
         $y = $marginTop;
         $col = 0;
-        $grid_row = 0;
+        $row = 0;
     }
 }
 
 // Output the PDF automatically
 $pdf->Output("D", "labels.pdf"); // 'D' triggers download
-exit();
-?>
+
+
+function drawLabel($pdf, $x, $y, $data, $dish, $date, $labelWidth, $labelHeight, $pad)
+{
+    $innerW = $labelWidth - ($pad * 2);
+
+    // Optional debug border
+    $pdf->Rect($x, $y, $labelWidth, $labelHeight);
+
+    /*
+     * Vertical layout (absolute, drift-free)
+     */
+    $yLine1 = $y + $pad;          // ID / Area / Size
+    $yDish  = $y + 0.35;          // Dish name block
+    $yDate  = $y + 0.80;          // Date
+
+    /* ---------- Line 1: ID / Area (L) + Size (R) ---------- */
+    $pdf->SetFont("Arial", "B", 14);
+
+    $pdf->SetXY($x + $pad, $yLine1);
+    $pdf->Cell($innerW, 0.18, "{$data['id']} {$data['area']}", 0, 0, "L");
+
+    $pdf->SetXY($x + $pad, $yLine1);
+    $pdf->Cell($innerW, 0.18, $data['size'], 0, 0, "R");
+
+    /* ---------- Line 2: Dish name (wrapped, centered) ---------- */
+    $pdf->SetFont("Arial", "", 10);
+
+    $pdf->SetXY($x + $pad, $yDish);
+    $pdf->MultiCell($innerW, 0.12, $dish, 0, "C");
+
+    /* ---------- Line 3: Date ---------- */
+    $pdf->SetXY($x + $pad, $yDate);
+    $pdf->Cell($innerW, 0.15, $date, 0, 0, "C");
+}
+

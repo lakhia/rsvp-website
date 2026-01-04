@@ -30,7 +30,7 @@ class Config
     // ----------------------------
 
     // Available thaali sizes (comma-separated, smallest to largest)
-    const THAALI_SIZES = ["XS", "S", "M", "L", "XL"];
+    const THAALI_SIZES = ["XS", "SM", "MD", "LG", "XL"];
 
     // Size selection mode: "any", "downgrade_only", "plus_minus_one"
     // "any": Users can select any size
