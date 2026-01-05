@@ -1,7 +1,8 @@
 <?php
 
-require_once('auxil.php');
-require_once('estimation.php');
+require_once "config.php";
+require_once "auxil.php";
+require_once "estimation.php";
 
 // If token is invalid, return an empty response
 if (!Helper::is_admin($email_cookie) ||
@@ -33,8 +34,7 @@ function family_get($db, $thaali, $msg)
             $row = $result->fetch_assoc();
         }
         if (!isset($row["thaali"]) || $i != $row["thaali"]) {
-            $k = array("thaali" => $i);
-            $rows[] = $k;
+            $rows[] = ["thaali" => $i];
         } else {
             $rows[] = $row;
             unset($row);
@@ -78,8 +78,8 @@ function family_post($db, $thaali) {
             $poc = Helper::get_if_defined($i->poc, '');
             $its = Helper::get_if_defined($i->its, '');
 
-            if (!in_array($size, Estimation::$sizes)) {
-                $size = "M";
+            if (!in_array($size, Config::THAALI_SIZES)) {
+                $size = "MD";
             }
             if ($lastName == '' || $firstName == '') {
                 $msg .= ", name is required";
