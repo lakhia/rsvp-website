@@ -73,6 +73,7 @@ $result = $stmt->get_result();
 // Create PDF
 $pdf = new FPDF("P", "in", "Letter");
 $pdf->SetMargins(0, 0);
+$pdf->SetAutoPageBreak(false);
 $pdf->AddPage();
 $pdf->SetFont("Arial", "", 9); // Font size adjusted for label size
 
@@ -132,7 +133,7 @@ function drawLabel($pdf, $x, $y, $data, $dish, $date, $labelWidth, $labelHeight,
      */
     $yLine1 = $y + $pad;          // ID / Area / Size
     $yDish  = $y + 0.35;          // Dish name block
-    $yDate  = $y + 0.80;          // Date
+    $yDate  = $y + 0.70;          // Date
 
     /* ---------- Line 1: ID / Area (L) + Size (R) ---------- */
     $pdf->SetFont("Arial", "B", 14);
