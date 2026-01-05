@@ -93,7 +93,7 @@ $row = 0;
 
 while ($r = $result->fetch_assoc()) {
 
-    drawLabel($pdf, $x, $y, $r, $dish, $filterDate, $labelWidth, $labelHeight, 0.1);
+    drawLabel($pdf, $x, $y, $r, $dish, $filterDate, $labelWidth, $labelHeight, 0.12);
 
     /* ---- Advance grid ---- */
     $col++;
@@ -126,7 +126,7 @@ function drawLabel($pdf, $x, $y, $data, $dish, $date, $labelWidth, $labelHeight,
     $innerW = $labelWidth - ($pad * 2);
 
     // Optional debug border
-    $pdf->Rect($x, $y, $labelWidth, $labelHeight);
+    //$pdf->Rect($x, $y, $labelWidth, $labelHeight);
 
     /*
      * Vertical layout (absolute, drift-free)
