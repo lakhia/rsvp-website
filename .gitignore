@@ -1,4 +1,6 @@
 node_modules/
+vendor/
+.phpunit.result.cache
 build/
 .DS_Store
 rsvp.sublime-project

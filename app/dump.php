@@ -1,12 +1,12 @@
 <?php
 
-require_once("auxil.php");
+require_once "bootstrap.php";
 
 $table = $_GET['table'];
 
 // If token is invalid, return an empty response
-if (!Helper::verify_token($db, $email_cookie, $thaali_cookie)) {
-    die('{ "msg": "Login failed, please logout and login again" }');
+if (!AuthService::verify_token($db, $email_cookie, $thaali_cookie)) {
+    Helper::json_error("Login failed, please logout and login again");
 }
 
 // Sanitize string
@@ -98,7 +98,7 @@ function dump_post($db, $table, $types) {
         $msg .= "Row " . $row . ", " . ($result ? "success" : "failure") . "\n";
     }
 
-    die('{ "msg": "' . $msg . '" }');
+    Helper::json_error($msg);
 }
 
 ?>

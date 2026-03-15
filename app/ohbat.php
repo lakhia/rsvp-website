@@ -1,16 +1,16 @@
 <?php
 
-require_once("auxil.php");
+require_once "bootstrap.php";
 
 // If token is invalid, return an empty response
-if (!Helper::verify_token($db, $email_cookie, $thaali_cookie)) {
-    die('{ "msg": "Login failed, please logout and login again" }');
+if (!AuthService::verify_token($db, $email_cookie, $thaali_cookie)) {
+    Helper::json_error("Login failed, please logout and login again");
 }
 
 // Start dump for special report
-$date = Helper::get_if_defined($_GET['date'], 0);
+$date = Helper::get_param('date', 0);
 if ($date == 0) {
-   $offset = Helper::get_if_defined($_GET['offset'], 0);
+   $offset = Helper::get_param('offset', 0);
    $date = Helper::get_day($offset);
 }
 dump_get($db, $date);

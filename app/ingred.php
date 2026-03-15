@@ -1,10 +1,10 @@
 <?php
-require_once('auxil.php');
+require_once "bootstrap.php";
 
 // If token is invalid, return an empty response
-if (!Helper::is_admin($email_cookie) ||
-    !Helper::verify_token($db, $email_cookie, $thaali_cookie)) {
-    die('{ "msg": "Login failed, please logout and login again" }');
+if (!AuthService::is_admin($email_cookie) ||
+    !AuthService::verify_token($db, $email_cookie, $thaali_cookie)) {
+    Helper::json_error("Login failed, please logout and login again");
 }
 ingredients_get($db);
 

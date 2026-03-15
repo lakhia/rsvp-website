@@ -77,7 +77,9 @@ class DB {
     }
 
     public function __destruct() {
-        $this->mysqli->close();
+        if ($this->mysqli) {
+            $this->mysqli->close();
+        }
     }
 }
 ?>

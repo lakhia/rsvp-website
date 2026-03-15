@@ -1,20 +1,29 @@
 <?php
 
 require_once "config.php";
+require_once "Helper.php";
 
-class Estimation
+class EstimationService
 {
-    private static function get_all_ingredients($db, $fullmenu) {
+    // Strip an optional "Label:" prefix and trim whitespace from a menu token.
+    public static function parse_menu_name(string $menu): string
+    {
+        $pos = strpos($menu, ":");
+        if ($pos !== false) {
+            $menu = substr($menu, $pos + 1);
+        }
+        return trim($menu);
+    }
+
+    private static function get_all_ingredients($db, string $fullmenu): array
+    {
         $ingredients = array();
         $stmt = $db->prepare("SELECT name, multiplier, rice, unit FROM cooking " .
                              "LEFT JOIN menus on menu_id = id " .
                              "LEFT JOIN ingredients on ingred_id = ingredients.id " .
                              "WHERE menu = ?");
         foreach (explode(",", $fullmenu) as $menu) {
-            if (strpos($menu, ":")) {
-                $menu = substr($menu, 1 + strpos($menu, ":"));
-            }
-            $menu = trim($menu);
+            $menu = self::parse_menu_name($menu);
             $stmt->bind_param("s", $menu);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -31,7 +40,8 @@ class Estimation
     }
 
     /* Get serving guidance for all different sizes */
-    static function get_serving_guidance($db, $fullmenu) {
+    public static function get_serving_guidance($db, string $fullmenu): array
+    {
         $menus = self::get_all_ingredients($db, $fullmenu);
         foreach ($menus as $menu => $ingredients) {
             $menus[$menu] = array();
@@ -51,7 +61,8 @@ class Estimation
     }
 
     /* For each menu, compute all the ingredients and ingredient totals */
-    static function get_ingredients($db, $fullmenu, &$count, &$total) {
+    public static function get_ingredients($db, string $fullmenu, array &$count, array &$total): array
+    {
         $menus = self::get_all_ingredients($db, $fullmenu);
         foreach ($menus as $menu => $ingredients) {
             $menus[$menu] = array();
@@ -66,7 +77,8 @@ class Estimation
     }
 
     /* Compute ingredient entry and ingredient totals from cumulative RSVP responses */
-    static function adjust_for_count(&$ingredient, &$count, &$total) {
+    public static function adjust_for_count(array &$ingredient, array &$count, array &$total): string
+    {
         if ($ingredient['rice']) {
             $quant = Helper::get_if_defined($count['rice+bread'], 0);
         } else {
@@ -84,7 +96,8 @@ class Estimation
     }
 
     /* Given thaali size, return factor */
-    static function get_factor_from_size($size, $multiplier) {
+    public static function get_factor_from_size(string $size, float $multiplier): float
+    {
         if ($size == 'XL') {
             $factor = 2;
         } else if ($size == 'LG') {

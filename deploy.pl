@@ -19,7 +19,7 @@ sub wanted {
 
     if (m/oo_db.php/) {
         db_config($_);
-    } elsif (m/aux/) {
+    } elsif (m/AuthService/) {
         php_helper($_);
     } elsif (m/index\.html/) {
         html($_);
