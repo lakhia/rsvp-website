@@ -4,7 +4,7 @@ This project is an RSVP website for collecting meal responses so that cooking an
 
 # System Requirements
 
-* PHP 8.1+
+* PHP 8.2+
 * MySQL 5.7+
 * Node.js (for build process)
 * Docker and Docker Compose (for containerized development)
@@ -88,6 +88,22 @@ Key configuration sections:
 - **Email**: EMAIL_ADMIN, EMAIL_CONTACT, EMAIL_SECRETARY
 - **RSVP Settings**: RSVP_CUTOFF_MODE, RSVP_TIMEZONE, cutoff times
 - **Application**: APP_NAME, SECRETARY_TITLE, LINK_PLANNING, LINK_FEEDBACK
+
+# Testing
+
+PHP unit tests use [PHPUnit](https://phpunit.de/) and live in the `tests/` directory.
+
+## Setup
+```bash
+composer install     # Install PHPUnit (first time only)
+```
+
+## Running tests
+```bash
+./vendor/bin/phpunit
+```
+
+Tests also run automatically on every push and pull request via GitHub Actions.
 
 # Deployment
 

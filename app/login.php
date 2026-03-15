@@ -1,6 +1,6 @@
 <?php
 
-require_once("auxil.php");
+require_once "bootstrap.php";
 
 $data = json_decode(file_get_contents('php://input'), false);
 if ($data) {
@@ -12,18 +12,17 @@ if ($data) {
 }
 
 // Get name from credentials
-$name = Helper::get_name($db, $email, $thaali);
+$name = AuthService::get_name($db, $email, $thaali);
 if ($name == "") {
-    $msg = "Login failed";
-    die('{ "msg": "' . $msg . '" }');
+    Helper::json_error("Login failed");
 }
 
 // Verified, set cookies for 60 days
 $expires = time() + (86400 * 60); // 86400 = 1 day
-setcookie("token", Helper::create_token($email, $thaali), $expires);
+setcookie("token", AuthService::create_token($email, $thaali), $expires);
 setcookie("thaali", $thaali, $expires);
 setcookie("email", $email, $expires);
-if (Helper::is_admin($email)) {
+if (AuthService::is_admin($email)) {
     setcookie("adv", "1", $expires);
 }
 $greet = $name . ", #" . $thaali;

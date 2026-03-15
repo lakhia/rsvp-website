@@ -1,15 +1,15 @@
 <?php
-require_once('auxil.php');
+require_once "bootstrap.php";
 
 // If token is invalid, return an empty response
-if (!Helper::is_admin($email_cookie) ||
-    !Helper::verify_token($db, $email_cookie, $thaali_cookie)) {
-    die('{ "msg": "Login failed, please logout and login again" }');
+if (!AuthService::is_admin($email_cookie) ||
+    !AuthService::verify_token($db, $email_cookie, $thaali_cookie)) {
+    Helper::json_error("Login failed, please logout and login again");
 }
 
 // Get offset
-$offset = Helper::get_if_defined($_GET['offset'], 0);
-$len = Helper::get_if_defined($_GET['len'], 10);
+$offset = Helper::get_param('offset', 0);
+$len = Helper::get_param('len', 10);
 
 // POST or GET?
 if ($method_server == "POST") {

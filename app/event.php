@@ -1,11 +1,11 @@
 <?php
 
-require_once("auxil.php");
+require_once "bootstrap.php";
 
 // If token is invalid, return an empty response
-if (!Helper::is_admin($email_cookie) ||
-    !Helper::verify_token($db, $email_cookie, $thaali_cookie)) {
-    die('{ "msg": "Login failed, please logout and login again" }');
+if (!AuthService::is_admin($email_cookie) ||
+    !AuthService::verify_token($db, $email_cookie, $thaali_cookie)) {
+    Helper::json_error("Login failed, please logout and login again");
 }
 
 // POST or GET?
@@ -18,8 +18,8 @@ if ($method_server == "POST") {
 // Get details for specific dates
 function event_get($db, $msg)
 {
-    $offset = Helper::get_if_defined($_GET['offset'], 0);
-    $date = Helper::get_if_defined($_GET['date'], "");
+    $offset = Helper::get_param('offset', 0);
+    $date = Helper::get_param('date', "");
     $from = Helper::get_week($date, $offset);
     $to = Helper::get_week($date, $offset + 7);
 
@@ -52,7 +52,7 @@ function event_get($db, $msg)
     if (isset($rows)) {
         Helper::print_to_json($rows, $msg, $from);
     } else {
-        die('{ "msg": "No details available for week of ' . $from . '" }');
+        Helper::json_error("No details available for week of $from");
     }
 }
 
@@ -174,7 +174,7 @@ function event_post($db)
         $msg = "Thank you, changes have been saved!";
         return event_get($db, $msg);
     } else {
-        die('{ "msg": "' . $msg . '" }');
+        Helper::json_error($msg);
     }
 }
 

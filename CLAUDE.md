@@ -115,6 +115,18 @@ The Docker setup uses `.env` for all application configuration. This file is git
 
 The same .env format is used for both Docker and traditional deployments, eliminating configuration drift.
 
+### PHP Testing
+
+PHPUnit is used for PHP unit tests.
+
+```bash
+composer install         # Install PHPUnit (first time only)
+./vendor/bin/phpunit     # Run all tests
+```
+
+Tests live in `tests/`. The bootstrap file `tests/bootstrap.php` sets timezone to UTC, loads `config.php`, `sizes.php`, `estimation.php`, and `cutoff.php`, and defines a minimal `Helper` stub so `estimation.php` can be loaded without `auxil.php`.
+
+
 ### Build System Details
 - `npm run build:js` - Minifies and concatenates JS files (route.js first, then app/js/*, app/lib/*, templates)
 - `npm run build:css` - Processes and minifies CSS
