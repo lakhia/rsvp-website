@@ -1,10 +1,8 @@
-const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thr', 'Fri', 'Sat'];
+const fmt = new Intl.DateTimeFormat('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 
-// "2025-04-06" → "Sun, 04-06"
+// "2025-04-06" → "Mon, Apr 6"
 export function getDisplayDate(input) {
 	const parts = input.split('-');
 	if (parts.length < 3) return input;
-	const d = new Date(parts[0], parts[1] - 1, parts[2]);
-	const withoutYear = input.replace(/^\d+-/, '');
-	return DAYS[d.getDay()] + ', ' + withoutYear;
+	return fmt.format(new Date(parts[0], parts[1] - 1, parts[2]));
 }
