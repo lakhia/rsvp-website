@@ -1,7 +1,6 @@
 <script>
 	import '../app.css';
 	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import { isLoggedIn, isAdmin, logout } from '$lib/auth.js';
 	import Icon from '$lib/Icon.svelte';
@@ -23,7 +22,9 @@
 
 	const navItems = $derived(ALL_NAV.filter(n => !n.adminOnly || admin));
 
-	onMount(() => {
+	$effect(() => {
+		// Re-read cookies on every navigation so admin state is always current
+		const _ = page.url.pathname;
 		loggedIn = isLoggedIn();
 		admin = isAdmin();
 		menuBig = localStorage.getItem('menuBig') === '1';
