@@ -1,0 +1,118 @@
+<script>
+    import { goto } from "$app/navigation";
+    import { page } from "$app/state";
+    import { get } from "$lib/api.js";
+    import { getDisplayDate } from "$lib/dates.js";
+
+    let data = $state({});
+    let startDate = $state("");
+    let msg = $state("");
+
+    const offset = $derived(parseInt(page.url.searchParams.get("offset")) || 0);
+
+    $effect(() => {
+        loadData(offset);
+    });
+
+    async function loadData(o) {
+        msg = "";
+        try {
+            const res = await get("shop.php", { offset: o });
+            data = res.data || {};
+            startDate = res.date || "";
+            msg = res.msg || "";
+        } catch {
+            msg = "Request failed, try again";
+        }
+    }
+
+    const entries = $derived(Object.entries(data));
+</script>
+
+<svelte:head>
+    <title>{__APP_NAME__} - Shopping</title>
+</svelte:head>
+
+<h3 class="text-lg font-semibold text-gray-700 mb-4">
+    Shopping from {getDisplayDate(startDate)}
+</h3>
+
+{#if entries.length === 0 && !msg}
+    <p class="text-sm text-gray-500">No events this week.</p>
+{/if}
+
+<div class="overflow-x-auto">
+    <table class="w-full min-w-120 text-sm border-collapse">
+        <thead>
+            <tr
+                class="bg-gray-200 text-gray-700 text-xs uppercase tracking-wide text-left"
+            >
+                <th class="px-3 py-2 font-medium w-[15%]">Date</th>
+                <th class="px-3 py-2 font-medium w-[65%]">Ingredients</th>
+                <th class="px-3 py-2 font-medium w-[20%]">Counts</th>
+            </tr>
+        </thead>
+        <tbody>
+            {#each entries as [date, value], i}
+                <tr
+                    class="border-t border-gray-200 align-top {i % 2 === 1
+                        ? 'bg-gray-50'
+                        : ''}"
+                >
+                    <td class="px-3 py-2 text-gray-700 whitespace-nowrap">
+                        {date === "Total" ? "Total" : getDisplayDate(date)}
+                    </td>
+                    <td class="px-3 py-2">
+                        {#each Object.entries(value.ingred ?? {}) as [menu, ingreds]}
+                            <div class="mb-2">
+                                <span class="font-medium text-gray-700"
+                                    >{menu}</span
+                                >
+                                <div class="ml-2 text-gray-600">
+                                    {#each ingreds as q}
+                                        <div>{q}</div>
+                                    {/each}
+                                </div>
+                            </div>
+                        {/each}
+                    </td>
+                    <td class="px-3 py-2 text-gray-600">
+                        {#each Object.entries(value.count ?? {}) as [k, v]}
+                            <div>
+                                <span class="text-gray-500">{k}:</span>
+                                {v}
+                            </div>
+                        {/each}
+                    </td>
+                </tr>
+            {/each}
+        </tbody>
+    </table>
+</div>
+
+{#if msg}
+    <p class="mt-3 text-center text-sm text-red-600">{msg}</p>
+{/if}
+
+<div class="mt-4 flex justify-center gap-4 no-print">
+    <button
+        onclick={() => goto(`/shop?offset=${offset - 7}`)}
+        class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors"
+    >
+        &laquo; Prev
+    </button>
+    <button
+        onclick={() => goto(`/shop?offset=${offset + 7}`)}
+        class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors"
+    >
+        Next &raquo;
+    </button>
+</div>
+
+<style>
+    @media print {
+        .no-print {
+            display: none !important;
+        }
+    }
+</style>
