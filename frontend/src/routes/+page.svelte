@@ -117,14 +117,14 @@
 </h3>
 
 <div class="overflow-x-auto">
-	<table class="w-full text-sm border-collapse">
+	<table class="w-full min-w-[560px] text-sm border-collapse">
 		<thead>
 			<tr class="bg-gray-200 text-gray-700 text-left text-xs uppercase tracking-wide">
-				<th class="px-3 py-2 font-medium">Day</th>
-				<th class="px-3 py-2 font-medium">Details</th>
-				<th class="px-3 py-2 font-medium text-center">No rice/bread</th>
-				<th class="px-3 py-2 font-medium text-center">RSVP</th>
-				<th class="px-3 py-2 font-medium">Size / Count</th>
+				<th class="px-3 py-2 font-medium w-[15%]">Day</th>
+				<th class="px-3 py-2 font-medium w-[40%]">Details</th>
+				<th class="px-3 py-2 font-medium text-center w-[15%]">No rice/bread</th>
+				<th class="px-3 py-2 font-medium text-center w-[12%]">RSVP</th>
+				<th class="px-3 py-2 font-medium w-[18%]">Size / Count</th>
 			</tr>
 		</thead>
 		<tbody>
