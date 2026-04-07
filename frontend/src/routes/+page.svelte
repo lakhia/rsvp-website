@@ -109,7 +109,7 @@
 </script>
 
 <svelte:head>
-	<title>RSVP</title>
+	<title>{__APP_NAME__} - RSVP</title>
 </svelte:head>
 
 <h3 class="text-lg font-semibold text-gray-700 mb-4">

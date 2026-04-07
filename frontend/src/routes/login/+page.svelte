@@ -27,7 +27,7 @@
 </script>
 
 <svelte:head>
-	<title>Login</title>
+	<title>{__APP_NAME__} - Login</title>
 </svelte:head>
 
 <div class="min-h-screen flex items-center justify-center bg-gray-50">

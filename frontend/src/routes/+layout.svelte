@@ -62,7 +62,7 @@
 		>
 			<span class="text-lg leading-none flex-shrink-0">&#9776;</span>
 			{#if menuBig}
-				<span class="whitespace-nowrap text-sm font-bold">APP_NAME</span>
+				<span class="whitespace-nowrap text-sm font-bold">{__APP_NAME__}</span>
 			{/if}
 		</button>
 
@@ -102,8 +102,8 @@
 	>
 		{@render children()}
 		<footer class="mt-8 pt-4 border-t border-gray-200 text-xs text-gray-400">
-			Please provide <a href="FEEDBACK_URL" class="underline">thaali feedback</a>.
-			Contact us via <a href="mailto:CONTACT_EMAIL" class="underline">email</a>.
+			Please provide <a href={__LINK_FEEDBACK__} class="underline">thaali feedback</a>.
+			Contact us via <a href="mailto:{__EMAIL_CONTACT__}" class="underline">email</a>.
 		</footer>
 	</main>
 {/if}
