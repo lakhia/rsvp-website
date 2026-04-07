@@ -164,7 +164,7 @@
 </script>
 
 <svelte:head>
-    <title>Print</title>
+    <title>{__APP_NAME__} - Print</title>
 </svelte:head>
 
 <!-- Header bar -->
