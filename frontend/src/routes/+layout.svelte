@@ -57,10 +57,12 @@
 		<!-- Toggle / app name -->
 		<button
 			onclick={menuToggle}
+			aria-label={menuBig ? 'Collapse menu' : 'Expand menu'}
+			aria-expanded={menuBig}
 			class="flex items-center gap-2 px-2 py-3 bg-brand text-white hover:bg-brand-dark focus:outline-none transition-colors"
 			style="min-height: 44px;"
 		>
-			<span class="text-lg leading-none flex-shrink-0">&#9776;</span>
+			<span class="text-lg leading-none shrink-0">&#9776;</span>
 			{#if menuBig}
 				<span class="whitespace-nowrap text-sm font-bold">{__APP_NAME__}</span>
 			{/if}
@@ -70,12 +72,14 @@
 		{#each navItems as item}
 			<a
 				href={item.href}
-				class="flex items-center gap-2 px-2 py-2 transition-colors focus:outline-none
+				aria-label={item.label}
+				aria-current={activePath === item.href ? 'page' : undefined}
+				class="flex items-center gap-2 px-2 py-3 transition-colors focus:outline-none
 					{activePath === item.href
 						? 'text-gray-400 pointer-events-none'
 						: 'text-gray-600 hover:bg-gray-200'}"
 			>
-				<span class="flex-shrink-0"><Icon name={item.icon} size={20} /></span>
+				<span class="shrink-0"><Icon name={item.icon} size={20} /></span>
 				{#if menuBig}
 					<span class="whitespace-nowrap text-sm">{item.label}</span>
 				{/if}
@@ -86,9 +90,10 @@
 		<div class="mt-auto">
 			<button
 				onclick={handleLogout}
+				aria-label="Logout"
 				class="w-full flex items-center gap-2 px-2 py-2 text-gray-600 hover:bg-gray-200 focus:outline-none transition-colors"
 			>
-				<span class="flex-shrink-0"><Icon name="logout" size={20} /></span>
+				<span class="shrink-0"><Icon name="logout" size={20} /></span>
 				{#if menuBig}
 					<span class="whitespace-nowrap text-sm">Logout</span>
 				{/if}

@@ -1,5 +1,4 @@
 <script>
-	import { onMount } from 'svelte';
 	import { goto, beforeNavigate } from '$app/navigation';
 	import { page } from '$app/state';
 	import { get, post } from '$lib/api.js';
@@ -19,7 +18,8 @@
 		loadData(offset, dateParam);
 	});
 
-	onMount(() => {
+	// No reactive reads → runs once on mount, cleans up on unmount
+	$effect(() => {
 		window.addEventListener('beforeunload', warnIfDirty);
 		return () => window.removeEventListener('beforeunload', warnIfDirty);
 	});
