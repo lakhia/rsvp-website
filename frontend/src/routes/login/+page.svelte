@@ -1,5 +1,4 @@
 <script>
-	import { goto } from '$app/navigation';
 	import { post } from '$lib/api.js';
 
 	let email = $state('');
@@ -15,7 +14,7 @@
 			const res = await post('login.php', {}, { email, pass });
 			if (res.data && !res.msg) {
 				localStorage.setItem('greet', res.data);
-				goto('/');
+				window.location.href = '/';
 			} else {
 				msg = res.msg || 'Login failed';
 			}
