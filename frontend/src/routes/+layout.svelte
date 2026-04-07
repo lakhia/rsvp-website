@@ -56,7 +56,7 @@
 		<!-- Toggle / app name -->
 		<button
 			onclick={menuToggle}
-			class="flex items-center gap-2 px-2 py-3 bg-blue-300 text-white hover:bg-blue-400 focus:outline-none transition-colors"
+			class="flex items-center gap-2 px-2 py-3 bg-brand text-white hover:bg-brand-dark focus:outline-none transition-colors"
 			style="min-height: 44px;"
 		>
 			<span class="text-lg leading-none flex-shrink-0">&#9776;</span>

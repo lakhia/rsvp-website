@@ -67,7 +67,7 @@
 			<button
 				type="submit"
 				disabled={loading}
-				class="mt-2 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 text-white text-sm font-medium py-2 rounded transition-colors"
+				class="mt-2 bg-brand hover:bg-brand-dark disabled:opacity-50 text-white text-sm font-medium py-2 rounded transition-colors"
 			>
 				{loading ? 'Signing in…' : 'Next'}
 			</button>
