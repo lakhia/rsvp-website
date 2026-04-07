@@ -18,7 +18,8 @@
     "watch:rebuild": "chokidar 'app/**/*' -c 'npm run build:dev && npm run deploy:dev' --initial false",
     "serve-prod": "npm run build && php -S localhost:8010 -t build",
     "clean": "rimraf build/.tmp build/*.html build/*.php",
-    "build:svelte": "cd frontend && npm run build"
+    "build:svelte": "cd frontend && npm run build",
+    "serve:svelte": "npm-run-all build:svelte && cpx 'app/*.php' build-svelte/ && php -S localhost:8011 -t build-svelte"
   },
   "name": "rsvp",
   "license": "Copyright 2016",
