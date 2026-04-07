@@ -3,4 +3,8 @@
 @theme {
 	--color-brand: rgb(75, 134, 183);
 	--color-brand-dark: rgb(55, 110, 155);
+	--color-yes: rgb(190, 220, 185);
+	--color-yes-dark: rgb(146, 185, 139);
+	--color-no: rgb(220, 185, 185);
+	--color-no-dark: rgb(179, 138, 137);
 }
