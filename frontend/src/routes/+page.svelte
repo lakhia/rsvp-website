@@ -6,6 +6,7 @@
 	import Loading from '$lib/Loading.svelte';
 	import { PageState } from '$lib/PageState.svelte.js';
 	import Message from '$lib/Message.svelte';
+	import Dialog from '$lib/Dialog.svelte';
 
 	const ps = new PageState();
 
@@ -116,16 +117,13 @@
 </h3>
 
 {#if pendingHref}
-	<div class="mb-4 flex items-center gap-3 px-3 py-2 bg-amber-50 border border-amber-300 rounded text-sm text-amber-800">
-		<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-			<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-		</svg>
-		<span>You have unsaved changes.</span>
-		<button onclick={() => { dirty = {}; goto(pendingHref); pendingHref = null; }}
-			class="font-medium underline hover:text-amber-900">Discard &amp; leave</button>
-		<button onclick={() => pendingHref = null}
-			class="ml-auto hover:text-amber-900" aria-label="Stay on page">✕</button>
-	</div>
+	<Dialog
+		message="You have unsaved changes. Discard them and leave?"
+		confirmLabel="Discard & leave"
+		cancelLabel="Stay"
+		onConfirm={() => { dirty = {}; goto(pendingHref); pendingHref = null; }}
+		onCancel={() => pendingHref = null}
+	/>
 {/if}
 
 {#if ps.loading}
