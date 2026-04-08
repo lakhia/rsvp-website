@@ -10,7 +10,8 @@
 
 	let events  = $state([]);
 	let sizes   = $state([]);   // eligible sizes from server
-	let dirty   = $state({});   // { [date]: true } — never unset on toggle-back
+	let dirty       = $state({});   // { [date]: true } — never unset on toggle-back
+	let pendingHref = $state(null); // set when navigation is blocked by dirty state
 
 	const offset    = $derived(parseInt(page.url.searchParams.get('offset')) || 0);
 	const dateParam = $derived(page.url.searchParams.get('date') || '');
@@ -26,8 +27,11 @@
 		return () => window.removeEventListener('beforeunload', warnIfDirty);
 	});
 
-	beforeNavigate(({ cancel }) => {
-		if (hasDirty && !confirm('Unsaved changes, proceed anyway?')) cancel();
+	beforeNavigate(({ cancel, to }) => {
+		if (hasDirty) {
+			cancel();
+			pendingHref = to?.url?.href ?? '/';
+		}
 	});
 
 	function warnIfDirty(e) {
@@ -109,6 +113,19 @@
 <h3 class="text-lg font-semibold text-gray-700 mb-4">
 	RSVP for {localStorage.getItem('greet') ?? ''}
 </h3>
+
+{#if pendingHref}
+	<div class="mb-4 flex items-center gap-3 px-3 py-2 bg-amber-50 border border-amber-300 rounded text-sm text-amber-800">
+		<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+			<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+		</svg>
+		<span>You have unsaved changes.</span>
+		<button onclick={() => { dirty = {}; goto(pendingHref); pendingHref = null; }}
+			class="font-medium underline hover:text-amber-900">Discard &amp; leave</button>
+		<button onclick={() => pendingHref = null}
+			class="ml-auto hover:text-amber-900" aria-label="Stay on page">✕</button>
+	</div>
+{/if}
 
 {#if ps.loading}
 	<Loading />
