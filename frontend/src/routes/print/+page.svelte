@@ -5,6 +5,7 @@
     import { getDisplayDate } from "$lib/dates.js";
     import Loading from "$lib/Loading.svelte";
     import { PageState } from "$lib/PageState.svelte.js";
+    import Message from "$lib/Message.svelte";
 
     const ps = new PageState();
 
@@ -251,9 +252,7 @@
 </div>
 {/if}
 
-{#if ps.msg}
-    <p class="mt-3 text-center text-sm text-red-600">{ps.msg}</p>
-{/if}
+<Message msg={ps.msg} msgType={ps.msgType} />
 
 <!-- Nav buttons -->
 <div class="mt-4 flex justify-center items-center gap-3 no-print">
