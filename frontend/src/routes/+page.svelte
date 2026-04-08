@@ -5,6 +5,7 @@
 	import { getDisplayDate } from '$lib/dates.js';
 	import Loading from '$lib/Loading.svelte';
 	import { PageState } from '$lib/PageState.svelte.js';
+	import Message from '$lib/Message.svelte';
 
 	const ps = new PageState();
 
@@ -136,7 +137,7 @@
 			<tr class="bg-gray-200 text-gray-700 text-left text-xs uppercase tracking-wide">
 				<th class="px-3 py-2 font-medium w-[15%]">Day</th>
 				<th class="px-3 py-2 font-medium w-[40%]">Details</th>
-				<th class="px-3 py-2 font-medium text-center w-[15%]">No rice/bread</th>
+				<th class="px-3 py-2 font-medium text-center w-[15%]">No bread<br>/ Rice</th>
 				<th class="px-3 py-2 font-medium text-center w-[12%]">RSVP</th>
 				<th class="px-3 py-2 font-medium w-[18%]">Size / Count</th>
 			</tr>
@@ -224,9 +225,7 @@
 </div>
 {/if}
 
-{#if ps.msg}
-	<p class="mt-3 text-center text-sm text-red-600">{ps.msg}</p>
-{/if}
+<Message msg={ps.msg} msgType={ps.msgType} />
 
 <div class="mt-4 flex justify-center items-center gap-4">
 	<button

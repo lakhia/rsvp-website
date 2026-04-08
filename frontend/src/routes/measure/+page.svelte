@@ -5,6 +5,7 @@
 	import { isAdmin } from '$lib/auth.js';
 	import Loading from '$lib/Loading.svelte';
 	import { PageState } from '$lib/PageState.svelte.js';
+	import Message from '$lib/Message.svelte';
 
 	const ps = new PageState();
 
@@ -173,9 +174,7 @@
 </div>
 {/if}
 
-{#if ps.msg}
-	<p class="mt-3 text-center text-sm text-red-600">{ps.msg}</p>
-{/if}
+<Message msg={ps.msg} msgType={ps.msgType} />
 
 <div class="mt-4 flex justify-center gap-4">
 	<button onclick={() => goto(`/measure?offset=${Math.max(0, offset - 10)}`)}
