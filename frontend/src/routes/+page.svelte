@@ -3,14 +3,16 @@
 	import { page } from '$app/state';
 	import { get, post } from '$lib/api.js';
 	import { getDisplayDate } from '$lib/dates.js';
+	import Loading from '$lib/Loading.svelte';
+	import { PageState } from '$lib/PageState.svelte.js';
 
-	let events = $state([]);
-	let sizes  = $state([]);   // eligible sizes from server
-	let msg    = $state('');
-	let dirty  = $state({});   // { [date]: true } — never unset on toggle-back
-	let saving = $state(false);
+	const ps = new PageState();
 
-	const offset   = $derived(parseInt(page.url.searchParams.get('offset')) || 0);
+	let events  = $state([]);
+	let sizes   = $state([]);   // eligible sizes from server
+	let dirty   = $state({});   // { [date]: true } — never unset on toggle-back
+
+	const offset    = $derived(parseInt(page.url.searchParams.get('offset')) || 0);
 	const dateParam = $derived(page.url.searchParams.get('date') || '');
 	const hasDirty  = $derived(Object.keys(dirty).length > 0);
 
@@ -33,21 +35,18 @@
 	}
 
 	async function loadData(o, d) {
-		msg = '';
-		try {
+		await ps.load(async () => {
 			const res = await get('rsvp.php', { offset: o, date: d });
-			events = res.data || [];
-			sizes  = res.other || [];
-			msg    = res.msg || '';
-			dirty  = {};
-		} catch (e) {
-			msg = e.message || 'Request failed, try again';
-		}
+			events    = res.data  || [];
+			sizes     = res.other || [];
+			ps.msg    = res.msg   || '';
+			dirty     = {};
+		});
 	}
 
 	function mark(event) {
 		dirty[event.date] = true;
-		msg = '';
+		ps.msg = '';
 	}
 
 	function getSizes(currentSize) {
@@ -89,18 +88,13 @@
 				body[ev.date] = row;
 			}
 		}
-		saving = true;
-		try {
+		await ps.save(async () => {
 			const res = await post('rsvp.php', { offset }, body);
-			events = res.data || [];
+			events = res.data  || [];
 			sizes  = res.other || [];
-			msg    = res.msg || 'Saved';
+			ps.msg = res.msg   || 'Saved';
 			dirty  = {};
-		} catch (e) {
-			msg = e.message || 'Request failed, try again';
-		} finally {
-			saving = false;
-		}
+		});
 	}
 
 	function navigate(delta) {
@@ -116,6 +110,9 @@
 	RSVP for {localStorage.getItem('greet') ?? ''}
 </h3>
 
+{#if ps.loading}
+	<Loading />
+{:else}
 <div class="overflow-x-auto">
 	<table class="w-full min-w-[560px] text-sm border-collapse">
 		<thead>
@@ -208,9 +205,10 @@
 		</tbody>
 	</table>
 </div>
+{/if}
 
-{#if msg}
-	<p class="mt-3 text-center text-sm text-red-600">{msg}</p>
+{#if ps.msg}
+	<p class="mt-3 text-center text-sm text-red-600">{ps.msg}</p>
 {/if}
 
 <div class="mt-4 flex justify-center items-center gap-4">
@@ -223,11 +221,11 @@
 
 	<button
 		onclick={handleSave}
-		disabled={!hasDirty || saving}
+		disabled={!hasDirty || ps.saving}
 		class="px-4 py-1.5 text-sm rounded text-white transition-colors
 			bg-brand hover:bg-brand-dark disabled:opacity-40"
 	>
-		{saving ? 'Saving…' : 'Save'}
+		{ps.saving ? 'Saving…' : 'Save'}
 	</button>
 
 	<button

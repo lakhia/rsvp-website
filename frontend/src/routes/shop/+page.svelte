@@ -3,27 +3,25 @@
     import { page } from "$app/state";
     import { get } from "$lib/api.js";
     import { getDisplayDate } from "$lib/dates.js";
+    import Loading from "$lib/Loading.svelte";
+    import { PageState } from "$lib/PageState.svelte.js";
+
+    const ps = new PageState();
 
     let data = $state({});
     let startDate = $state("");
-    let msg = $state("");
 
     const offset = $derived(parseInt(page.url.searchParams.get("offset")) || 0);
 
-    $effect(() => {
-        loadData(offset);
-    });
+    $effect(() => { loadData(offset); });
 
     async function loadData(o) {
-        msg = "";
-        try {
+        await ps.load(async () => {
             const res = await get("shop.php", { offset: o });
-            data = res.data || {};
+            data      = res.data || {};
             startDate = res.date || "";
-            msg = res.msg || "";
-        } catch (e) {
-            msg = e.message || "Request failed, try again";
-        }
+            ps.msg    = res.msg  || "";
+        });
     }
 
     const entries = $derived(Object.entries(data));
@@ -37,7 +35,11 @@
     Shopping from {getDisplayDate(startDate)}
 </h3>
 
-{#if entries.length === 0 && !msg}
+{#if ps.loading}
+    <Loading />
+{:else}
+
+{#if entries.length === 0 && !ps.msg}
     <p class="text-sm text-gray-500">No events this week.</p>
 {/if}
 
@@ -89,9 +91,10 @@
         </tbody>
     </table>
 </div>
+{/if}
 
-{#if msg}
-    <p class="mt-3 text-center text-sm text-red-600">{msg}</p>
+{#if ps.msg}
+    <p class="mt-3 text-center text-sm text-red-600">{ps.msg}</p>
 {/if}
 
 <div class="mt-4 flex justify-center gap-4 no-print">

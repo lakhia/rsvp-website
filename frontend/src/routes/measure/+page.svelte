@@ -3,17 +3,17 @@
 	import { page } from '$app/state';
 	import { get, post } from '$lib/api.js';
 	import { isAdmin } from '$lib/auth.js';
+	import Loading from '$lib/Loading.svelte';
+	import { PageState } from '$lib/PageState.svelte.js';
 
-	let menus    = $state([]);
+	const ps = new PageState();
+
+	let menus      = $state([]);
 	let allIngreds = $state([]);   // full ingredient list for autocomplete
-	let msg      = $state('');
-	let dirty    = $state(false);
-	let saving   = $state(false);
+	let dirty      = $state(false);
+	let dropdown   = $state(null);
 
-	// Active dropdown state: { menuIdx, ingredIdx, matches, highlighted }
-	let dropdown = $state(null);
-
-	const offset = $derived(parseInt(page.url.searchParams.get('offset')) || 0);
+	const offset  = $derived(parseInt(page.url.searchParams.get('offset')) || 0);
 	const pageNum = $derived(offset / 10 + 1);
 
 	$effect(() => {
@@ -22,34 +22,26 @@
 	});
 
 	async function loadData(o) {
-		msg = '';
-		try {
+		dropdown = null;
+		await ps.load(async () => {
 			const [menuRes, ingredRes] = await Promise.all([
 				get('measure.php', { offset: o, len: 10 }),
 				get('ingred.php')
 			]);
 			menus      = menuRes.data  || [];
 			allIngreds = ingredRes.data || [];
-			msg        = menuRes.msg   || '';
+			ps.msg     = menuRes.msg   || '';
 			dirty      = false;
-			dropdown   = null;
-		} catch (e) {
-			msg = e.message || 'Request failed, try again';
-		}
+		});
 	}
 
 	async function handleSave() {
-		saving = true;
-		try {
+		await ps.save(async () => {
 			const res = await post('measure.php', { offset, len: 10 }, menus);
-			menus = res.data || [];
-			msg   = res.msg  || 'Saved';
-			dirty = false;
-		} catch (e) {
-			msg = e.message || 'Request failed, try again';
-		} finally {
-			saving = false;
-		}
+			menus  = res.data || [];
+			ps.msg = res.msg  || 'Saved';
+			dirty  = false;
+		});
 	}
 
 	// Autocomplete logic
@@ -112,6 +104,9 @@
 	Menu Measurements, page {pageNum}
 </h3>
 
+{#if ps.loading}
+	<Loading />
+{:else}
 <div class="overflow-x-auto">
 	<table class="w-full min-w-[600px] text-sm border-collapse">
 		<thead>
@@ -176,9 +171,10 @@
 		</tbody>
 	</table>
 </div>
+{/if}
 
-{#if msg}
-	<p class="mt-3 text-center text-sm text-red-600">{msg}</p>
+{#if ps.msg}
+	<p class="mt-3 text-center text-sm text-red-600">{ps.msg}</p>
 {/if}
 
 <div class="mt-4 flex justify-center gap-4">
@@ -187,9 +183,9 @@
 		class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors disabled:opacity-40">
 		&laquo; Prev
 	</button>
-	<button onclick={handleSave} disabled={!dirty || saving}
+	<button onclick={handleSave} disabled={!dirty || ps.saving}
 		class="px-4 py-1.5 text-sm rounded text-white transition-colors bg-brand hover:bg-brand-dark disabled:opacity-40">
-		{saving ? 'Saving…' : 'Save'}
+		{ps.saving ? 'Saving…' : 'Save'}
 	</button>
 	<button onclick={() => goto(`/measure?offset=${offset + 10}`)}
 		class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors">
