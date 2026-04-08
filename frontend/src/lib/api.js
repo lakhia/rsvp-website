@@ -10,33 +10,29 @@ function buildUrl(url, params = {}) {
 	return u.toString();
 }
 
-export async function get(url, params = {}) {
+async function request(url, options) {
 	const controller = new AbortController();
 	const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
 	try {
-		const res = await fetch(buildUrl(url, params), {
-			signal: controller.signal,
-			credentials: 'include'
-		});
+		const res = await fetch(url, { ...options, signal: controller.signal, credentials: 'include' });
+		if (!res.ok) throw new Error(`Server error (${res.status})`);
 		return await res.json();
+	} catch (e) {
+		if (e.name === 'AbortError') throw new Error('Request timed out');
+		throw e;
 	} finally {
 		clearTimeout(timer);
 	}
 }
 
+export async function get(url, params = {}) {
+	return request(buildUrl(url, params), {});
+}
+
 export async function post(url, params = {}, body) {
-	const controller = new AbortController();
-	const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
-	try {
-		const res = await fetch(buildUrl(url, params), {
-			method: 'POST',
-			signal: controller.signal,
-			credentials: 'include',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(body)
-		});
-		return await res.json();
-	} finally {
-		clearTimeout(timer);
-	}
+	return request(buildUrl(url, params), {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify(body)
+	});
 }

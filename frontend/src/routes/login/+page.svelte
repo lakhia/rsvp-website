@@ -18,8 +18,8 @@
 			} else {
 				msg = res.msg || 'Login failed';
 			}
-		} catch {
-			msg = 'Request failed, try again';
+		} catch (e) {
+			msg = e.message || 'Request failed, try again';
 		} finally {
 			loading = false;
 		}

@@ -33,8 +33,8 @@
 			msg        = menuRes.msg   || '';
 			dirty      = false;
 			dropdown   = null;
-		} catch {
-			msg = 'Request failed, try again';
+		} catch (e) {
+			msg = e.message || 'Request failed, try again';
 		}
 	}
 
@@ -45,8 +45,8 @@
 			menus = res.data || [];
 			msg   = res.msg  || 'Saved';
 			dirty = false;
-		} catch {
-			msg = 'Request failed, try again';
+		} catch (e) {
+			msg = e.message || 'Request failed, try again';
 		} finally {
 			saving = false;
 		}
