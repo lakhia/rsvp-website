@@ -53,7 +53,7 @@
         const f = filters;
         return rows.filter((item) => {
             if (f.name && !item.name.includes(f.name)) return false;
-            if (f.area && item.area?.toUpperCase() !== f.area.toUpperCase()) return false;
+            if (f.area && item.area !== f.area) return false;
             if (f.size && item.size?.toUpperCase() !== f.size.toUpperCase()) return false;
             if (f.here === "Y" && !item.here) return false;
             if (f.here === "N" && item.here) return false;
@@ -67,6 +67,10 @@
             return true;
         });
     });
+
+    const areas = $derived(
+        [...new Set(rows.map(r => r.area).filter(Boolean))].sort()
+    );
 
     const sortedRows = $derived.by(() => {
         return [...filteredRows].sort((a, b) => {
@@ -191,38 +195,67 @@
 <div class="overflow-x-auto">
     <table class="w-full min-w-[520px] text-sm border-collapse">
         <thead>
-            <tr class="bg-gray-200 text-gray-700 text-left">
-                <th class="px-2 py-2 w-16 text-right">
-                    <div class="text-xs font-medium uppercase tracking-wide">#</div>
-                </th>
-                <th class="px-2 py-2">
-                    <div class="text-xs font-medium uppercase tracking-wide mb-1">Area</div>
-                    <input bind:value={filters.area} placeholder="Filter…" class="w-full text-xs border-b border-gray-400 bg-transparent focus:outline-none placeholder-gray-400"/>
-                </th>
+            <!-- Label row -->
+            <tr class="bg-gray-200 text-gray-700 text-left text-xs uppercase tracking-wide">
+                <th class="px-2 py-2 w-16 text-right">#</th>
+                <th class="px-2 py-2 w-24">Group</th>
+                {#if !meta.niyaz}<th class="px-2 py-2 w-24">Rice/Bread</th>{/if}
+                <th class="px-2 py-2 w-16">Size</th>
                 {#if !meta.niyaz}
-                    <th class="px-2 py-2 w-24">
-                        <div class="text-xs font-medium uppercase tracking-wide mb-1">Rice/Bread</div>
-                        <input bind:value={filters.rice} placeholder="Y/N" class="w-full text-xs border-b border-gray-400 bg-transparent focus:outline-none placeholder-gray-400"/>
-                    </th>
+                    <th class="px-2 py-2 w-16">Here</th>
+                    <th class="px-2 py-2 w-16">Filled</th>
                 {/if}
-                <th class="px-2 py-2 w-16">
-                    <div class="text-xs font-medium uppercase tracking-wide mb-1">Size</div>
-                    <input bind:value={filters.size} placeholder="Filter…" class="w-full text-xs border-b border-gray-400 bg-transparent focus:outline-none placeholder-gray-400"/>
-                </th>
+                <th class="px-2 py-2">Name</th>
+            </tr>
+            <!-- Filter row -->
+            <tr class="bg-gray-100 border-b border-gray-300">
+                <td class="px-2 py-1"></td>
+                <td class="px-2 py-1">
+                    <select bind:value={filters.area} class="w-full text-xs bg-transparent focus:outline-none">
+                        <option value="">All</option>
+                        {#each areas as area}
+                            <option value={area}>{area}</option>
+                        {/each}
+                    </select>
+                </td>
                 {#if !meta.niyaz}
-                    <th class="px-2 py-2 w-16">
-                        <div class="text-xs font-medium uppercase tracking-wide mb-1">Here</div>
-                        <input bind:value={filters.here} placeholder="Y/N" maxlength="1" class="w-full text-xs border-b border-gray-400 bg-transparent focus:outline-none placeholder-gray-400"/>
-                    </th>
-                    <th class="px-2 py-2 w-16">
-                        <div class="text-xs font-medium uppercase tracking-wide mb-1">Filled</div>
-                        <input bind:value={filters.filled} placeholder="Y/N" maxlength="1" class="w-full text-xs border-b border-gray-400 bg-transparent focus:outline-none placeholder-gray-400"/>
-                    </th>
+                    <td class="px-2 py-1">
+                        <select bind:value={filters.rice} class="w-full text-xs bg-transparent focus:outline-none">
+                            <option value="">All</option>
+                            <option value="Y">No rice</option>
+                            <option value="N">With rice</option>
+                        </select>
+                    </td>
                 {/if}
-                <th class="px-2 py-2">
-                    <div class="text-xs font-medium uppercase tracking-wide mb-1">Name</div>
-                    <input bind:value={filters.name} placeholder="Filter…" class="w-full text-xs border-b border-gray-400 bg-transparent focus:outline-none placeholder-gray-400"/>
-                </th>
+                <td class="px-2 py-1">
+                    <select bind:value={filters.size} class="w-full text-xs bg-transparent focus:outline-none">
+                        <option value="">All</option>
+                        <option value="XS">XS</option>
+                        <option value="SM">SM</option>
+                        <option value="MD">MD</option>
+                        <option value="LG">LG</option>
+                        <option value="XL">XL</option>
+                    </select>
+                </td>
+                {#if !meta.niyaz}
+                    <td class="px-2 py-1">
+                        <select bind:value={filters.here} class="w-full text-xs bg-transparent focus:outline-none">
+                            <option value="">All</option>
+                            <option value="Y">Yes</option>
+                            <option value="N">No</option>
+                        </select>
+                    </td>
+                    <td class="px-2 py-1">
+                        <select bind:value={filters.filled} class="w-full text-xs bg-transparent focus:outline-none">
+                            <option value="">All</option>
+                            <option value="Y">Yes</option>
+                            <option value="N">No</option>
+                        </select>
+                    </td>
+                {/if}
+                <td class="px-2 py-1">
+                    <input bind:value={filters.name} placeholder="Filter…" class="w-full text-xs bg-transparent border-b border-gray-400 focus:outline-none placeholder-gray-400"/>
+                </td>
             </tr>
         </thead>
         <tbody>
