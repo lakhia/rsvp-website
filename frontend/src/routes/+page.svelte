@@ -40,8 +40,8 @@
 			sizes  = res.other || [];
 			msg    = res.msg || '';
 			dirty  = {};
-		} catch {
-			msg = 'Request failed, try again';
+		} catch (e) {
+			msg = e.message || 'Request failed, try again';
 		}
 	}
 
@@ -96,8 +96,8 @@
 			sizes  = res.other || [];
 			msg    = res.msg || 'Saved';
 			dirty  = {};
-		} catch {
-			msg = 'Request failed, try again';
+		} catch (e) {
+			msg = e.message || 'Request failed, try again';
 		} finally {
 			saving = false;
 		}

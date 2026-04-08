@@ -29,8 +29,8 @@
             startDate = res.date || "";
             msg = res.msg || "";
             dirty = false;
-        } catch {
-            msg = "Request failed, try again";
+        } catch (e) {
+            msg = e.message || "Request failed, try again";
         }
     }
 
@@ -42,8 +42,8 @@
             startDate = res.date || "";
             msg = res.msg || "Saved";
             dirty = false;
-        } catch {
-            msg = "Request failed, try again";
+        } catch (e) {
+            msg = e.message || "Request failed, try again";
         } finally {
             saving = false;
         }

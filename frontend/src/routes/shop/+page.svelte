@@ -21,8 +21,8 @@
             data = res.data || {};
             startDate = res.date || "";
             msg = res.msg || "";
-        } catch {
-            msg = "Request failed, try again";
+        } catch (e) {
+            msg = e.message || "Request failed, try again";
         }
     }
 
