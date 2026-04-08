@@ -4,49 +4,40 @@
     import { get, post } from "$lib/api.js";
     import { getDisplayDate } from "$lib/dates.js";
     import { isAdmin } from "$lib/auth.js";
+    import Loading from "$lib/Loading.svelte";
+    import { PageState } from "$lib/PageState.svelte.js";
+
+    const ps = new PageState();
 
     let events = $state([]);
     let startDate = $state("");
-    let msg = $state("");
     let dirty = $state(false);
-    let saving = $state(false);
 
     const offset = $derived(parseInt(page.url.searchParams.get("offset")) || 0);
 
     $effect(() => {
-        if (!isAdmin()) {
-            goto("/");
-            return;
-        }
+        if (!isAdmin()) { goto("/"); return; }
         loadData(offset);
     });
 
     async function loadData(o) {
-        msg = "";
-        try {
+        await ps.load(async () => {
             const res = await get("event.php", { offset: o });
-            events = res.data || [];
+            events    = res.data || [];
             startDate = res.date || "";
-            msg = res.msg || "";
-            dirty = false;
-        } catch (e) {
-            msg = e.message || "Request failed, try again";
-        }
+            ps.msg    = res.msg  || "";
+            dirty     = false;
+        });
     }
 
     async function handleSave() {
-        saving = true;
-        try {
+        await ps.save(async () => {
             const res = await post("event.php", { offset }, events);
-            events = res.data || [];
+            events    = res.data || [];
             startDate = res.date || "";
-            msg = res.msg || "Saved";
-            dirty = false;
-        } catch (e) {
-            msg = e.message || "Request failed, try again";
-        } finally {
-            saving = false;
-        }
+            ps.msg    = res.msg  || "Saved";
+            dirty     = false;
+        });
     }
 </script>
 
@@ -58,6 +49,9 @@
     Events from {getDisplayDate(startDate)}
 </h3>
 
+{#if ps.loading}
+    <Loading />
+{:else}
 <div class="overflow-x-auto">
     <table class="w-full min-w-120 text-sm border-collapse">
         <thead>
@@ -111,9 +105,10 @@
         </tbody>
     </table>
 </div>
+{/if}
 
-{#if msg}
-    <p class="mt-3 text-center text-sm text-red-600">{msg}</p>
+{#if ps.msg}
+    <p class="mt-3 text-center text-sm text-red-600">{ps.msg}</p>
 {/if}
 
 <div class="mt-4 flex justify-center gap-4">
@@ -125,10 +120,10 @@
     </button>
     <button
         onclick={handleSave}
-        disabled={!dirty || saving}
+        disabled={!dirty || ps.saving}
         class="px-4 py-1.5 text-sm rounded text-white transition-colors bg-brand hover:bg-brand-dark disabled:opacity-40"
     >
-        {saving ? "Saving…" : "Save"}
+        {ps.saving ? "Saving…" : "Save"}
     </button>
     <button
         onclick={() => goto(`/event?offset=${offset + 7}`)}
