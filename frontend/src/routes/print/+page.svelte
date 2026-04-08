@@ -6,6 +6,7 @@
     import Loading from "$lib/Loading.svelte";
     import { PageState } from "$lib/PageState.svelte.js";
     import Message from "$lib/Message.svelte";
+    import Dialog from "$lib/Dialog.svelte";
 
     const ps = new PageState();
 
@@ -14,6 +15,7 @@
     let date = $state("");
     let dirty = $state(false);
     let dateWarning = $state("");
+    let confirmingReset = $state(false);
 
     let sortCol = $state("thaali");
     let filters = $state({ area: "", size: "", here: "", filled: "", rice: "", name: "" });
@@ -117,6 +119,7 @@
         ps.msg = "";
         warnedDate = "";
         dateWarning = "";
+        confirmingReset = false;
     }
 
     function generateLabels() {
@@ -161,15 +164,8 @@
     </div>
 </div>
 
-<!-- Date warning banner -->
 {#if dateWarning}
-    <div class="mb-3 flex items-center gap-2 px-3 py-2 bg-amber-50 border border-amber-300 rounded text-sm text-amber-800 no-print">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-        </svg>
-        {dateWarning}
-        <button onclick={() => dateWarning = ""} class="ml-auto text-amber-600 hover:text-amber-900" aria-label="Dismiss">✕</button>
-    </div>
+    <Dialog message={dateWarning} cancelLabel="OK" onCancel={() => dateWarning = ""} />
 {/if}
 
 <!-- Serving guidance -->
@@ -293,7 +289,17 @@
         &laquo; Prev
     </button>
     {#if meta.save}
-        <button onclick={handleReset} class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors">
+        {#if confirmingReset}
+            <Dialog
+                message="Clear all here and filled checkboxes?"
+                confirmLabel="Reset"
+                cancelLabel="Cancel"
+                danger={true}
+                onConfirm={handleReset}
+                onCancel={() => confirmingReset = false}
+            />
+        {/if}
+        <button onclick={() => confirmingReset = true} class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors">
             Reset
         </button>
         <button onclick={handleSave} disabled={!dirty || ps.saving} class="px-4 py-1.5 text-sm rounded text-white transition-colors bg-brand hover:bg-brand-dark disabled:opacity-40">
