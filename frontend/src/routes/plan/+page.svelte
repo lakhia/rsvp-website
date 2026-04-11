@@ -2,7 +2,7 @@
 	<title>{__APP_NAME__} - Plan</title>
 </svelte:head>
 
-<h3 class="text-lg font-semibold text-gray-700 mb-4">Plan Your Event</h3>
+<h2>Plan Your Event</h2>
 
 <p class="text-gray-700">
 	Submit your <a href={__LINK_PLANNING__} class="text-brand underline">raza request</a>.

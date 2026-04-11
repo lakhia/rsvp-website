@@ -11,6 +11,45 @@
 
 @layer base {
 	:disabled { opacity: 0.5; }
+	h2 { @apply text-lg font-semibold text-gray-700 mb-4; }
+	thead tr:first-child { @apply bg-gray-200 text-gray-700 text-xs uppercase tracking-wide text-left; }
+	th { @apply px-3 py-2 font-medium; }
+	tbody tr { @apply border-t border-gray-200; }
+	tbody tr:nth-child(even) { @apply bg-gray-50; }
+	table { @apply w-full min-w-[480px] text-sm border-collapse; }
+	td { @apply px-3 py-2 text-gray-700; }
+	label { @apply text-sm text-gray-600; }
+}
+
+@layer components {
+	/* Outline/secondary button */
+	.btn-secondary {
+		@apply px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors;
+	}
+	/* Brand/primary button */
+	.btn-primary {
+		@apply px-4 py-1.5 text-sm rounded text-white bg-brand hover:bg-brand-dark transition-colors;
+	}
+	/* Destructive button */
+	.btn-danger {
+		@apply px-4 py-1.5 text-sm rounded text-white bg-red-500 hover:bg-red-600 transition-colors;
+	}
+
+	/* Transparent border-bottom inline editing input (table cells) */
+	.input-inline {
+		@apply w-full bg-transparent border-b border-transparent hover:border-gray-300 focus:border-brand focus:outline-none text-gray-700 placeholder-gray-300 text-sm;
+	}
+
+	/* Small bordered input / select */
+	.input-sm {
+		@apply border border-gray-300 rounded px-1 py-0.5 text-sm;
+	}
+
+	/* Transparent filter select (print table header row) */
+	.select-filter {
+		@apply w-full text-xs bg-transparent focus:outline-none;
+	}
+
 }
 
 @media print {

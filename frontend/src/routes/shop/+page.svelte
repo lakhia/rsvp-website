@@ -8,7 +8,6 @@
     import Message from "$lib/Message.svelte";
     import PageNav from "$lib/PageNav.svelte";
     import { getIntParam } from "$lib/utils.js";
-    import { tableHeadClass, pageHeadingClass } from "$lib/styles.js";
 
     const ps = new PageState();
 
@@ -35,9 +34,7 @@
     <title>{__APP_NAME__} - Shopping</title>
 </svelte:head>
 
-<h3 class={pageHeadingClass}>
-    Shopping from {getDisplayDate(startDate)}
-</h3>
+<h2>Shopping from {getDisplayDate(startDate)}</h2>
 
 {#if ps.loading}
     <Loading />
@@ -48,21 +45,21 @@
 {/if}
 
 <div class="overflow-x-auto">
-    <table class="w-full min-w-120 text-sm border-collapse">
+    <table>
         <thead>
-            <tr class={tableHeadClass}>
-                <th class="px-3 py-2 font-medium w-[15%]">Date</th>
-                <th class="px-3 py-2 font-medium w-[65%]">Ingredients</th>
-                <th class="px-3 py-2 font-medium w-[20%]">Counts</th>
+            <tr>
+                <th class="w-[15%]">Date</th>
+                <th class="w-[65%]">Ingredients</th>
+                <th class="w-[20%]">Counts</th>
             </tr>
         </thead>
         <tbody>
             {#each entries as [date, value], i}
-                <tr class="border-t border-gray-200 align-top even:bg-gray-50">
-                    <td class="px-3 py-2 text-gray-700 whitespace-nowrap">
+                <tr class="align-top">
+                    <td class="whitespace-nowrap">
                         {date === "Total" ? "Total" : getDisplayDate(date)}
                     </td>
-                    <td class="px-3 py-2">
+                    <td>
                         <div class="sm:columns-2 gap-x-6">
                             {#each Object.entries(value.ingred ?? {}) as [menu, ingreds]}
                                 <div class="mb-2 break-inside-avoid">
@@ -76,7 +73,7 @@
                             {/each}
                         </div>
                     </td>
-                    <td class="px-3 py-2 text-gray-600">
+                    <td class="text-gray-600">
                         {#each Object.entries(value.count ?? {}) as [k, v]}
                             <div>
                                 <span class="text-gray-500">{k}:</span>

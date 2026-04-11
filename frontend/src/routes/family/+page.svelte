@@ -8,8 +8,6 @@
     import Message from "$lib/Message.svelte";
     import PageNav from "$lib/PageNav.svelte";
     import { getIntParam } from "$lib/utils.js";
-    import { inputClass, tableHeadClass, pageHeadingClass } from "$lib/styles.js";
-
     const ps = new PageState();
 
     let families = $state([]);
@@ -47,109 +45,109 @@
     <title>{__APP_NAME__} - Families</title>
 </svelte:head>
 
-<h3 class={pageHeadingClass}>Families</h3>
+<h2>Families</h2>
 
 {#if ps.loading}
     <Loading />
 {:else}
 <div class="overflow-x-auto">
-    <table class="w-full min-w-200 text-sm border-collapse">
+    <table>
         <thead>
-            <tr class={tableHeadClass}>
-                <th class="px-2 py-2 font-medium w-[8%]">Num</th>
-                <th class="px-2 py-2 font-medium w-[10%]">Area</th>
-                <th class="px-2 py-2 font-medium w-[18%]">Name</th>
-                <th class="px-2 py-2 font-medium w-[6%]">Size</th>
-                <th class="px-2 py-2 font-medium w-[20%]">Email</th>
-                <th class="px-2 py-2 font-medium w-[22%]">Phone / POC</th>
-                <th class="px-2 py-2 font-medium w-[8%]">Resp</th>
+            <tr>
+                <th class="w-[8%]">Num</th>
+                <th class="w-[10%]">Area</th>
+                <th class="w-[18%]">Name</th>
+                <th class="w-[6%]">Size</th>
+                <th class="w-[20%]">Email</th>
+                <th class="w-[22%]">Phone / POC</th>
+                <th class="w-[8%]">Resp</th>
             </tr>
         </thead>
         <tbody>
             {#each families as f, i}
-                <tr class="border-t border-gray-200 even:bg-gray-50">
+                <tr>
                     <!-- Thaali # + ITS -->
-                    <td class="px-2 py-2 align-top">
+                    <td class="align-top">
                         <div class="text-gray-500 text-xs mb-1">{f.thaali}</div>
                         <input
                             type="text"
                             bind:value={f.its}
                             oninput={() => (dirty = true)}
                             placeholder="ITS ID"
-                            class={inputClass}
+                            class="input-inline"
                         />
                     </td>
                     <!-- Area -->
-                    <td class="px-2 py-2 align-top">
+                    <td class="align-top">
                         <input
                             type="text"
                             bind:value={f.area}
                             oninput={() => (dirty = true)}
                             placeholder="Area"
-                            class={inputClass}
+                            class="input-inline"
                         />
                     </td>
                     <!-- Name -->
-                    <td class="px-2 py-2 align-top">
+                    <td class="align-top">
                         <input
                             type="text"
                             bind:value={f.firstName}
                             oninput={() => (dirty = true)}
                             placeholder="First name"
-                            class="{inputClass} mb-1"
+                            class="input-inline mb-1"
                         />
                         <input
                             type="text"
                             bind:value={f.lastName}
                             oninput={() => (dirty = true)}
                             placeholder="Last name"
-                            class={inputClass}
+                            class="input-inline"
                         />
                     </td>
                     <!-- Size -->
-                    <td class="px-2 py-2 align-top">
+                    <td class="align-top">
                         <input
                             type="text"
                             bind:value={f.size}
                             oninput={() => (dirty = true)}
                             placeholder="MD"
-                            class={inputClass}
+                            class="input-inline"
                         />
                     </td>
                     <!-- Email -->
-                    <td class="px-2 py-2 align-top">
+                    <td class="align-top">
                         <input
                             type="email"
                             bind:value={f.email}
                             oninput={() => (dirty = true)}
                             placeholder="Email (empty = delete)"
-                            class={inputClass}
+                            class="input-inline"
                         />
                     </td>
                     <!-- Phone / POC -->
-                    <td class="px-2 py-2 align-top">
+                    <td class="align-top">
                         <input
                             type="text"
                             bind:value={f.phone}
                             oninput={() => (dirty = true)}
                             placeholder="Phone"
-                            class="{inputClass} mb-1"
+                            class="input-inline mb-1"
                         />
                         <input
                             type="text"
                             bind:value={f.poc}
                             oninput={() => (dirty = true)}
                             placeholder="POC"
-                            class={inputClass}
+                            class="input-inline"
                         />
                     </td>
                     <!-- Resp -->
-                    <td class="px-2 py-2 align-top">
+                    <td class="align-top">
                         <input
                             type="text"
                             bind:value={f.resp}
                             oninput={() => (dirty = true)}
-                            class={inputClass}
+                            class="input-inline"
                         />
                     </td>
                 </tr>
