@@ -7,6 +7,9 @@
 	import { PageState } from '$lib/PageState.svelte.js';
 	import Message from '$lib/Message.svelte';
 	import Dialog from '$lib/Dialog.svelte';
+	import PageNav from '$lib/PageNav.svelte';
+	import { getIntParam } from '$lib/utils.js';
+	import { tableHeadClass, pageHeadingClass } from '$lib/styles.js';
 
 	const ps = new PageState();
 
@@ -15,7 +18,7 @@
 	let dirty       = $state({});   // { [date]: true } — never unset on toggle-back
 	let pendingHref = $state(null); // set when navigation is blocked by dirty state
 
-	const offset    = $derived(parseInt(page.url.searchParams.get('offset')) || 0);
+	const offset    = $derived(getIntParam(page.url.searchParams, 'offset'));
 	const dateParam = $derived(page.url.searchParams.get('date') || '');
 	const hasDirty  = $derived(Object.keys(dirty).length > 0);
 
@@ -112,7 +115,7 @@
 	<title>{__APP_NAME__} - RSVP</title>
 </svelte:head>
 
-<h3 class="text-lg font-semibold text-gray-700 mb-4">
+<h3 class={pageHeadingClass}>
 	RSVP for {localStorage.getItem('greet') ?? ''}
 </h3>
 
@@ -132,7 +135,7 @@
 <div class="overflow-x-auto">
 	<table class="w-full min-w-[560px] text-sm border-collapse">
 		<thead>
-			<tr class="bg-gray-200 text-gray-700 text-left text-xs uppercase tracking-wide">
+			<tr class={tableHeadClass}>
 				<th class="px-3 py-2 font-medium w-[15%]">Day</th>
 				<th class="px-3 py-2 font-medium w-[40%]">Details</th>
 				<th class="px-3 py-2 font-medium text-center w-[15%]">No bread<br>/ Rice</th>
@@ -142,7 +145,7 @@
 		</thead>
 		<tbody>
 			{#each events as ev, i}
-				<tr class="border-t border-gray-200 {i % 2 === 1 ? 'bg-gray-50' : ''}">
+				<tr class="border-t border-gray-200 even:bg-gray-50">
 					<!-- Day -->
 					<td class="px-3 py-2 whitespace-nowrap text-gray-700">
 						{getDisplayDate(ev.date)}
@@ -225,27 +228,10 @@
 
 <Message msg={ps.msg} msgType={ps.msgType} />
 
-<div class="mt-4 flex justify-center items-center gap-4">
-	<button
-		onclick={() => navigate(-7)}
-		class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors"
-	>
-		&laquo; Prev
-	</button>
-
-	<button
-		onclick={handleSave}
-		disabled={!hasDirty || ps.saving}
-		class="px-4 py-1.5 text-sm rounded text-white transition-colors
-			bg-brand hover:bg-brand-dark disabled:opacity-40"
-	>
-		{ps.saving ? 'Saving…' : 'Save'}
-	</button>
-
-	<button
-		onclick={() => navigate(7)}
-		class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors"
-	>
-		Next &raquo;
-	</button>
-</div>
+<PageNav
+	onPrev={() => navigate(-7)}
+	onNext={() => navigate(7)}
+	onSave={handleSave}
+	dirty={hasDirty}
+	saving={ps.saving}
+/>

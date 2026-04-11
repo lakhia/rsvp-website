@@ -2,10 +2,13 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { get, post } from '$lib/api.js';
-	import { isAdmin } from '$lib/auth.js';
+	import { requireAdmin } from '$lib/auth.js';
 	import Loading from '$lib/Loading.svelte';
 	import { PageState } from '$lib/PageState.svelte.js';
 	import Message from '$lib/Message.svelte';
+	import PageNav from '$lib/PageNav.svelte';
+	import { getIntParam } from '$lib/utils.js';
+	import { inputClass, tableHeadClass, pageHeadingClass } from '$lib/styles.js';
 
 	const ps = new PageState();
 
@@ -14,11 +17,11 @@
 	let dirty      = $state(false);
 	let dropdown   = $state(null);
 
-	const offset  = $derived(parseInt(page.url.searchParams.get('offset')) || 0);
+	const offset  = $derived(getIntParam(page.url.searchParams, 'offset'));
 	const pageNum = $derived(offset / 10 + 1);
 
 	$effect(() => {
-		if (!isAdmin()) { goto('/'); return; }
+		if (!requireAdmin()) return;
 		loadData(offset);
 	});
 
@@ -93,15 +96,13 @@
 		setTimeout(() => { dropdown = null; }, 150);
 	}
 
-	const inputClass  = 'w-full bg-transparent border-b border-transparent hover:border-gray-300 focus:border-brand focus:outline-none text-gray-700 placeholder-gray-300 text-sm';
-	const narrowClass = 'bg-transparent border-b border-transparent hover:border-gray-300 focus:border-brand focus:outline-none text-gray-700 placeholder-gray-300 text-sm';
 </script>
 
 <svelte:head>
 	<title>{__APP_NAME__} - Measures</title>
 </svelte:head>
 
-<h3 class="text-lg font-semibold text-gray-700 mb-4">
+<h3 class={pageHeadingClass}>
 	Menu Measurements, page {pageNum}
 </h3>
 
@@ -111,14 +112,14 @@
 <div class="overflow-x-auto">
 	<table class="w-full min-w-[600px] text-sm border-collapse">
 		<thead>
-			<tr class="bg-gray-200 text-gray-700 text-xs uppercase tracking-wide text-left">
+			<tr class={tableHeadClass}>
 				<th class="px-3 py-2 font-medium w-[25%]">Menu</th>
 				<th class="px-3 py-2 font-medium">Ingredients per thaali</th>
 			</tr>
 		</thead>
 		<tbody>
 			{#each menus as menu, mi}
-				<tr class="border-t border-gray-200 align-top {mi % 2 === 1 ? 'bg-gray-50' : ''}">
+				<tr class="border-t border-gray-200 align-top even:bg-gray-50">
 					<td class="px-3 py-3 text-gray-700 font-medium">{menu.menu}</td>
 					<td class="px-3 py-3">
 						<!-- ingredient grid: 3 cols mobile, 6 cols (2×3) on large screens -->
@@ -176,18 +177,11 @@
 
 <Message msg={ps.msg} msgType={ps.msgType} />
 
-<div class="mt-4 flex justify-center gap-4">
-	<button onclick={() => goto(`/measure?offset=${Math.max(0, offset - 10)}`)}
-		disabled={offset === 0}
-		class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors disabled:opacity-40">
-		&laquo; Prev
-	</button>
-	<button onclick={handleSave} disabled={!dirty || ps.saving}
-		class="px-4 py-1.5 text-sm rounded text-white transition-colors bg-brand hover:bg-brand-dark disabled:opacity-40">
-		{ps.saving ? 'Saving…' : 'Save'}
-	</button>
-	<button onclick={() => goto(`/measure?offset=${offset + 10}`)}
-		class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors">
-		Next &raquo;
-	</button>
-</div>
+<PageNav
+	onPrev={() => goto(`/measure?offset=${Math.max(0, offset - 10)}`)}
+	onNext={() => goto(`/measure?offset=${offset + 10}`)}
+	onSave={handleSave}
+	dirty={dirty}
+	saving={ps.saving}
+	prevDisabled={offset === 0}
+/>

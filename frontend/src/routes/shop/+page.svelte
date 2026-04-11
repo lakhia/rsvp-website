@@ -6,13 +6,16 @@
     import Loading from "$lib/Loading.svelte";
     import { PageState } from "$lib/PageState.svelte.js";
     import Message from "$lib/Message.svelte";
+    import PageNav from "$lib/PageNav.svelte";
+    import { getIntParam } from "$lib/utils.js";
+    import { tableHeadClass, pageHeadingClass } from "$lib/styles.js";
 
     const ps = new PageState();
 
     let data = $state({});
     let startDate = $state("");
 
-    const offset = $derived(parseInt(page.url.searchParams.get("offset")) || 0);
+    const offset = $derived(getIntParam(page.url.searchParams, "offset"));
 
     $effect(() => { loadData(offset); });
 
@@ -32,7 +35,7 @@
     <title>{__APP_NAME__} - Shopping</title>
 </svelte:head>
 
-<h3 class="text-lg font-semibold text-gray-700 mb-4">
+<h3 class={pageHeadingClass}>
     Shopping from {getDisplayDate(startDate)}
 </h3>
 
@@ -47,9 +50,7 @@
 <div class="overflow-x-auto">
     <table class="w-full min-w-120 text-sm border-collapse">
         <thead>
-            <tr
-                class="bg-gray-200 text-gray-700 text-xs uppercase tracking-wide text-left"
-            >
+            <tr class={tableHeadClass}>
                 <th class="px-3 py-2 font-medium w-[15%]">Date</th>
                 <th class="px-3 py-2 font-medium w-[65%]">Ingredients</th>
                 <th class="px-3 py-2 font-medium w-[20%]">Counts</th>
@@ -57,11 +58,7 @@
         </thead>
         <tbody>
             {#each entries as [date, value], i}
-                <tr
-                    class="border-t border-gray-200 align-top {i % 2 === 1
-                        ? 'bg-gray-50'
-                        : ''}"
-                >
+                <tr class="border-t border-gray-200 align-top even:bg-gray-50">
                     <td class="px-3 py-2 text-gray-700 whitespace-nowrap">
                         {date === "Total" ? "Total" : getDisplayDate(date)}
                     </td>
@@ -96,20 +93,11 @@
 
 <Message msg={ps.msg} msgType={ps.msgType} />
 
-<div class="mt-4 flex justify-center gap-4 no-print">
-    <button
-        onclick={() => goto(`/shop?offset=${offset - 7}`)}
-        class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors"
-    >
-        &laquo; Prev
-    </button>
-    <button
-        onclick={() => goto(`/shop?offset=${offset + 7}`)}
-        class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors"
-    >
-        Next &raquo;
-    </button>
-</div>
+<PageNav
+    onPrev={() => goto(`/shop?offset=${offset - 7}`)}
+    onNext={() => goto(`/shop?offset=${offset + 7}`)}
+    class="no-print"
+/>
 
 <style>
     @media print {

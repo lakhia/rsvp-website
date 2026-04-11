@@ -1,3 +1,5 @@
+import { goto } from '$app/navigation';
+
 export function getCookie(name) {
 	const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
 	return match ? decodeURIComponent(match[1]) : null;
@@ -18,6 +20,14 @@ export function isLoggedIn() {
 
 export function isAdmin() {
 	return getCookie('adv') === '1';
+}
+
+export function requireAdmin() {
+	if (!isAdmin()) {
+		goto('/');
+		return false;
+	}
+	return true;
 }
 
 export function logout() {
