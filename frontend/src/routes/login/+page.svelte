@@ -1,5 +1,6 @@
 <script>
 	import { post } from '$lib/api.js';
+	import Message from '$lib/Message.svelte';
 
 	let email = $state('');
 	let pass = $state('');
@@ -59,14 +60,12 @@
 				/>
 			</div>
 
-			{#if msg}
-				<p class="text-center text-sm text-red-600">{msg}</p>
-			{/if}
+			<Message msg={msg} msgType="error" />
 
 			<button
 				type="submit"
 				disabled={loading}
-				class="mt-2 bg-brand hover:bg-brand-dark disabled:opacity-50 text-white text-sm font-medium py-2 rounded transition-colors"
+				class="mt-2 bg-brand hover:bg-brand-dark text-white text-sm font-medium py-2 rounded transition-colors"
 			>
 				{loading ? 'Signing in…' : 'Next'}
 			</button>

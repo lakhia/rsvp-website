@@ -8,3 +8,11 @@
 	--color-no: rgb(220, 185, 185);
 	--color-no-dark: rgb(179, 138, 137);
 }
+
+@layer base {
+	:disabled { opacity: 0.5; }
+}
+
+@media print {
+	.no-print { display: none !important; }
+}
