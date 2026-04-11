@@ -98,11 +98,3 @@
     onNext={() => goto(`/shop?offset=${offset + 7}`)}
     class="no-print"
 />
-
-<style>
-    @media print {
-        .no-print {
-            display: none !important;
-        }
-    }
-</style>

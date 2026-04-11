@@ -162,7 +162,7 @@
 								bind:checked={ev.lessRice}
 								disabled={ev.readonly || !ev.rsvp}
 								onchange={() => mark(ev)}
-								class="cursor-pointer disabled:opacity-40"
+								class="cursor-pointer"
 							/>
 						{/if}
 					</td>
@@ -173,7 +173,7 @@
 							<button
 								onclick={() => onRsvpChange(ev)}
 								disabled={ev.readonly}
-								class="w-16 py-0.5 rounded text-sm font-medium transition-colors disabled:opacity-40
+								class="w-16 py-0.5 rounded text-sm font-medium transition-colors
 									{ev.rsvp ? 'bg-yes hover:bg-yes-dark' : 'bg-no hover:bg-no-dark'}"
 							>
 								{ev.rsvp ? 'Yes' : 'No'}
@@ -188,7 +188,7 @@
 								bind:value={ev.size}
 								disabled={ev.readonly || !ev.rsvp}
 								onchange={() => mark(ev)}
-								class="border border-gray-300 rounded px-1 py-0.5 text-sm disabled:opacity-40"
+								class="border border-gray-300 rounded px-1 py-0.5 text-sm"
 							>
 								{#each getSizes(ev.size) as s}
 									<option value={s}>{s}</option>
@@ -202,7 +202,7 @@
 										bind:value={ev.adults}
 										disabled={ev.readonly || !ev.rsvp}
 										onchange={() => onCountChange(ev)}
-										class="w-12 border border-gray-300 rounded px-1 py-0.5 text-sm disabled:opacity-40"
+										class="w-12 border border-gray-300 rounded px-1 py-0.5 text-sm"
 									/>
 									Adults
 								</label>
@@ -212,7 +212,7 @@
 										bind:value={ev.kids}
 										disabled={ev.readonly || !ev.rsvp}
 										onchange={() => onCountChange(ev)}
-										class="w-12 border border-gray-300 rounded px-1 py-0.5 text-sm disabled:opacity-40"
+										class="w-12 border border-gray-300 rounded px-1 py-0.5 text-sm"
 									/>
 									Kids
 								</label>

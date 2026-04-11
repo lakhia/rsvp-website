@@ -313,9 +313,3 @@
         </button>
     {/if}
 </PageNav>
-
-<style>
-    @media print {
-        .no-print { display: none !important; }
-    }
-</style>

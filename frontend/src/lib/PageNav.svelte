@@ -15,7 +15,7 @@
 	<button
 		onclick={onPrev}
 		disabled={prevDisabled}
-		class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors disabled:opacity-40"
+		class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors"
 	>
 		&laquo; Prev
 	</button>
@@ -24,7 +24,7 @@
 		<button
 			onclick={onSave}
 			disabled={!dirty || saving}
-			class="px-4 py-1.5 text-sm rounded text-white transition-colors bg-brand hover:bg-brand-dark disabled:opacity-40"
+			class="px-4 py-1.5 text-sm rounded text-white transition-colors bg-brand hover:bg-brand-dark"
 		>
 			{saving ? 'Saving…' : 'Save'}
 		</button>
