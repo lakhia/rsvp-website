@@ -11,11 +11,11 @@
 	} = $props();
 </script>
 
-<div class="mt-4 flex justify-center items-center gap-4 {klass}">
+<div class="mt-4 flex justify-center items-center gap-2 {klass}">
 	<button
 		onclick={onPrev}
 		disabled={prevDisabled}
-		class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors"
+		class="btn-secondary"
 	>
 		&laquo; Prev
 	</button>
@@ -24,14 +24,14 @@
 		<button
 			onclick={onSave}
 			disabled={!dirty || saving}
-			class="px-4 py-1.5 text-sm rounded text-white transition-colors bg-brand hover:bg-brand-dark"
+			class="btn-primary"
 		>
 			{saving ? 'Saving…' : 'Save'}
 		</button>
 	{/if}
 	<button
 		onclick={onNext}
-		class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors"
+		class="btn-secondary"
 	>
 		Next &raquo;
 	</button>

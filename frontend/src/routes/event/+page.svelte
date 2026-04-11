@@ -9,7 +9,6 @@
     import Message from "$lib/Message.svelte";
     import PageNav from "$lib/PageNav.svelte";
     import { getIntParam } from "$lib/utils.js";
-    import { tableHeadClass, pageHeadingClass } from "$lib/styles.js";
 
     const ps = new PageState();
 
@@ -49,40 +48,37 @@
     <title>{__APP_NAME__} - Events</title>
 </svelte:head>
 
-<h3 class={pageHeadingClass}>
-    Events from {getDisplayDate(startDate)}
-</h3>
+<h2>Events from {getDisplayDate(startDate)}</h2>
 
 {#if ps.loading}
     <Loading />
 {:else}
 <div class="overflow-x-auto">
-    <table class="w-full min-w-120 text-sm border-collapse">
+    <table>
         <thead>
-            <tr class={tableHeadClass}>
-                <th class="px-3 py-2 font-medium w-[15%]">Date</th>
-                <th class="px-3 py-2 font-medium">Details</th>
-                <th class="px-3 py-2 font-medium text-center w-[8%]">Niyaz</th>
-                <th class="px-3 py-2 font-medium text-center w-[8%]">Enabled</th
-                >
+            <tr>
+                <th class="w-[15%]">Date</th>
+                <th>Details</th>
+                <th class="text-center w-[8%]">Niyaz</th>
+                <th class="text-center w-[8%]">Enabled</th>
             </tr>
         </thead>
         <tbody>
             {#each events as ev, i}
-                <tr class="border-t border-gray-200 even:bg-gray-50">
-                    <td class="px-3 py-2 text-gray-700 whitespace-nowrap">
+                <tr>
+                    <td class="whitespace-nowrap">
                         {getDisplayDate(ev.date)}
                     </td>
-                    <td class="px-3 py-2">
+                    <td>
                         <input
                             type="text"
                             bind:value={ev.details}
                             oninput={() => (dirty = true)}
                             placeholder="Event details (empty = delete)"
-                            class="w-full bg-transparent border-b border-transparent hover:border-gray-300 focus:border-brand focus:outline-none text-gray-700 placeholder-gray-300"
+                            class="input-inline"
                         />
                     </td>
-                    <td class="px-3 py-2 text-center">
+                    <td class="text-center">
                         <input
                             type="checkbox"
                             bind:checked={ev.niyaz}
@@ -90,7 +86,7 @@
                             class="cursor-pointer"
                         />
                     </td>
-                    <td class="px-3 py-2 text-center">
+                    <td class="text-center">
                         <input
                             type="checkbox"
                             bind:checked={ev.enabled}

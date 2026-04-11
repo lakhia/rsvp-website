@@ -8,8 +8,6 @@
 	import Message from '$lib/Message.svelte';
 	import PageNav from '$lib/PageNav.svelte';
 	import { getIntParam } from '$lib/utils.js';
-	import { inputClass, tableHeadClass, pageHeadingClass } from '$lib/styles.js';
-
 	const ps = new PageState();
 
 	let menus      = $state([]);
@@ -102,26 +100,24 @@
 	<title>{__APP_NAME__} - Measures</title>
 </svelte:head>
 
-<h3 class={pageHeadingClass}>
-	Menu Measurements, page {pageNum}
-</h3>
+<h2>Menu Measurements, page {pageNum}</h2>
 
 {#if ps.loading}
 	<Loading />
 {:else}
 <div class="overflow-x-auto">
-	<table class="w-full min-w-[600px] text-sm border-collapse">
+	<table>
 		<thead>
-			<tr class={tableHeadClass}>
-				<th class="px-3 py-2 font-medium w-[25%]">Menu</th>
-				<th class="px-3 py-2 font-medium">Ingredients per thaali</th>
+			<tr>
+				<th class="w-[25%]">Menu</th>
+				<th>Ingredients per thaali</th>
 			</tr>
 		</thead>
 		<tbody>
 			{#each menus as menu, mi}
-				<tr class="border-t border-gray-200 align-top even:bg-gray-50">
-					<td class="px-3 py-3 text-gray-700 font-medium">{menu.menu}</td>
-					<td class="px-3 py-3">
+				<tr class="align-top">
+					<td class="font-medium">{menu.menu}</td>
+					<td>
 						<!-- ingredient grid: 3 cols mobile, 6 cols (2×3) on large screens -->
 						<div class="grid items-center gap-x-3 gap-y-1 [grid-template-columns:60px_50px_1fr] lg:[grid-template-columns:60px_50px_1fr_60px_50px_1fr]">
 							{#each menu.ingred as ingred, ii}
@@ -132,7 +128,7 @@
 									oninput={() => dirty = true}
 									placeholder="0.0"
 									step="0.01"
-									class="text-right bg-transparent border-b border-transparent hover:border-gray-300 focus:border-brand focus:outline-none text-gray-700 placeholder-gray-300 text-sm"
+									class="input-inline text-right"
 								/>
 								<!-- Unit -->
 								<span class="text-gray-400 text-sm">{ingred.unit ?? ''}</span>
@@ -145,7 +141,7 @@
 										onkeydown={(e) => onIngredKeydown(e, mi, ii, ingred)}
 										onblur={onIngredBlur}
 										placeholder="ingredient"
-										class={inputClass}
+										class="input-inline"
 									/>
 									{#if dropdown?.menuIdx === mi && dropdown?.ingredIdx === ii && dropdown.matches.length > 0}
 										<ul class="absolute z-20 left-0 right-0 top-full mt-0.5 bg-white border border-gray-200 rounded shadow-lg max-h-48 overflow-y-auto text-sm">

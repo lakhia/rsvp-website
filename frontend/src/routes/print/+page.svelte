@@ -9,7 +9,6 @@
     import Dialog from "$lib/Dialog.svelte";
     import PageNav from "$lib/PageNav.svelte";
     import { getIntParam } from "$lib/utils.js";
-    import { tableHeadClass } from "$lib/styles.js";
 
     const ps = new PageState();
 
@@ -143,13 +142,13 @@
 <!-- Header bar -->
 <div class="flex flex-wrap items-start justify-between gap-3 mb-3 no-print">
     <div class="flex items-center gap-3">
-        <h3 class="text-lg font-semibold text-gray-700">{getDisplayDate(date)}</h3>
+        <h2 class="mb-0">{getDisplayDate(date)}</h2>
         <button onclick={generateLabels} class="px-3 py-1 text-xs border border-gray-300 rounded hover:bg-gray-100 transition-colors">
             Generate Labels
         </button>
-        <label class="flex items-center gap-1 text-sm text-gray-600">
+        <label class="flex items-center gap-1">
             Sort:
-            <select bind:value={sortCol} class="border border-gray-300 rounded px-1 py-0.5 text-sm">
+            <select bind:value={sortCol} class="input-sm">
                 <option value="thaali">Thaali</option>
                 <option value="area">Area</option>
                 <option value="size">Size</option>
@@ -174,7 +173,7 @@
 
 <!-- Serving guidance -->
 {#if servingEntries.length > 0}
-    <table class="text-xs text-gray-600 mb-3 border border-gray-200 rounded">
+    <table class="w-auto min-w-0 border-separate text-xs text-gray-600 mb-3 border border-gray-200 rounded">
         <tbody>
             {#each servingEntries as [menu, portions]}
                 <tr>
@@ -193,25 +192,25 @@
 {:else}
 <!-- Main table -->
 <div class="overflow-x-auto">
-    <table class="w-full min-w-[520px] text-sm border-collapse">
+    <table>
         <thead>
             <!-- Label row -->
-            <tr class={tableHeadClass}>
-                <th class="px-2 py-2 w-16 text-right">#</th>
-                <th class="px-2 py-2 w-24">Group</th>
-                {#if !meta.niyaz}<th class="px-2 py-2 w-24">Rice/Bread</th>{/if}
-                <th class="px-2 py-2 w-16">Size</th>
+            <tr>
+                <th class="w-16 text-right">#</th>
+                <th class="w-24">Group</th>
+                {#if !meta.niyaz}<th class="w-24">Rice/Bread</th>{/if}
+                <th class="w-16">Size</th>
                 {#if !meta.niyaz}
-                    <th class="px-2 py-2 w-16">Here</th>
-                    <th class="px-2 py-2 w-16">Filled</th>
+                    <th class="w-16">Here</th>
+                    <th class="w-16">Filled</th>
                 {/if}
-                <th class="px-2 py-2">Name</th>
+                <th>Name</th>
             </tr>
             <!-- Filter row -->
             <tr class="bg-gray-100 border-b border-gray-300">
                 <td class="px-2 py-1"></td>
                 <td class="px-2 py-1">
-                    <select bind:value={filters.area} class="w-full text-xs bg-transparent focus:outline-none">
+                    <select bind:value={filters.area} class="select-filter">
                         <option value="">All</option>
                         {#each areas as area}
                             <option value={area}>{area}</option>
@@ -220,7 +219,7 @@
                 </td>
                 {#if !meta.niyaz}
                     <td class="px-2 py-1">
-                        <select bind:value={filters.rice} class="w-full text-xs bg-transparent focus:outline-none">
+                        <select bind:value={filters.rice} class="select-filter">
                             <option value="">All</option>
                             <option value="Y">No rice</option>
                             <option value="N">With rice</option>
@@ -228,7 +227,7 @@
                     </td>
                 {/if}
                 <td class="px-2 py-1">
-                    <select bind:value={filters.size} class="w-full text-xs bg-transparent focus:outline-none">
+                    <select bind:value={filters.size} class="select-filter">
                         <option value="">All</option>
                         <option value="XS">XS</option>
                         <option value="SM">SM</option>
@@ -239,14 +238,14 @@
                 </td>
                 {#if !meta.niyaz}
                     <td class="px-2 py-1">
-                        <select bind:value={filters.here} class="w-full text-xs bg-transparent focus:outline-none">
+                        <select bind:value={filters.here} class="select-filter">
                             <option value="">All</option>
                             <option value="Y">Yes</option>
                             <option value="N">No</option>
                         </select>
                     </td>
                     <td class="px-2 py-1">
-                        <select bind:value={filters.filled} class="w-full text-xs bg-transparent focus:outline-none">
+                        <select bind:value={filters.filled} class="select-filter">
                             <option value="">All</option>
                             <option value="Y">Yes</option>
                             <option value="N">No</option>
@@ -254,15 +253,15 @@
                     </td>
                 {/if}
                 <td class="px-2 py-1">
-                    <input bind:value={filters.name} placeholder="Filter…" class="w-full text-xs bg-transparent border-b border-gray-400 focus:outline-none placeholder-gray-400"/>
+                    <input bind:value={filters.name} placeholder="Filter…" class="select-filter border-b border-gray-400 placeholder-gray-400"/>
                 </td>
             </tr>
         </thead>
         <tbody>
             {#each sortedRows as item, i}
-                <tr class="border-t border-gray-200 even:bg-gray-50">
+                <tr>
                     <td class="px-2 py-1.5 text-right text-gray-500">{item.thaali}</td>
-                    <td class="px-2 py-1.5 text-gray-700">{item.area ?? ""}</td>
+                    <td class="px-2 py-1.5">{item.area ?? ""}</td>
                     {#if !meta.niyaz}
                         <td class="px-2 py-1.5 text-gray-600 text-xs">{item["bread+rice"] ?? ""}</td>
                     {/if}
@@ -277,7 +276,7 @@
                             <input type="checkbox" bind:checked={item.filled} onchange={() => onCheckboxChange(item)} class="cursor-pointer"/>
                         </td>
                     {/if}
-                    <td class="px-2 py-1.5 text-gray-700">{item.name ?? ""}</td>
+                    <td class="px-2 py-1.5">{item.name ?? ""}</td>
                 </tr>
             {/each}
         </tbody>
@@ -308,7 +307,7 @@
     class="no-print"
 >
     {#if meta.save}
-        <button onclick={() => confirmingReset = true} class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors">
+        <button onclick={() => confirmingReset = true} class="btn-secondary">
             Reset
         </button>
     {/if}

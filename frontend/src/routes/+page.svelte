@@ -9,7 +9,6 @@
 	import Dialog from '$lib/Dialog.svelte';
 	import PageNav from '$lib/PageNav.svelte';
 	import { getIntParam } from '$lib/utils.js';
-	import { tableHeadClass, pageHeadingClass } from '$lib/styles.js';
 
 	const ps = new PageState();
 
@@ -115,9 +114,9 @@
 	<title>{__APP_NAME__} - RSVP</title>
 </svelte:head>
 
-<h3 class={pageHeadingClass}>
+<h2>
 	RSVP for {localStorage.getItem('greet') ?? ''}
-</h3>
+</h2>
 
 {#if pendingHref}
 	<Dialog
@@ -133,29 +132,29 @@
 	<Loading />
 {:else}
 <div class="overflow-x-auto">
-	<table class="w-full min-w-[560px] text-sm border-collapse">
+	<table>
 		<thead>
-			<tr class={tableHeadClass}>
-				<th class="px-3 py-2 font-medium w-[15%]">Day</th>
-				<th class="px-3 py-2 font-medium w-[40%]">Details</th>
-				<th class="px-3 py-2 font-medium text-center w-[15%]">No bread<br>/ Rice</th>
-				<th class="px-3 py-2 font-medium text-center w-[12%]">RSVP</th>
-				<th class="px-3 py-2 font-medium w-[18%]">Size / Count</th>
+			<tr>
+				<th class="w-[15%]">Day</th>
+				<th class="w-[40%]">Details</th>
+				<th class="text-center w-[15%]">No bread<br>/ Rice</th>
+				<th class="text-center w-[12%]">RSVP</th>
+				<th class="w-[18%]">Size / Count</th>
 			</tr>
 		</thead>
 		<tbody>
 			{#each events as ev, i}
-				<tr class="border-t border-gray-200 even:bg-gray-50">
+				<tr>
 					<!-- Day -->
-					<td class="px-3 py-2 whitespace-nowrap text-gray-700">
+					<td class="whitespace-nowrap">
 						{getDisplayDate(ev.date)}
 					</td>
 
 					<!-- Details -->
-					<td class="px-3 py-2 text-gray-600">{ev.details ?? ''}</td>
+					<td class="text-gray-600">{ev.details ?? ''}</td>
 
 					<!-- No rice/bread -->
-					<td class="px-3 py-2 text-center">
+					<td class="text-center">
 						{#if ev.enabled && !ev.niyaz}
 							<input
 								type="checkbox"
@@ -168,7 +167,7 @@
 					</td>
 
 					<!-- RSVP button -->
-					<td class="px-3 py-2 text-center">
+					<td class="text-center">
 						{#if ev.enabled}
 							<button
 								onclick={() => onRsvpChange(ev)}
@@ -182,13 +181,13 @@
 					</td>
 
 					<!-- Size / Count -->
-					<td class="px-3 py-2">
+					<td>
 						{#if ev.enabled && !ev.niyaz}
 							<select
 								bind:value={ev.size}
 								disabled={ev.readonly || !ev.rsvp}
 								onchange={() => mark(ev)}
-								class="border border-gray-300 rounded px-1 py-0.5 text-sm"
+								class="input-sm"
 							>
 								{#each getSizes(ev.size) as s}
 									<option value={s}>{s}</option>
@@ -196,23 +195,23 @@
 							</select>
 						{:else if ev.enabled && ev.niyaz}
 							<div class="flex flex-col gap-1">
-								<label class="flex items-center gap-1 text-xs text-gray-600">
+								<label class="flex items-center gap-1 text-xs">
 									<input
 										type="number"
 										bind:value={ev.adults}
 										disabled={ev.readonly || !ev.rsvp}
 										onchange={() => onCountChange(ev)}
-										class="w-12 border border-gray-300 rounded px-1 py-0.5 text-sm"
+										class="input-sm w-12"
 									/>
 									Adults
 								</label>
-								<label class="flex items-center gap-1 text-xs text-gray-600">
+								<label class="flex items-center gap-1 text-xs">
 									<input
 										type="number"
 										bind:value={ev.kids}
 										disabled={ev.readonly || !ev.rsvp}
 										onchange={() => onCountChange(ev)}
-										class="w-12 border border-gray-300 rounded px-1 py-0.5 text-sm"
+										class="input-sm w-12"
 									/>
 									Kids
 								</label>

@@ -33,11 +33,11 @@
 
 <div class="min-h-screen flex items-center justify-center bg-gray-50">
 	<div class="w-full max-w-sm bg-white rounded-lg shadow p-8">
-		<h2 class="text-xl font-semibold text-gray-700 mb-6 text-center">Enter your credentials</h2>
+		<h2 class="text-xl mb-6 text-center">Enter your credentials</h2>
 
 		<form onsubmit={handleSubmit} class="flex flex-col gap-4">
 			<div class="flex flex-col gap-1">
-				<label for="email" class="text-sm text-gray-600">Email</label>
+				<label for="email">Email</label>
 				<input
 					id="email"
 					type="email"
@@ -49,7 +49,7 @@
 			</div>
 
 			<div class="flex flex-col gap-1">
-				<label for="pass" class="text-sm text-gray-600">Password</label>
+				<label for="pass">Password</label>
 				<input
 					id="pass"
 					type="password"
