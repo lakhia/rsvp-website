@@ -177,9 +177,9 @@
         <tbody>
             {#each servingEntries as [menu, portions]}
                 <tr>
-                    <td class="px-2 py-1 font-medium border-r border-gray-200">{menu}</td>
+                    <td class="font-medium border-r border-gray-200">{menu}</td>
                     {#each portions as q}
-                        <td class="px-2 py-1 border-r border-gray-100">{q}</td>
+                        <td class="border-r border-gray-100">{q}</td>
                     {/each}
                 </tr>
             {/each}
@@ -198,7 +198,7 @@
             <tr>
                 <th class="w-16 text-right">#</th>
                 <th class="w-24">Group</th>
-                {#if !meta.niyaz}<th class="w-24">Rice/Bread</th>{/if}
+                {#if !meta.niyaz}<th class="w-16">Rice/<br>Bread</th>{/if}
                 <th class="w-16">Size</th>
                 {#if !meta.niyaz}
                     <th class="w-16">Here</th>
@@ -208,8 +208,8 @@
             </tr>
             <!-- Filter row -->
             <tr class="bg-gray-100 border-b border-gray-300">
-                <td class="px-2 py-1"></td>
-                <td class="px-2 py-1">
+                <td></td>
+                <td>
                     <select bind:value={filters.area} class="select-filter">
                         <option value="">All</option>
                         {#each areas as area}
@@ -218,7 +218,7 @@
                     </select>
                 </td>
                 {#if !meta.niyaz}
-                    <td class="px-2 py-1">
+                    <td>
                         <select bind:value={filters.rice} class="select-filter">
                             <option value="">All</option>
                             <option value="Y">No rice</option>
@@ -226,7 +226,7 @@
                         </select>
                     </td>
                 {/if}
-                <td class="px-2 py-1">
+                <td>
                     <select bind:value={filters.size} class="select-filter">
                         <option value="">All</option>
                         <option value="XS">XS</option>
@@ -237,14 +237,14 @@
                     </select>
                 </td>
                 {#if !meta.niyaz}
-                    <td class="px-2 py-1">
+                    <td>
                         <select bind:value={filters.here} class="select-filter">
                             <option value="">All</option>
                             <option value="Y">Yes</option>
                             <option value="N">No</option>
                         </select>
                     </td>
-                    <td class="px-2 py-1">
+                    <td>
                         <select bind:value={filters.filled} class="select-filter">
                             <option value="">All</option>
                             <option value="Y">Yes</option>
@@ -252,7 +252,7 @@
                         </select>
                     </td>
                 {/if}
-                <td class="px-2 py-1">
+                <td>
                     <input bind:value={filters.name} placeholder="Filter…" class="select-filter border-b border-gray-400 placeholder-gray-400"/>
                 </td>
             </tr>
@@ -260,23 +260,23 @@
         <tbody>
             {#each sortedRows as item, i}
                 <tr>
-                    <td class="px-2 py-1.5 text-right text-gray-500">{item.thaali}</td>
-                    <td class="px-2 py-1.5">{item.area ?? ""}</td>
+                    <td class="text-right text-gray-500">{item.thaali}</td>
+                    <td>{item.area ?? ""}</td>
                     {#if !meta.niyaz}
-                        <td class="px-2 py-1.5 text-gray-600 text-xs">{item["bread+rice"] ?? ""}</td>
+                        <td class="text-gray-600 text-xs">{item["bread+rice"] ?? ""}</td>
                     {/if}
-                    <td class="px-2 py-1.5">
-                        <span class="inline-block px-1.5 py-0.5 text-xs font-medium bg-gray-100 rounded">{item.size ?? ""}</span>
+                    <td>
+                        <span class="inline-block text-xs font-medium bg-gray-100 rounded">{item.size ?? ""}</span>
                     </td>
                     {#if !meta.niyaz}
-                        <td class="px-2 py-1.5 text-center">
+                        <td class="text-center">
                             <input type="checkbox" bind:checked={item.here} onchange={() => onCheckboxChange(item)} class="cursor-pointer"/>
                         </td>
-                        <td class="px-2 py-1.5 text-center">
+                        <td class="text-center">
                             <input type="checkbox" bind:checked={item.filled} onchange={() => onCheckboxChange(item)} class="cursor-pointer"/>
                         </td>
                     {/if}
-                    <td class="px-2 py-1.5">{item.name ?? ""}</td>
+                    <td>{item.name ?? ""}</td>
                 </tr>
             {/each}
         </tbody>
