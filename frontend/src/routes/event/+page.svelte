@@ -3,10 +3,13 @@
     import { page } from "$app/state";
     import { get, post } from "$lib/api.js";
     import { getDisplayDate } from "$lib/dates.js";
-    import { isAdmin } from "$lib/auth.js";
+    import { requireAdmin } from "$lib/auth.js";
     import Loading from "$lib/Loading.svelte";
     import { PageState } from "$lib/PageState.svelte.js";
     import Message from "$lib/Message.svelte";
+    import PageNav from "$lib/PageNav.svelte";
+    import { getIntParam } from "$lib/utils.js";
+    import { tableHeadClass, pageHeadingClass } from "$lib/styles.js";
 
     const ps = new PageState();
 
@@ -14,10 +17,10 @@
     let startDate = $state("");
     let dirty = $state(false);
 
-    const offset = $derived(parseInt(page.url.searchParams.get("offset")) || 0);
+    const offset = $derived(getIntParam(page.url.searchParams, "offset"));
 
     $effect(() => {
-        if (!isAdmin()) { goto("/"); return; }
+        if (!requireAdmin()) return;
         loadData(offset);
     });
 
@@ -46,7 +49,7 @@
     <title>{__APP_NAME__} - Events</title>
 </svelte:head>
 
-<h3 class="text-lg font-semibold text-gray-700 mb-4">
+<h3 class={pageHeadingClass}>
     Events from {getDisplayDate(startDate)}
 </h3>
 
@@ -56,9 +59,7 @@
 <div class="overflow-x-auto">
     <table class="w-full min-w-120 text-sm border-collapse">
         <thead>
-            <tr
-                class="bg-gray-200 text-gray-700 text-xs uppercase tracking-wide text-left"
-            >
+            <tr class={tableHeadClass}>
                 <th class="px-3 py-2 font-medium w-[15%]">Date</th>
                 <th class="px-3 py-2 font-medium">Details</th>
                 <th class="px-3 py-2 font-medium text-center w-[8%]">Niyaz</th>
@@ -68,11 +69,7 @@
         </thead>
         <tbody>
             {#each events as ev, i}
-                <tr
-                    class="border-t border-gray-200 {i % 2 === 1
-                        ? 'bg-gray-50'
-                        : ''}"
-                >
+                <tr class="border-t border-gray-200 even:bg-gray-50">
                     <td class="px-3 py-2 text-gray-700 whitespace-nowrap">
                         {getDisplayDate(ev.date)}
                     </td>
@@ -110,24 +107,10 @@
 
 <Message msg={ps.msg} msgType={ps.msgType} />
 
-<div class="mt-4 flex justify-center gap-4">
-    <button
-        onclick={() => goto(`/event?offset=${offset - 7}`)}
-        class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors"
-    >
-        &laquo; Prev
-    </button>
-    <button
-        onclick={handleSave}
-        disabled={!dirty || ps.saving}
-        class="px-4 py-1.5 text-sm rounded text-white transition-colors bg-brand hover:bg-brand-dark disabled:opacity-40"
-    >
-        {ps.saving ? "Saving…" : "Save"}
-    </button>
-    <button
-        onclick={() => goto(`/event?offset=${offset + 7}`)}
-        class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors"
-    >
-        Next &raquo;
-    </button>
-</div>
+<PageNav
+    onPrev={() => goto(`/event?offset=${offset - 7}`)}
+    onNext={() => goto(`/event?offset=${offset + 7}`)}
+    onSave={handleSave}
+    dirty={dirty}
+    saving={ps.saving}
+/>

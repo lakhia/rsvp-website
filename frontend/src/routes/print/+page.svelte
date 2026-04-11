@@ -7,6 +7,9 @@
     import { PageState } from "$lib/PageState.svelte.js";
     import Message from "$lib/Message.svelte";
     import Dialog from "$lib/Dialog.svelte";
+    import PageNav from "$lib/PageNav.svelte";
+    import { getIntParam } from "$lib/utils.js";
+    import { tableHeadClass } from "$lib/styles.js";
 
     const ps = new PageState();
 
@@ -20,21 +23,25 @@
     let sortCol = $state("thaali");
     let filters = $state({ area: "", size: "", here: "", filled: "", rice: "", name: "" });
 
-    const offset = $derived(parseInt(page.url.searchParams.get("offset")) || 0);
+    const offset = $derived(getIntParam(page.url.searchParams, "offset"));
 
     $effect(() => { loadData(offset); });
 
     let warnedDate = "";
+
+    function applyResponse(res, defaultMsg = "") {
+        rows   = res.data  || [];
+        meta   = res.other || {};
+        date   = res.date  || "";
+        ps.msg = res.msg   || defaultMsg;
+    }
 
     async function loadData(o) {
         dateWarning = "";
         warnedDate = "";
         await ps.load(async () => {
             const res = await get("print.php", { offset: o });
-            rows  = res.data  || [];
-            meta  = res.other || {};
-            date  = res.date  || "";
-            ps.msg = res.msg  || "";
+            applyResponse(res);
             dirty = false;
         });
     }
@@ -105,11 +112,8 @@
         const body = rows.map((r) => ({ thaali: r.thaali, here: r.here ? 1 : 0, filled: r.filled ? 1 : 0 }));
         await ps.save(async () => {
             const res = await post("print.php", { offset }, body);
-            rows   = res.data  || [];
-            meta   = res.other || {};
-            date   = res.date  || "";
-            ps.msg = res.msg   || "Saved";
-            dirty  = false;
+            applyResponse(res, "Saved");
+            dirty = false;
         });
     }
 
@@ -192,7 +196,7 @@
     <table class="w-full min-w-[520px] text-sm border-collapse">
         <thead>
             <!-- Label row -->
-            <tr class="bg-gray-200 text-gray-700 text-left text-xs uppercase tracking-wide">
+            <tr class={tableHeadClass}>
                 <th class="px-2 py-2 w-16 text-right">#</th>
                 <th class="px-2 py-2 w-24">Group</th>
                 {#if !meta.niyaz}<th class="px-2 py-2 w-24">Rice/Bread</th>{/if}
@@ -256,7 +260,7 @@
         </thead>
         <tbody>
             {#each sortedRows as item, i}
-                <tr class="border-t border-gray-200 {i % 2 === 1 ? 'bg-gray-50' : ''}">
+                <tr class="border-t border-gray-200 even:bg-gray-50">
                     <td class="px-2 py-1.5 text-right text-gray-500">{item.thaali}</td>
                     <td class="px-2 py-1.5 text-gray-700">{item.area ?? ""}</td>
                     {#if !meta.niyaz}
@@ -284,32 +288,31 @@
 <Message msg={ps.msg} msgType={ps.msgType} />
 
 <!-- Nav buttons -->
-<div class="mt-4 flex justify-center items-center gap-3 no-print">
-    <button onclick={() => navigate(-1)} class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors">
-        &laquo; Prev
-    </button>
+{#if confirmingReset}
+    <Dialog
+        message="Clear all here and filled checkboxes?"
+        confirmLabel="Reset"
+        cancelLabel="Cancel"
+        danger={true}
+        onConfirm={handleReset}
+        onCancel={() => confirmingReset = false}
+    />
+{/if}
+
+<PageNav
+    onPrev={() => navigate(-1)}
+    onNext={() => navigate(1)}
+    onSave={meta.save ? handleSave : null}
+    dirty={dirty}
+    saving={ps.saving}
+    class="no-print"
+>
     {#if meta.save}
-        {#if confirmingReset}
-            <Dialog
-                message="Clear all here and filled checkboxes?"
-                confirmLabel="Reset"
-                cancelLabel="Cancel"
-                danger={true}
-                onConfirm={handleReset}
-                onCancel={() => confirmingReset = false}
-            />
-        {/if}
         <button onclick={() => confirmingReset = true} class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors">
             Reset
         </button>
-        <button onclick={handleSave} disabled={!dirty || ps.saving} class="px-4 py-1.5 text-sm rounded text-white transition-colors bg-brand hover:bg-brand-dark disabled:opacity-40">
-            {ps.saving ? "Saving…" : "Save"}
-        </button>
     {/if}
-    <button onclick={() => navigate(1)} class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors">
-        Next &raquo;
-    </button>
-</div>
+</PageNav>
 
 <style>
     @media print {

@@ -2,10 +2,13 @@
     import { goto } from "$app/navigation";
     import { page } from "$app/state";
     import { get, post } from "$lib/api.js";
-    import { isAdmin } from "$lib/auth.js";
+    import { requireAdmin } from "$lib/auth.js";
     import Loading from "$lib/Loading.svelte";
     import { PageState } from "$lib/PageState.svelte.js";
     import Message from "$lib/Message.svelte";
+    import PageNav from "$lib/PageNav.svelte";
+    import { getIntParam } from "$lib/utils.js";
+    import { inputClass, tableHeadClass, pageHeadingClass } from "$lib/styles.js";
 
     const ps = new PageState();
 
@@ -13,10 +16,10 @@
     let dirty = $state(false);
 
     // Family uses thaali number as offset (1-indexed), not week offset
-    const offset = $derived(parseInt(page.url.searchParams.get("offset")) || 1);
+    const offset = $derived(getIntParam(page.url.searchParams, "offset", 1));
 
     $effect(() => {
-        if (!isAdmin()) { goto("/"); return; }
+        if (!requireAdmin()) return;
         loadData(offset);
     });
 
@@ -38,15 +41,13 @@
         });
     }
 
-    const inputClass =
-        "w-full bg-transparent border-b border-transparent hover:border-gray-300 focus:border-brand focus:outline-none text-gray-700 placeholder-gray-300 text-sm";
 </script>
 
 <svelte:head>
     <title>{__APP_NAME__} - Families</title>
 </svelte:head>
 
-<h3 class="text-lg font-semibold text-gray-700 mb-4">Families</h3>
+<h3 class={pageHeadingClass}>Families</h3>
 
 {#if ps.loading}
     <Loading />
@@ -54,9 +55,7 @@
 <div class="overflow-x-auto">
     <table class="w-full min-w-200 text-sm border-collapse">
         <thead>
-            <tr
-                class="bg-gray-200 text-gray-700 text-xs uppercase tracking-wide text-left"
-            >
+            <tr class={tableHeadClass}>
                 <th class="px-2 py-2 font-medium w-[8%]">Num</th>
                 <th class="px-2 py-2 font-medium w-[10%]">Area</th>
                 <th class="px-2 py-2 font-medium w-[18%]">Name</th>
@@ -68,11 +67,7 @@
         </thead>
         <tbody>
             {#each families as f, i}
-                <tr
-                    class="border-t border-gray-200 {i % 2 === 1
-                        ? 'bg-gray-50'
-                        : ''}"
-                >
+                <tr class="border-t border-gray-200 even:bg-gray-50">
                     <!-- Thaali # + ITS -->
                     <td class="px-2 py-2 align-top">
                         <div class="text-gray-500 text-xs mb-1">{f.thaali}</div>
@@ -166,25 +161,11 @@
 
 <Message msg={ps.msg} msgType={ps.msgType} />
 
-<div class="mt-4 flex justify-center gap-4">
-    <button
-        onclick={() => goto(`/family?offset=${Math.max(1, offset - 10)}`)}
-        disabled={offset <= 1}
-        class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors disabled:opacity-40"
-    >
-        &laquo; Prev
-    </button>
-    <button
-        onclick={handleSave}
-        disabled={!dirty || ps.saving}
-        class="px-4 py-1.5 text-sm rounded text-white transition-colors bg-brand hover:bg-brand-dark disabled:opacity-40"
-    >
-        {ps.saving ? "Saving…" : "Save"}
-    </button>
-    <button
-        onclick={() => goto(`/family?offset=${offset + 10}`)}
-        class="px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors"
-    >
-        Next &raquo;
-    </button>
-</div>
+<PageNav
+    onPrev={() => goto(`/family?offset=${Math.max(1, offset - 10)}`)}
+    onNext={() => goto(`/family?offset=${offset + 10}`)}
+    onSave={handleSave}
+    dirty={dirty}
+    saving={ps.saving}
+    prevDisabled={offset <= 1}
+/>
