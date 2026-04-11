@@ -66,18 +66,18 @@
                         {date === "Total" ? "Total" : getDisplayDate(date)}
                     </td>
                     <td class="px-3 py-2">
-                        {#each Object.entries(value.ingred ?? {}) as [menu, ingreds]}
-                            <div class="mb-2">
-                                <span class="font-medium text-gray-700"
-                                    >{menu}</span
-                                >
-                                <div class="ml-2 text-gray-600">
-                                    {#each ingreds as q}
-                                        <div>{q}</div>
-                                    {/each}
+                        <div class="sm:columns-2 gap-x-6">
+                            {#each Object.entries(value.ingred ?? {}) as [menu, ingreds]}
+                                <div class="mb-2 break-inside-avoid">
+                                    <span class="font-medium text-gray-700">{menu}</span>
+                                    <div class="ml-2 text-gray-600">
+                                        {#each ingreds as q}
+                                            <div>{q}</div>
+                                        {/each}
+                                    </div>
                                 </div>
-                            </div>
-                        {/each}
+                            {/each}
+                        </div>
                     </td>
                     <td class="px-3 py-2 text-gray-600">
                         {#each Object.entries(value.count ?? {}) as [k, v]}
