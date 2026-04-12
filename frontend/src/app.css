@@ -3,22 +3,22 @@
 @theme {
 	--color-brand: rgb(75, 134, 183);
 	--color-brand-dark: rgb(55, 110, 155);
-	--color-yes: rgb(190, 220, 185);
+	--color-yes: rgb(170, 200, 165);
 	--color-yes-dark: rgb(146, 185, 139);
-	--color-no: rgb(220, 185, 185);
-	--color-no-dark: rgb(179, 138, 137);
+	--color-no: rgb(187, 155, 153);
+	--color-no-dark: rgb(168, 127, 124);
 }
 
 @layer base {
 	:disabled { opacity: 0.5; }
-	h2 { @apply text-lg font-semibold text-gray-900 mb-6; }
+	h2 { @apply text-xl font-semibold text-gray-900 mb-6; }
 	thead tr:first-child { @apply bg-gray-200 text-gray-700 text-xs uppercase tracking-wide text-left; }
 	th { @apply px-3 py-2 font-medium; }
 	tbody tr { @apply border-t border-gray-200; }
 	tbody tr:nth-child(even) { @apply bg-gray-50; }
 	table { @apply w-full min-w-[480px] text-sm border-collapse; }
-	td { @apply px-3 py-2 text-gray-700; }
-	label { @apply text-sm text-gray-600; }
+	td { @apply px-3 py-2 text-gray-900; }
+	label { @apply text-sm text-gray-900; }
 }
 
 @layer components {
@@ -48,6 +48,11 @@
 	/* Transparent filter select (print table header row) */
 	.select-filter {
 		@apply w-full text-xs bg-transparent focus:outline-none;
+	}
+
+	/* Dark rounded badge (menu names, size labels, etc.) */
+	.badge {
+		@apply inline-block text-xs font-medium bg-gray-500 text-white px-1.5 py-0.5 rounded;
 	}
 
 }

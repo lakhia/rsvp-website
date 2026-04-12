@@ -140,31 +140,33 @@
 </svelte:head>
 
 <!-- Header bar -->
-<div class="flex flex-wrap items-start justify-between gap-3 mb-3 no-print">
-    <div class="flex items-center gap-3">
-        <h2 class="mb-0">{getDisplayDate(date)}</h2>
-        <button onclick={generateLabels} class="px-3 py-1 text-xs border border-gray-300 rounded hover:bg-gray-100 transition-colors">
-            Generate Labels
-        </button>
-        <label class="flex items-center gap-1">
-            Sort:
-            <select bind:value={sortCol} class="input-sm">
-                <option value="thaali">Thaali</option>
-                <option value="area">Area</option>
-                <option value="size">Size</option>
-                <option value="name">Name</option>
-                {#if !meta.niyaz}
-                    <option value="here">Here</option>
-                    <option value="filled">Filled</option>
-                    <option value="bread+rice">Rice / Bread</option>
-                {/if}
-            </select>
-        </label>
-    </div>
+<div class="flex flex-wrap items-start justify-between gap-3 mb-2 no-print">
+    <h2 class="mb-0">RSVP for {getDisplayDate(date)}</h2>
     <div class="text-right text-sm text-gray-600 leading-relaxed">
         <div>{firstLine}</div>
         <div>{secondLine}</div>
     </div>
+</div>
+
+<!-- Controls row -->
+<div class="flex items-center gap-3 mb-3 no-print">
+    <button onclick={generateLabels} class="px-3 py-1 text-xs border border-gray-300 rounded hover:bg-gray-100 transition-colors">
+        Generate Labels
+    </button>
+    <label class="flex items-center gap-1">
+        Sort:
+        <select bind:value={sortCol} class="input-sm">
+            <option value="thaali">Thaali</option>
+            <option value="area">Area</option>
+            <option value="size">Size</option>
+            <option value="name">Name</option>
+            {#if !meta.niyaz}
+                <option value="here">Here</option>
+                <option value="filled">Filled</option>
+                <option value="bread+rice">Rice / Bread</option>
+            {/if}
+        </select>
+    </label>
 </div>
 
 {#if dateWarning}
@@ -221,8 +223,8 @@
                     <td>
                         <select bind:value={filters.rice} class="select-filter">
                             <option value="">All</option>
-                            <option value="Y">No rice</option>
-                            <option value="N">With rice</option>
+                            <option value="Y">Yes</option>
+                            <option value="N">No</option>
                         </select>
                     </td>
                 {/if}
@@ -266,7 +268,7 @@
                         <td class="text-gray-600 text-xs">{item["bread+rice"] ?? ""}</td>
                     {/if}
                     <td>
-                        <span class="inline-block text-xs font-medium bg-gray-100 rounded">{item.size ?? ""}</span>
+                        <span class="badge w-8 text-center">{item.size ?? ""}</span>
                     </td>
                     {#if !meta.niyaz}
                         <td class="text-center">
