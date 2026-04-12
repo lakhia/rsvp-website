@@ -7,6 +7,11 @@ export default defineConfig(({ mode }) => {
 	const env = loadEnv(mode, '../', '');
 	return {
 		plugins: [tailwindcss(), sveltekit()],
+		server: {
+			proxy: {
+				'^/.*\\.php(\\?.*)?$': { target: 'http://localhost:8010', changeOrigin: false }
+			}
+		},
 		define: {
 			__APP_NAME__:       JSON.stringify(env.APP_NAME        || 'RSVP'),
 			__LINK_PLANNING__:  JSON.stringify(env.LINK_PLANNING   || '#'),

@@ -21,8 +21,6 @@ sub wanted {
         db_config($_);
     } elsif (m/AuthService/) {
         php_helper($_);
-    } elsif (m/index\.html/) {
-        html($_);
     }
 }
 

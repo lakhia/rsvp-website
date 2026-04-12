@@ -215,7 +215,7 @@
                     <select bind:value={filters.area} class="select-filter">
                         <option value="">All</option>
                         {#each areas as area}
-                            <option value={area}>{area}</option>
+                            <option id={area} value={area}>{area}</option>
                         {/each}
                     </select>
                 </td>
