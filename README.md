@@ -28,10 +28,13 @@ cp .env.example .env         # Create local configuration
 
 ### Commands
 ```bash
-npm run dev                  # Start dev server at http://127.0.0.1:3000
+npm run dev                  # Start dev server at http://localhost:5173
 npm run build                # Build production files to build/ directory
+npm run build:single         # Build minified single-file production output (build/index.html)
 npm run serve-prod           # Build and serve production version
 ```
+
+**Note:** Use the Vite URL (`http://localhost:5173`) during development — it proxies PHP requests to the backend automatically and provides hot module replacement (HMR) for instant CSS/JS updates. PHP file changes are also watched and automatically copied to `build/`.
 
 ## Docker Development (Recommended)
 
@@ -46,10 +49,10 @@ npm run serve-prod           # Build and serve production version
    docker compose up -d --build
    ```
 
-The application will be available at [http://localhost:3000](http://localhost:3000) with live reload.
+The application will be available at [http://localhost:5173](http://localhost:5173) with live reload.
 
 ### Development Mode (Default)
-The default setup runs in development mode with auto-rebuild and live reload:
+The default setup runs in development mode with Vite HMR and PHP file watching:
 
 ```bash
 docker compose up -d --build      # Start with live reload
@@ -59,10 +62,10 @@ docker compose down -v            # Stop and remove volumes (resets database)
 ```
 
 **Features:**
-- Auto-rebuilds on source file changes (JS, CSS, HTML, PHP)
-- Browser auto-reloads after rebuild completes
+- Vite HMR for instant Svelte/JS/CSS updates
+- PHP file changes automatically copied to `build/`
 - Template variable substitution from `.env` via `deploy.pl`
-- Access at [http://localhost:3000](http://localhost:3000)
+- Access at [http://localhost:5173](http://localhost:5173)
 
 ### Production Mode (Test Production Builds)
 To test the full production build locally:
@@ -112,7 +115,7 @@ Complete Local Development Prerequisites.
 
 1. Build the production files:
    ```bash
-   npm run build
+   npm run build:single
    ```
 
 2. Run the deployment script to substitute environment variables:

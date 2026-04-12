@@ -11,21 +11,18 @@ This is an RSVP website for collecting meal responses and helping cooking/fillin
 ### Local Development (without Docker)
 ```bash
 npm install                  # Install dependencies
-npm run dev                  # Start dev server at http://127.0.0.1:3000 (serves from app/)
+npm run dev                  # Start dev server (Vite at http://localhost:5173, PHP at http://localhost:8010)
 npm run build                # Build production files to build/ directory
+npm run build:single         # Build minified single-file output (build/index.html)
 npm run serve-prod           # Build and serve production version
 ```
 
-**Note:** The `npm run dev:docker` command is specifically for Docker development. For local development without Docker, use `npm run dev`.
+**Note:** Use `http://localhost:5173` (Vite) during development — it proxies PHP requests to port 8010 automatically and provides HMR for instant CSS/JS updates. PHP file changes are also watched and auto-copied to `build/`.
 
 The `npm run dev:docker` command (used by Docker):
-1. Builds source files from `app/` to `build/` directory
-2. Runs `deploy.pl` to substitute environment variables from `.env`
-3. Starts PHP backend serving from `build/` (`php -S localhost:8010`)
-4. Starts browser-sync proxy on port 3000 with auto-reload
-5. Watches `app/` directory for changes and automatically rebuilds + redeploys
-
-This ensures development uses the same build + deploy process as production, so template variable substitution works correctly during development.
+1. Copies PHP files to `build/` and runs `deploy.pl` for env substitution
+2. Starts PHP backend serving from `build/` (`php -S localhost:8010`)
+3. Starts Vite dev server at port 5173 (proxies PHP calls to localhost:8010)
 
 ### Docker Development
 
@@ -48,26 +45,20 @@ docker compose up -d --build      # Start with live reload
 docker compose logs -f app        # Watch logs (see build + browser-sync output)
 ```
 
-**Access**: http://localhost:3000 (browser-sync with auto-reload)
+**Access**: http://localhost:5173 (Vite dev server with HMR)
 
 **Features**:
-- Builds from `app/` to `build/` directory on startup and file changes
-- Runs `deploy.pl` to substitute template variables from `.env`
-- Auto-rebuilds and redeploys on source file changes (JS, CSS, HTML, PHP)
-- Auto-reloads browser after rebuild completes
-- Consistent with production build + deploy process
+- Vite HMR for instant Svelte/JS/CSS updates
+- PHP file changes auto-copied to `build/`
+- Runs `deploy.pl` to substitute template variables from `.env` on startup
+- PHP backend on port 8010, proxied transparently by Vite
 
 **How it works**:
 1. Uses `docker-entrypoint-dev.sh` which runs `npm run dev:docker`
-2. Initial build: `app/` → `build/` + `deploy.pl` substitution
-3. Volume mount (`.:/var/www/html`) syncs your local files to container
-4. Chokidar watches `app/` directory for changes
-5. On change: rebuild `app/` → `build/` + re-run `deploy.pl`
-6. Browser-sync watches `build/` and auto-reloads browser
-7. PHP server runs on port 8010 serving from `build/`, browser-sync proxies on port 3000
-
-**Why build in dev mode?**
-This ensures template variable substitution (via `deploy.pl`) works during development. Source files in `app/` can contain template placeholders that get replaced with values from `.env`, just like in production. The `app/` directory stays clean (version controlled), while `build/` contains the processed files (gitignored).
+2. Copies PHP files to `build/` and runs `deploy.pl` substitution
+3. Volume mount (`.:/var/www/html`) syncs local files to container
+4. PHP server runs on port 8010 serving from `build/`
+5. Vite dev server runs on port 5173, proxying `.php` requests to port 8010
 
 #### Production Mode (Test Production Builds)
 To test the full production build locally, use `docker-compose.prod.yml`:
@@ -128,22 +119,22 @@ Tests live in `tests/`. The bootstrap file `tests/bootstrap.php` sets timezone t
 
 
 ### Build System Details
-- `npm run build:js` - Minifies and concatenates JS files (route.js first, then app/js/*, app/lib/*, templates)
-- `npm run build:css` - Processes and minifies CSS
-- `npm run build:php` - Copies PHP files to build directory
-- `npm run build:templates` - Minifies HTML templates and generates templates.js
-- `npm run clean` - Removes build artifacts
+- `npm run build` - Runs Vite build for frontend, then copies PHP files to `build/`
+- `npm run build:single` - Same as above but produces a single minified `build/index.html` (all JS/CSS inlined)
+- `npm run build:php` - Copies PHP files from `app/` to `build/`
+- `npm run watch:php` - Watches `app/*.php` and auto-copies changes to `build/` (used in `dev`)
 
 ## Architecture Overview
 
-### Frontend (AngularJS 1.x SPA)
-- **Router**: Uses `angular-ui-router` for state-based routing (see `app/js/route.js`)
-- **Main App Module**: Defined in `route.js` as `angular.module("rsvp", ['ui.router', 'ngCookies', 'angular-loading-bar'])`
-- **Controllers**: Each view has a dedicated controller in separate JS files (event.js, family.js, rsvp.js, etc.)
+### Frontend (Svelte 5 / SvelteKit SPA)
+- **Framework**: Svelte 5 with SvelteKit, using `adapter-static` with `fallback: index.html` (client-side SPA)
+- **SSR**: Disabled globally via `src/routes/+layout.js` (`export const ssr = false`) — the app relies on localStorage and client-side cookies
+- **Routing**: SvelteKit file-based routing under `frontend/src/routes/`
+- **Reactivity**: Svelte 5 runes (`$state`, `$derived`, `$effect`) throughout
 - **Common Patterns**:
-  - `$rootScope.init()` (in main.js) is called by most controllers to setup scope, fetch data, handle navigation warnings
-  - Authentication uses cookies (token, thaali, email) stored in localStorage
-  - All HTTP requests include offset and date params for pagination/filtering
+  - `PageState` class (`src/lib/PageState.svelte.js`) manages loading/saving/error state per page
+  - Authentication uses localStorage (token, thaali, email) checked via `src/lib/auth.js`
+  - All HTTP requests use `get`/`post` helpers in `src/lib/api.js`, which include offset and date params
 
 ### Backend (PHP)
 - **Entry Point**: Each PHP file in `app/` directory serves JSON responses
@@ -163,11 +154,11 @@ Migrations are in `migration/` directory, run sequentially (01_setup.sql through
 
 ### Key Architectural Patterns
 
-1. **State Management**: Each view receives data via HTTP GET, modifies locally, submits via POST
-2. **Change Detection**: Controllers track `scope.changed` to warn users about unsaved changes
+1. **State Management**: Each view fetches data via HTTP GET, modifies locally, submits via POST
+2. **Change Detection**: Pages track a `dirty` flag and warn users about unsaved changes before navigating away
 3. **Pagination**: Most views support offset-based pagination via URL params
 4. **Size Eligibility**: Users can only select meal sizes equal to or one size larger than their default (XS→S, S→M, M→L, L→XL), admins can select any size
-5. **Build Process**: Production build concatenates all JS (starting with route.js), minifies, and inlines templates
+5. **Build Process**: Vite bundles and minifies; `build:single` additionally inlines everything into one `index.html` via `scripts/inline-html.js`
 
 ## Configuration
 
@@ -197,8 +188,6 @@ Source files in `app/` should contain the original placeholder values. The build
 
 ## Important Notes
 
-- The app uses AngularJS 1.x `.success()/.error()` callback pattern (deprecated but in use)
-- Build order matters: `route.js` must be first in concatenation to define the angular module
-- Templates are minified and converted to angular template cache in build process
-- All PHP endpoints expect token authentication via cookies except login.php
+- All PHP endpoints expect token authentication via cookies except `login.php`
 - Docker setup auto-runs migrations on first startup via MySQL's `/docker-entrypoint-initdb.d`
+- `scripts/inline-html.js` post-processes the single-file build: collapses HTML whitespace, strips newlines from inlined `<script>` blocks (JS is already minified by Vite/oxc — do not set `minifyJS: true`)

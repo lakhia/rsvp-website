@@ -7,7 +7,7 @@ services:
     environment:
       - SHELL=/bin/bash
     ports:
-      - "0.0.0.0:3000:3000"  # Browser-sync with live reload
+      - "0.0.0.0:5173:5173"  # Vite dev server with HMR
       - "0.0.0.0:8010:8010"  # PHP backend (optional, for debugging)
     volumes:
       - .:/var/www/html
