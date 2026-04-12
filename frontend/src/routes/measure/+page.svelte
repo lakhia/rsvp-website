@@ -150,8 +150,8 @@
 													<button
 														type="button"
 														onmousedown={() => selectMatch(ingred, match)}
-														class="w-full text-left hover:bg-gray-100 transition-colors
-															{k === dropdown.highlighted ? 'bg-gray-100 font-medium' : ''}"
+														class="w-full text-left hover:bg-gray-200 transition-colors
+															{k === dropdown.highlighted ? 'bg-gray-200 font-medium' : ''}"
 													>
 														{match.name}
 														<span class="text-xs ml-1">{match.unit}</span>
