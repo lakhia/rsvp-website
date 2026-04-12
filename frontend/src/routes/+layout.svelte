@@ -77,7 +77,7 @@
 				class="flex items-center gap-2 px-2 py-3 transition-colors focus:outline-none
 					{activePath === item.href
 						? 'text-gray-400 pointer-events-none'
-						: 'text-gray-600 hover:bg-gray-200'}"
+						: 'text-gray-600 hover:bg-gray-100'}"
 			>
 				<span class="shrink-0"><Icon name={item.icon} size={20} /></span>
 				{#if menuBig}
@@ -91,7 +91,7 @@
 			<button
 				onclick={handleLogout}
 				aria-label="Logout"
-				class="w-full flex items-center gap-2 px-2 py-2 text-gray-600 hover:bg-gray-200 focus:outline-none transition-colors"
+				class="w-full flex items-center gap-2 px-2 py-2 text-gray-600 hover:bg-gray-100 focus:outline-none transition-colors"
 			>
 				<span class="shrink-0"><Icon name="logout" size={20} /></span>
 				{#if menuBig}

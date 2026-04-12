@@ -141,7 +141,7 @@
 
 <!-- Header bar -->
 <div class="flex flex-wrap items-start justify-between gap-3 mb-2 no-print">
-    <h2 class="mb-0">RSVP for {getDisplayDate(date)}</h2>
+    <h2>Filling for {getDisplayDate(date)}</h2>
     <div class="text-right text-sm text-gray-600 leading-relaxed">
         <div>{firstLine}</div>
         <div>{secondLine}</div>
@@ -150,7 +150,7 @@
 
 <!-- Controls row -->
 <div class="flex items-center gap-3 mb-3 no-print">
-    <button onclick={generateLabels} class="px-3 py-1 text-xs border border-gray-300 rounded hover:bg-gray-100 transition-colors">
+    <button onclick={generateLabels} class="btn-secondary">
         Generate Labels
     </button>
     <label class="flex items-center gap-1">
@@ -175,13 +175,13 @@
 
 <!-- Serving guidance -->
 {#if servingEntries.length > 0}
-    <table class="w-auto min-w-0 border-separate text-xs text-gray-600 mb-3 border border-gray-200 rounded">
+    <table class="w-fill border-separate text-xs mb-3 border border-gray-200">
         <tbody>
             {#each servingEntries as [menu, portions]}
                 <tr>
                     <td class="font-medium border-r border-gray-200">{menu}</td>
                     {#each portions as q}
-                        <td class="border-r border-gray-100">{q}</td>
+                        <td class="border-r border-gray-200">{q}</td>
                     {/each}
                 </tr>
             {/each}
@@ -209,7 +209,7 @@
                 <th>Name</th>
             </tr>
             <!-- Filter row -->
-            <tr class="bg-gray-100 border-b border-gray-300">
+            <tr class="bg-gray-100 border-b border-gray-200">
                 <td></td>
                 <td>
                     <select bind:value={filters.area} class="select-filter">
@@ -255,17 +255,17 @@
                     </td>
                 {/if}
                 <td>
-                    <input bind:value={filters.name} placeholder="Filter…" class="select-filter border-b border-gray-400 placeholder-gray-400"/>
+                    <input bind:value={filters.name} placeholder="Filter…" class="select-filter border-b border-gray-200 placeholder-gray-400"/>
                 </td>
             </tr>
         </thead>
         <tbody>
             {#each sortedRows as item, i}
                 <tr>
-                    <td class="text-right text-gray-500">{item.thaali}</td>
+                    <td class="text-right">{item.thaali}</td>
                     <td>{item.area ?? ""}</td>
                     {#if !meta.niyaz}
-                        <td class="text-gray-600 text-xs">{item["bread+rice"] ?? ""}</td>
+                        <td class="text-xs">{item["bread+rice"] ?? ""}</td>
                     {/if}
                     <td>
                         <span class="badge w-8 text-center">{item.size ?? ""}</span>

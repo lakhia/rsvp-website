@@ -3,19 +3,19 @@
 @theme {
 	--color-brand: rgb(75, 134, 183);
 	--color-brand-dark: rgb(55, 110, 155);
-	--color-yes: rgb(170, 200, 165);
-	--color-yes-dark: rgb(146, 185, 139);
-	--color-no: rgb(187, 155, 153);
-	--color-no-dark: rgb(168, 127, 124);
+	--color-yes: rgb(146, 185, 139);
+	--color-yes-dark: rgb(124, 157, 118);
+	--color-no: rgb(168, 127, 124);
+	--color-no-dark: rgb(143, 108, 105);
 }
 
 @layer base {
-	:disabled { opacity: 0.5; }
-	h2 { @apply text-xl font-semibold text-gray-900 mb-6; }
-	thead tr:first-child { @apply bg-gray-200 text-gray-700 text-xs uppercase tracking-wide text-left; }
-	th { @apply px-3 py-2 font-medium; }
+	:disabled { opacity: 0.6; }
+	h2 { @apply text-xl font-semibold mb-6; }
+	thead tr:first-child { @apply bg-gray-100 text-gray-600 text-xs uppercase tracking-wide text-left; }
+	th { @apply px-3 py-2 font-bold; }
 	tbody tr { @apply border-t border-gray-200; }
-	tbody tr:nth-child(even) { @apply bg-gray-50; }
+	tbody tr:nth-child(even) { @apply bg-gray-100; }
 	table { @apply w-full min-w-[480px] text-sm border-collapse; }
 	td { @apply px-3 py-2 text-gray-900; }
 	label { @apply text-sm text-gray-900; }
@@ -24,7 +24,7 @@
 @layer components {
 	/* Outline/secondary button */
 	.btn-secondary {
-		@apply px-4 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors;
+		@apply px-4 py-1.5 text-sm border border-gray-200 rounded hover:bg-gray-100 transition-colors;
 	}
 	/* Brand/primary button */
 	.btn-primary {
@@ -37,12 +37,12 @@
 
 	/* Transparent border-bottom inline editing input (table cells) */
 	.input-inline {
-		@apply w-full bg-transparent border-b border-transparent hover:border-gray-300 focus:border-brand focus:outline-none text-gray-700 placeholder-gray-300 text-sm;
+		@apply w-full bg-transparent border-b border-transparent hover:border-gray-200 focus:border-brand focus:outline-none text-gray-600 placeholder-gray-300 text-sm;
 	}
 
 	/* Small bordered input / select */
 	.input-sm {
-		@apply border border-gray-300 rounded px-1 py-0.5 text-sm;
+		@apply border border-gray-200 rounded px-1 py-0.5 text-sm;
 	}
 
 	/* Transparent filter select (print table header row) */

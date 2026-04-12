@@ -40,10 +40,6 @@
     <Loading />
 {:else}
 
-{#if entries.length === 0 && !ps.msg}
-    <p class="text-sm text-gray-500">No events this week.</p>
-{/if}
-
 <div class="overflow-x-auto">
     <table>
         <thead>
@@ -64,7 +60,7 @@
                             {#each Object.entries(value.ingred ?? {}) as [menu, ingreds]}
                                 <div class="mb-2 break-inside-avoid">
                                     {#if menu}<span class="badge">{menu}</span>{/if}
-                                    <div class="ml-2 text-gray-600">
+                                    <div class="ml-2">
                                         {#each ingreds as q}
                                             <div>{q}</div>
                                         {/each}
@@ -73,10 +69,10 @@
                             {/each}
                         </div>
                     </td>
-                    <td class="text-gray-600">
+                    <td>
                         {#each Object.entries(value.count ?? {}) as [k, v]}
                             <div>
-                                <span class="text-gray-500">{k}:</span>
+                                <span>{k}:</span>
                                 {v}
                             </div>
                         {/each}

@@ -68,7 +68,7 @@
                 <tr>
                     <!-- Thaali # + ITS -->
                     <td class="align-top">
-                        <div class="text-gray-500 text-xs mb-1">{f.thaali}</div>
+                        <div class="text-xs mb-1">{f.thaali}</div>
                         <input
                             type="text"
                             bind:value={f.its}

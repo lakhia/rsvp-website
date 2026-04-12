@@ -31,7 +31,7 @@
 	<title>{__APP_NAME__} - Login</title>
 </svelte:head>
 
-<div class="min-h-screen flex items-center justify-center bg-gray-50">
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
 	<div class="w-full max-w-sm bg-white rounded-lg shadow p-8">
 		<h2 class="text-xl mb-6 text-center">Enter your credentials</h2>
 
@@ -44,7 +44,7 @@
 					bind:value={email}
 					placeholder="Enter email"
 					required
-					class="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+					class="border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
 				/>
 			</div>
 
@@ -56,7 +56,7 @@
 					bind:value={pass}
 					placeholder="Enter thaali number"
 					required
-					class="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+					class="border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
 				/>
 			</div>
 
