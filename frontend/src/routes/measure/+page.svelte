@@ -116,7 +116,7 @@
 		<tbody>
 			{#each menus as menu, mi}
 				<tr class="align-top">
-					<td class="font-medium">{menu.menu}</td>
+					<td>{menu.menu}</td>
 					<td>
 						<!-- ingredient grid: 3 cols mobile, 6 cols (2×3) on large screens -->
 						<div class="grid items-center gap-x-3 gap-y-1 [grid-template-columns:60px_50px_1fr] lg:[grid-template-columns:60px_50px_1fr_60px_50px_1fr]">
@@ -131,7 +131,7 @@
 									class="input-inline text-right"
 								/>
 								<!-- Unit -->
-								<span class="text-gray-400 text-sm">{ingred.unit ?? ''}</span>
+								<span class="text-sm">{ingred.unit ?? ''}</span>
 								<!-- Name + autocomplete dropdown -->
 								<div class="relative">
 									<input
@@ -154,7 +154,7 @@
 															{k === dropdown.highlighted ? 'bg-gray-100 font-medium' : ''}"
 													>
 														{match.name}
-														<span class="text-gray-400 text-xs ml-1">{match.unit}</span>
+														<span class="text-xs ml-1">{match.unit}</span>
 													</button>
 												</li>
 											{/each}

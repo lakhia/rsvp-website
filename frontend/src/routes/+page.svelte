@@ -121,7 +121,7 @@
 {#if pendingHref}
 	<Dialog
 		message="You have unsaved changes. Discard them and leave?"
-		confirmLabel="Discard & leave"
+		confirmLabel="Discard"
 		cancelLabel="Stay"
 		onConfirm={() => { dirty = {}; goto(pendingHref); pendingHref = null; }}
 		onCancel={() => pendingHref = null}
