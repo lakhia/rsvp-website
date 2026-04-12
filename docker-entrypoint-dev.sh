@@ -24,24 +24,20 @@ fi
 # Install npm dependencies (needed because volume mount overwrites node_modules)
 echo "Installing npm dependencies..."
 npm install --quiet
+cd frontend && npm install --quiet && cd ..
 
 echo ""
 echo "=========================================="
 echo "  Development server starting..."
 echo "=========================================="
-echo "  Browser-sync: http://localhost:3000"
-echo "  PHP backend:  http://localhost:8010"
-echo "  Serving from: build/ (auto-rebuild on changes)"
-echo "  Watching:     app/ directory for changes"
+echo "  Vite dev:    http://localhost:5173"
+echo "  PHP backend: http://localhost:8010"
+echo "  Serving PHP: build/ directory"
 echo "=========================================="
-echo ""
-echo "Initial build and deploy in progress..."
 echo ""
 
 # Run npm dev:docker script which will:
-# 1. Build to build/ directory
-# 2. Run deploy.pl on build/ to substitute env vars
-# 3. Start PHP server serving from build/
-# 4. Start browser-sync watching build/
-# 5. Watch app/ for changes and rebuild + redeploy
+# 1. Copy PHP files to build/ and run deploy.pl
+# 2. Start PHP server serving from build/
+# 3. Start SvelteKit Vite dev server (proxies PHP calls to localhost:8010)
 exec npm run dev:docker
