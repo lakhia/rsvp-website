@@ -5,8 +5,10 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig(({ mode }) => {
 	// Load .env from the repo root (one level up from frontend/)
 	const env = loadEnv(mode, '../', '');
+	const singleFile = process.env.BUILD_SINGLE === '1';
 	return {
 		plugins: [tailwindcss(), sveltekit()],
+		build: singleFile ? { minify: 'oxc' } : {},
 		server: {
 			proxy: {
 				'^/.*\\.php(\\?.*)?$': { target: 'http://localhost:8010', changeOrigin: false }
