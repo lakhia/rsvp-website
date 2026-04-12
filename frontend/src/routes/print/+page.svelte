@@ -201,7 +201,7 @@
                 <th class="w-16 text-right">#</th>
                 <th class="w-24">Group</th>
                 {#if !meta.niyaz}<th class="w-16">Rice/<br>Bread</th>{/if}
-                <th class="w-16">Size</th>
+                <th class="w-20">Size</th>
                 {#if !meta.niyaz}
                     <th class="w-16">Here</th>
                     <th class="w-16">Filled</th>
@@ -268,7 +268,7 @@
                         <td class="text-xs">{item["bread+rice"] ?? ""}</td>
                     {/if}
                     <td>
-                        <span class="badge w-8 text-center">{item.size ?? ""}</span>
+                        <span class="badge">{item.size ?? ""}</span>
                     </td>
                     {#if !meta.niyaz}
                         <td class="text-center">

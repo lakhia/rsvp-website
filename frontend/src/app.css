@@ -11,20 +11,20 @@
 
 @layer base {
 	:disabled { opacity: 0.6; }
-	h2 { @apply text-xl font-semibold mb-6; }
-	thead tr:first-child { @apply bg-gray-100 text-gray-600 text-xs uppercase tracking-wide text-left; }
+	h2 { @apply text-xl font-medium mb-6; }
+	thead tr:first-child { @apply bg-gray-200 text-gray-600 text-xs uppercase tracking-wide text-left; }
 	th { @apply px-3 py-2 font-bold; }
 	tbody tr { @apply border-t border-gray-200; }
 	tbody tr:nth-child(even) { @apply bg-gray-100; }
 	table { @apply w-full min-w-[480px] text-sm border-collapse; }
-	td { @apply px-3 py-2 text-gray-900; }
-	label { @apply text-sm text-gray-900; }
+	td { @apply px-3 py-2; }
+	label { @apply text-sm; }
 }
 
 @layer components {
 	/* Outline/secondary button */
 	.btn-secondary {
-		@apply px-4 py-1.5 text-sm border border-gray-200 rounded hover:bg-gray-100 transition-colors;
+		@apply px-4 py-1.5 text-sm border border-gray-200 rounded hover:bg-gray-200 transition-colors;
 	}
 	/* Brand/primary button */
 	.btn-primary {
@@ -54,7 +54,6 @@
 	.badge {
 		@apply inline-block text-xs font-medium bg-gray-500 text-white px-1.5 py-0.5 rounded;
 	}
-
 }
 
 @media print {
