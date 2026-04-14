@@ -7,7 +7,8 @@
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
-		"prepare": "svelte-kit sync || echo ''"
+		"prepare": "svelte-kit sync || echo ''",
+		"format": "prettier --write \"src/**/*.{svelte,js,ts}\""
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^7.0.1",
@@ -15,6 +16,8 @@
 		"@sveltejs/kit": "^2.57.1",
 		"@sveltejs/vite-plugin-svelte": "7.0",
 		"@tailwindcss/vite": "^4.2.2",
+		"prettier": "^3.8.2",
+		"prettier-plugin-svelte": "^3.5.1",
 		"svelte": "^5.55.3",
 		"tailwindcss": "^4.2.2",
 		"vite": "^8.0.8"
