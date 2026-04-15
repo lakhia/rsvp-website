@@ -355,8 +355,14 @@
 {/if}
 
 <PageNav
-  onPrev={() => navigate(-1)}
-  onNext={() => navigate(1)}
+  prevSteps={[
+    { label: '1w', onClick: () => navigate(-7) },
+    { label: '1d', onClick: () => navigate(-1) },
+  ]}
+  nextSteps={[
+    { label: '1d', onClick: () => navigate(1) },
+    { label: '1w', onClick: () => navigate(7) },
+  ]}
   onSave={meta.save ? handleSave : null}
   {dirty}
   saving={ps.saving}

@@ -17,6 +17,7 @@
 
   const offset = $derived(getIntParam(page.url.searchParams, 'offset'));
   const pageNum = $derived(offset / 10 + 1);
+  const lastPage = $derived(menus.length < 10);
 
   $effect(() => {
     if (!requireAdmin()) return;
@@ -183,10 +184,11 @@
 <Message msg={ps.msg} msgType={ps.msgType} />
 
 <PageNav
-  onPrev={() => goto(`/measure?offset=${Math.max(0, offset - 10)}`)}
-  onNext={() => goto(`/measure?offset=${offset + 10}`)}
+  prevSteps={[{ label: '10', onClick: () => goto(`/measure?offset=${Math.max(0, offset - 10)}`) }]}
+  nextSteps={[{ label: '10', onClick: () => goto(`/measure?offset=${offset + 10}`) }]}
   onSave={handleSave}
   {dirty}
   saving={ps.saving}
   prevDisabled={offset === 0}
+  nextDisabled={lastPage}
 />

@@ -9,6 +9,7 @@
   import Dialog from '$lib/Dialog.svelte';
   import PageNav from '$lib/PageNav.svelte';
   import { getIntParam } from '$lib/utils.js';
+  import Tooltip from '$lib/Tooltip.svelte';
 
   const ps = new PageState();
 
@@ -147,7 +148,11 @@
         <tr>
           <th class="w-[15%]">Day</th>
           <th class="w-[43%]">Details</th>
-          <th class="text-center w-[12%]">No bread<br />/ Rice</th>
+          <th class="text-center w-[12%]">
+            <Tooltip text="No bread, rice and roti" side="bottom">
+              <span>No bread<br />/ Rice</span>
+            </Tooltip>
+          </th>
           <th class="text-center w-[15%]">RSVP</th>
           <th class="w-[15%]">Size /<br /> Count</th>
         </tr>
@@ -238,8 +243,14 @@
 <Message msg={ps.msg} msgType={ps.msgType} />
 
 <PageNav
-  onPrev={() => navigate(-7)}
-  onNext={() => navigate(7)}
+  prevSteps={[
+    { label: '5w', onClick: () => navigate(-35) },
+    { label: '1w', onClick: () => navigate(-7) },
+  ]}
+  nextSteps={[
+    { label: '1w', onClick: () => navigate(7) },
+    { label: '5w', onClick: () => navigate(35) },
+  ]}
   onSave={handleSave}
   dirty={hasDirty}
   saving={ps.saving}

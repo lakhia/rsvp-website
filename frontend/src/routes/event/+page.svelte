@@ -104,8 +104,14 @@
 <Message msg={ps.msg} msgType={ps.msgType} />
 
 <PageNav
-  onPrev={() => goto(`/event?offset=${offset - 7}`)}
-  onNext={() => goto(`/event?offset=${offset + 7}`)}
+  prevSteps={[
+    { label: '5w', onClick: () => goto(`/event?offset=${offset - 35}`) },
+    { label: '1w', onClick: () => goto(`/event?offset=${offset - 7}`) },
+  ]}
+  nextSteps={[
+    { label: '1w', onClick: () => goto(`/event?offset=${offset + 7}`) },
+    { label: '5w', onClick: () => goto(`/event?offset=${offset + 35}`) },
+  ]}
   onSave={handleSave}
   {dirty}
   saving={ps.saving}

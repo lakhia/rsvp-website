@@ -159,8 +159,14 @@
 <Message msg={ps.msg} msgType={ps.msgType} />
 
 <PageNav
-  onPrev={() => goto(`/family?offset=${Math.max(1, offset - 10)}`)}
-  onNext={() => goto(`/family?offset=${offset + 10}`)}
+  prevSteps={[
+    { label: '50', onClick: () => goto(`/family?offset=${Math.max(1, offset - 50)}`) },
+    { label: '10', onClick: () => goto(`/family?offset=${Math.max(1, offset - 10)}`) },
+  ]}
+  nextSteps={[
+    { label: '10', onClick: () => goto(`/family?offset=${offset + 10}`) },
+    { label: '50', onClick: () => goto(`/family?offset=${offset + 50}`) },
+  ]}
   onSave={handleSave}
   {dirty}
   saving={ps.saving}
