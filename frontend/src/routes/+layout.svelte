@@ -4,6 +4,7 @@
   import { page } from '$app/state';
   import { isLoggedIn, isAdmin, logout } from '$lib/auth.js';
   import Icon from '$lib/Icon.svelte';
+  import Tooltip from '$lib/Tooltip.svelte';
 
   let { children } = $props();
   let menuBig = $state(false);
@@ -51,7 +52,7 @@
   {@render children()}
 {:else}
   <nav
-    class="fixed left-0 top-0 bottom-0 flex flex-col bg-gray-100 z-10 overflow-hidden transition-all duration-200"
+    class="fixed left-0 top-0 bottom-0 flex flex-col bg-gray-100 z-10 transition-all duration-200"
     style="width: {menuBig ? '140px' : '40px'}"
   >
     <!-- Toggle / app name -->
@@ -70,34 +71,38 @@
 
     <!-- Nav links -->
     {#each navItems as item}
-      <a
-        href={item.href}
-        aria-label={item.label}
-        aria-current={activePath === item.href ? 'page' : undefined}
-        class="flex items-center gap-2 px-2 py-3 transition-colors focus:outline-none
+      <Tooltip text={menuBig ? '' : item.label} side="right">
+        <a
+          href={item.href}
+          aria-label={item.label}
+          aria-current={activePath === item.href ? 'page' : undefined}
+          class="flex items-center gap-2 px-2 py-3 transition-colors focus:outline-none
 					{activePath === item.href
-          ? 'text-gray-400 pointer-events-none'
-          : 'text-gray-600 hover:bg-gray-200'}"
-      >
-        <span class="shrink-0"><Icon name={item.icon} size={20} /></span>
-        {#if menuBig}
-          <span class="whitespace-nowrap text-sm">{item.label}</span>
-        {/if}
-      </a>
+            ? 'text-gray-400 pointer-events-none'
+            : 'text-gray-600 hover:bg-gray-200'}"
+        >
+          <span class="shrink-0"><Icon name={item.icon} size={20} /></span>
+          {#if menuBig}
+            <span class="whitespace-nowrap text-sm">{item.label}</span>
+          {/if}
+        </a>
+      </Tooltip>
     {/each}
 
     <!-- Logout -->
     <div class="mt-auto">
-      <button
-        onclick={handleLogout}
-        aria-label="Logout"
-        class="w-full flex items-center gap-2 px-2 py-2 text-gray-600 hover:bg-gray-200 focus:outline-none transition-colors"
-      >
-        <span class="shrink-0"><Icon name="logout" size={20} /></span>
-        {#if menuBig}
-          <span class="whitespace-nowrap text-sm">Logout</span>
-        {/if}
-      </button>
+      <Tooltip text={menuBig ? '' : 'Logout'} side="right">
+        <button
+          onclick={handleLogout}
+          aria-label="Logout"
+          class="w-full flex items-center gap-2 px-2 py-2 text-gray-600 hover:bg-gray-200 focus:outline-none transition-colors"
+        >
+          <span class="shrink-0"><Icon name="logout" size={20} /></span>
+          {#if menuBig}
+            <span class="whitespace-nowrap text-sm">Logout</span>
+          {/if}
+        </button>
+      </Tooltip>
     </div>
   </nav>
 
