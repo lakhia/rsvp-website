@@ -106,7 +106,13 @@
   }
 
   function navigate(delta) {
-    goto(`/?offset=${offset + delta}`);
+    if (dateParam) {
+      const d = new Date(dateParam + 'T00:00:00');
+      d.setDate(d.getDate() + offset + delta);
+      goto(`/?date=${d.toISOString().split('T')[0]}`);
+    } else {
+      goto(`/?offset=${offset + delta}`);
+    }
   }
 </script>
 
