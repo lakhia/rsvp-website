@@ -1,61 +1,81 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-	--color-brand: rgb(75, 134, 183);
-	--color-brand-dark: rgb(55, 110, 155);
-	--color-yes: rgb(146, 185, 139);
-	--color-yes-dark: rgb(124, 157, 118);
-	--color-no: rgb(168, 127, 124);
-	--color-no-dark: rgb(143, 108, 105);
+  --color-brand: rgb(75, 134, 183);
+  --color-brand-dark: rgb(55, 110, 155);
+  --color-yes: rgb(146, 185, 139);
+  --color-yes-dark: rgb(124, 157, 118);
+  --color-no: rgb(168, 127, 124);
+  --color-no-dark: rgb(143, 108, 105);
 }
 
 @layer base {
-	:disabled { opacity: 0.6; }
-	h2 { @apply text-xl font-medium mb-6; }
-	thead tr:first-child { @apply bg-gray-200 text-gray-600 text-xs uppercase tracking-wide text-left; }
-	th { @apply px-3 py-2 font-bold; }
-	tbody tr { @apply border-t border-gray-200; }
-	tbody tr:nth-child(even) { @apply bg-gray-100; }
-	table { @apply w-full min-w-[480px] text-sm border-collapse; }
-	td { @apply px-3 py-2; }
-	label { @apply text-sm; }
+  :disabled {
+    opacity: 0.6;
+  }
+  h2 {
+    @apply text-xl font-medium mb-6;
+  }
+  thead tr:first-child {
+    @apply bg-gray-200 text-gray-600 text-xs uppercase tracking-wide text-left;
+  }
+  th {
+    @apply px-3 py-2 font-bold;
+  }
+  tbody tr {
+    @apply border-b border-gray-200;
+  }
+  tbody tr:nth-child(even) {
+    @apply bg-gray-100;
+  }
+  table {
+    @apply w-full min-w-120 text-sm border-collapse;
+  }
+  td {
+    @apply px-3 py-2;
+  }
+  label {
+    @apply text-sm;
+  }
 }
 
 @layer components {
-	/* Outline/secondary button */
-	.btn-secondary {
-		@apply px-4 py-1.5 text-sm border border-gray-200 rounded hover:bg-gray-200 transition-colors;
-	}
-	/* Brand/primary button */
-	.btn-primary {
-		@apply px-4 py-1.5 text-sm rounded text-white bg-brand hover:bg-brand-dark transition-colors;
-	}
-	/* Destructive button */
-	.btn-danger {
-		@apply px-4 py-1.5 text-sm rounded text-white bg-red-500 hover:bg-red-600 transition-colors;
-	}
+  /* Outline/secondary button */
+  .btn-secondary {
+    @apply px-4 py-1.5 text-sm border border-gray-400 rounded hover:bg-gray-200 transition-colors;
+  }
+  /* Brand/primary button */
+  .btn-primary {
+    @apply px-4 py-1.5 text-sm rounded text-white bg-brand hover:bg-brand-dark transition-colors;
+  }
+  /* Destructive button */
+  .btn-danger {
+    @apply px-4 py-1.5 text-sm rounded text-white bg-red-500 hover:bg-red-600 transition-colors;
+  }
 
-	/* Transparent border-bottom inline editing input (table cells) */
-	.input-inline {
-		@apply w-full bg-transparent border-b border-transparent hover:border-gray-200 focus:border-brand focus:outline-none text-gray-600 placeholder-gray-300 text-sm;
-	}
+  /* Transparent border-bottom inline editing input (table cells) */
+  .input-inline {
+    @apply w-full bg-transparent border-b border-transparent hover:border-gray-200 focus:border-brand focus:outline-none placeholder-gray-400;
+  }
 
-	/* Small bordered input / select */
-	.input-sm {
-		@apply border border-gray-200 rounded px-1 py-0.5 text-sm;
-	}
+  /* Small bordered input / select */
+  .input-sm {
+    @apply border border-gray-200 rounded px-1 py-0.5 text-sm;
+  }
 
-	/* Transparent filter select (print table header row) */
-	.select-filter {
-		@apply w-full text-xs bg-transparent focus:outline-none;
-	}
+  /* Transparent filter select (print table header row) */
+  .select-filter {
+    @apply w-full text-xs bg-transparent focus:outline-none;
+  }
 
-	/* Dark rounded badge (menu names, size labels, etc.) */
-	.badge {
-		@apply inline-block text-xs font-medium bg-gray-500 text-white px-1.5 py-0.5 rounded;
-	}
+  /* Dark rounded badge (menu names, size labels, etc.) */
+  .badge {
+    @apply inline-block text-xs font-medium bg-gray-500 text-white px-1.5 py-0.5 rounded;
+  }
 }
 
 @media print {
-	.no-print { display: none !important; }
+  .no-print {
+    display: none !important;
+  }
 }

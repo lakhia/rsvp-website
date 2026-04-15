@@ -19,7 +19,7 @@
   let dateWarning = $state('');
   let confirmingReset = $state(false);
 
-  let sortCol = $state('thaali');
+  let sortCol = $state('');
   let filters = $state({
     area: '',
     size: '',
@@ -58,7 +58,7 @@
     if (!warnedDate) {
       warnedDate = new Date().toLocaleDateString('en-CA');
       if (date !== warnedDate) {
-        dateWarning = `You are modifying ${getDisplayDate(date)}, not today.`;
+        dateWarning = `You are modifying ${getDisplayDate(date)}.`;
       }
     }
     dirty = true;
@@ -71,8 +71,7 @@
     return rows.filter((item) => {
       if (f.name && !item.name.includes(f.name)) return false;
       if (f.area && item.area !== f.area) return false;
-      if (f.size && item.size?.toUpperCase() !== f.size.toUpperCase())
-        return false;
+      if (f.size && item.size !== f.size) return false;
       if (f.here === 'Y' && !item.here) return false;
       if (f.here === 'N' && item.here) return false;
       if (f.filled === 'Y' && !item.filled) return false;
@@ -90,10 +89,21 @@
     [...new Set(rows.map((r) => r.area).filter(Boolean))].sort()
   );
 
+  const sizes = $derived(
+    [...new Set(rows.map((r) => r.size).filter(Boolean))].sort(
+      (a, b) => SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b)
+    )
+  );
+
+  const SIZE_ORDER = ['XS', 'SM', 'MD', 'LG', 'XL'];
+
   const sortedRows = $derived.by(() => {
     return [...filteredRows].sort((a, b) => {
       const av = a[sortCol] ?? '';
       const bv = b[sortCol] ?? '';
+      if (sortCol === 'size') {
+        return SIZE_ORDER.indexOf(av) - SIZE_ORDER.indexOf(bv);
+      }
       return av < bv ? -1 : av > bv ? 1 : 0;
     });
   });
@@ -109,9 +119,9 @@
 
   const secondLine = $derived.by(() => {
     if (!meta.niyaz) {
-      const counts = { XS: 0, SM: 0, MD: 0, LG: 0, XL: 0 };
-      for (const r of filteredRows) if (r.size in counts) counts[r.size]++;
-      return Object.entries(counts)
+      const counts = {};
+      for (const r of filteredRows) counts[r.size] = (counts[r.size] ?? 0) + 1;
+      return SIZE_ORDER.filter((s) => s in counts).map((s) => [s, counts[s]])
         .map(([k, v]) => `${k}: ${v}`)
         .join(', ');
     }
@@ -183,6 +193,7 @@
   <label class="flex items-center gap-1">
     Sort:
     <select bind:value={sortCol} class="input-sm">
+      <option value=""></option>
       <option value="thaali">Thaali</option>
       <option value="area">Area</option>
       <option value="size">Size</option>
@@ -262,11 +273,9 @@
           <td>
             <select bind:value={filters.size} class="select-filter">
               <option value="">All</option>
-              <option value="XS">XS</option>
-              <option value="SM">SM</option>
-              <option value="MD">MD</option>
-              <option value="LG">LG</option>
-              <option value="XL">XL</option>
+              {#each sizes as s}
+                <option value={s}>{s}</option>
+              {/each}
             </select>
           </td>
           {#if !meta.niyaz}
