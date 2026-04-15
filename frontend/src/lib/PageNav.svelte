@@ -17,7 +17,7 @@
   </button>
   {#if children}{@render children()}{/if}
   {#if onSave}
-    <button onclick={onSave} disabled={!dirty || saving} class="btn-primary">
+    <button onclick={onSave} disabled={!dirty || saving} class="btn-primary min-w-22">
       {saving ? 'Saving…' : 'Save'}
     </button>
   {/if}
