@@ -13,7 +13,7 @@ This is an RSVP website for collecting meal responses and helping cooking/fillin
 npm install                  # Install dependencies
 npm run dev                  # Start dev server (Vite at http://localhost:5173, PHP at http://localhost:8010)
 npm run build                # Build production files to build/ directory
-npm run build:single         # Build minified single-file output (build/index.html)
+npm run build:prod         # Build minified single-file output (build/index.html)
 npm run serve-prod           # Build and serve production version
 ```
 
@@ -120,7 +120,7 @@ Tests live in `tests/`. The bootstrap file `tests/bootstrap.php` sets timezone t
 
 ### Build System Details
 - `npm run build` - Runs Vite build for frontend, then copies PHP files to `build/`
-- `npm run build:single` - Same as above but produces a single minified `build/index.html` (all JS/CSS inlined)
+- `npm run build:prod` - Same as above but produces a single minified `build/index.html` (all JS/CSS inlined)
 - `npm run build:php` - Copies PHP files from `app/` to `build/`
 - `npm run watch:php` - Watches `app/*.php` and auto-copies changes to `build/` (used in `dev`)
 
@@ -158,7 +158,7 @@ Migrations are in `migration/` directory, run sequentially (01_setup.sql through
 2. **Change Detection**: Pages track a `dirty` flag and warn users about unsaved changes before navigating away
 3. **Pagination**: Most views support offset-based pagination via URL params
 4. **Size Eligibility**: Users can only select meal sizes equal to or one size larger than their default (XS→S, S→M, M→L, L→XL), admins can select any size
-5. **Build Process**: Vite bundles and minifies; `build:single` additionally inlines everything into one `index.html` via `scripts/inline-html.js`
+5. **Build Process**: Vite bundles and minifies; `build:prod` additionally inlines everything into one `index.html` via `scripts/inline-html.js`
 
 ## Configuration
 

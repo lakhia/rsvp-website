@@ -121,7 +121,8 @@
     if (!meta.niyaz) {
       const counts = {};
       for (const r of filteredRows) counts[r.size] = (counts[r.size] ?? 0) + 1;
-      return SIZE_ORDER.filter((s) => s in counts).map((s) => [s, counts[s]])
+      return SIZE_ORDER.filter((s) => s in counts)
+        .map((s) => [s, counts[s]])
         .map(([k, v]) => `${k}: ${v}`)
         .join(', ');
     }
@@ -162,7 +163,7 @@
       filterSize: filters.size,
       filterHere: filters.here,
     });
-    window.open('generate_labels.php?' + params.toString());
+    window.open(__BASE_PATH__ + '/generate_labels.php?' + params.toString());
   }
 
   function navigate(delta) {

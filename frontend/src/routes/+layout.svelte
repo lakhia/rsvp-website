@@ -29,8 +29,8 @@
     loggedIn = isLoggedIn();
     admin = isAdmin();
     menuBig = localStorage.getItem('menuBig') === '1';
-    if (!page.url.pathname.startsWith('/login') && !loggedIn) {
-      goto('/login');
+    if (page.route.id !== '/login' && !loggedIn) {
+      goto(__BASE_PATH__ + '/login');
     }
   });
 
@@ -41,11 +41,11 @@
 
   function handleLogout() {
     logout();
-    goto('/login');
+    goto(__BASE_PATH__ + '/login');
   }
 
-  const isLogin = $derived(page.url.pathname === '/login');
-  const activePath = $derived(page.url.pathname);
+  const isLogin = $derived(page.route.id === '/login');
+  const activeRoute = $derived(page.route.id);
 </script>
 
 {#if isLogin}
@@ -73,11 +73,11 @@
     {#each navItems as item}
       <Tooltip text={menuBig ? '' : item.label} side="right">
         <a
-          href={item.href}
+          href="{__BASE_PATH__}{item.href}"
           aria-label={item.label}
-          aria-current={activePath === item.href ? 'page' : undefined}
+          aria-current={activeRoute === item.href ? 'page' : undefined}
           class="flex items-center gap-2 px-2 py-3 transition-colors focus:outline-none
-					{activePath === item.href
+					{activeRoute === item.href
             ? 'text-gray-400 pointer-events-none'
             : 'text-gray-600 hover:bg-gray-200'}"
         >

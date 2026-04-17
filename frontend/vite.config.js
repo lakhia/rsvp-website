@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig(({ mode }) => {
 	// Load .env from the repo root (one level up from frontend/)
-	const env = loadEnv(mode, '../', '');
+	const env = loadEnv(process.env.BUILD_ENV || mode, '../', '');
 	const singleFile = process.env.BUILD_SINGLE === '1';
 	return {
 		plugins: [tailwindcss(), sveltekit()],
@@ -15,6 +15,7 @@ export default defineConfig(({ mode }) => {
 			}
 		},
 		define: {
+			__BASE_PATH__:      JSON.stringify(env.BASE_PATH       || ''),
 			__APP_NAME__:       JSON.stringify(env.APP_NAME        || 'RSVP'),
 			__LINK_PLANNING__:  JSON.stringify(env.LINK_PLANNING   || '#'),
 			__LINK_FEEDBACK__:  JSON.stringify(env.LINK_FEEDBACK   || '#'),

@@ -8,4 +8,5 @@ config/
 rsvp.sublime-project
 rsvp.sublime-workspace
 .env
+.env.prod
 production_dump.sql

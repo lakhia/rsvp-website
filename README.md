@@ -30,7 +30,7 @@ cp .env.example .env         # Create local configuration
 ```bash
 npm run dev                  # Start dev server at http://localhost:5173
 npm run build                # Build production files to build/ directory
-npm run build:single         # Build minified single-file production output (build/index.html)
+npm run build:prod           # Build minified single-file output for production (build/index.html)
 npm run serve-prod           # Build and serve production version
 ```
 
@@ -113,14 +113,14 @@ Tests also run automatically on every push and pull request via GitHub Actions.
 ## Pre-requisites
 Complete Local Development Prerequisites.
 
-1. Build the production files:
+1. Create `.env.prod` with production overrides (e.g. `BASE_PATH=/myapp`), then build:
    ```bash
-   npm run build:single
+   npm run build:prod
    ```
 
 2. Run the deployment script to substitute environment variables:
    ```bash
-   perl deploy.pl .env
+   perl deploy.pl .env.prod
    ```
 
 3. Deploy all files from the `build/` directory to your web server

@@ -26,7 +26,7 @@ export function isAdmin() {
 
 export function requireAdmin() {
   if (!isAdmin()) {
-    goto('/');
+    goto(__BASE_PATH__ + '/');
     return false;
   }
   return true;
