@@ -107,7 +107,7 @@
   </nav>
 
   <main
-    class="transition-all duration-200 p-5 overflow-x-hidden"
+    class="transition-all duration-200 p-3 overflow-x-hidden"
     style="margin-left: {menuBig ? '140px' : '40px'}"
   >
     {@render children()}

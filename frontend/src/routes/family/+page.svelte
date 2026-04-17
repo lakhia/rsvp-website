@@ -146,7 +146,6 @@
       </div>
     {/each}
   </div>
-
 {/if}
 
 <Message msg={ps.msg} msgType={ps.msgType} />

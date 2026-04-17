@@ -76,11 +76,9 @@
       if (f.here === 'N' && item.here) return false;
       if (f.filled === 'Y' && !item.filled) return false;
       if (f.filled === 'N' && item.filled) return false;
-      if (f.rice) {
-        const riceVal = item['bread+rice'];
-        if (f.rice.startsWith('N') && !riceVal) return false;
-        if (f.rice.startsWith('Y') && riceVal) return false;
-      }
+      const riceVal = item['bread+rice'];
+      if (f.rice === 'Y' && riceVal) return false;
+      if (f.rice === 'N' && !riceVal) return false;
       return true;
     });
   });
@@ -191,7 +189,7 @@
   <button onclick={generateLabels} class="btn-secondary">
     Generate Labels
   </button>
-  <label class="flex items-center gap-1">
+  <label class="label-row">
     Sort:
     <select bind:value={sortCol} class="input-sm">
       <option value=""></option>
@@ -237,14 +235,14 @@
 {:else}
   <!-- Filters -->
   <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1 mb-3 p-2 bg-gray-100 rounded text-xs">
-    <label class="flex items-center gap-1">
+    <label class="label-row">
       Area:
       <select bind:value={filters.area} class="flex-1 bg-transparent focus:outline-none">
         <option value="">All</option>
         {#each areas as area}<option value={area}>{area}</option>{/each}
       </select>
     </label>
-    <label class="flex items-center gap-1">
+    <label class="label-row">
       Size:
       <select bind:value={filters.size} class="flex-1 bg-transparent focus:outline-none">
         <option value="">All</option>
@@ -252,7 +250,7 @@
       </select>
     </label>
     {#if !meta.niyaz}
-      <label class="flex items-center gap-1">
+      <label class="label-row">
         Rice:
         <select bind:value={filters.rice} class="flex-1 bg-transparent focus:outline-none">
           <option value="">All</option>
@@ -260,7 +258,7 @@
           <option value="N">No</option>
         </select>
       </label>
-      <label class="flex items-center gap-1">
+      <label class="label-row">
         Here:
         <select bind:value={filters.here} class="flex-1 bg-transparent focus:outline-none">
           <option value="">All</option>
@@ -268,7 +266,7 @@
           <option value="N">No</option>
         </select>
       </label>
-      <label class="flex items-center gap-1">
+      <label class="label-row">
         Filled:
         <select bind:value={filters.filled} class="flex-1 bg-transparent focus:outline-none">
           <option value="">All</option>
@@ -277,7 +275,7 @@
         </select>
       </label>
     {/if}
-    <label class="flex items-center gap-1">
+    <label class="label-row">
       Name:
       <input
         bind:value={filters.name}
@@ -295,7 +293,7 @@
           <span class="font-semibold text-sm shrink-0">#{item.thaali}</span>
           <span class="text-sm flex-1">{item.area ?? ''}</span>
           {#if !meta.niyaz}
-            <label class="flex items-center gap-1 text-xs shrink-0">
+            <label class="label-row text-xs shrink-0">
               <input
                 type="checkbox"
                 bind:checked={item.here}
@@ -304,7 +302,7 @@
               />
               Here
             </label>
-            <label class="flex items-center gap-1 text-xs shrink-0">
+            <label class="label-row text-xs shrink-0">
               <input
                 type="checkbox"
                 bind:checked={item.filled}

@@ -182,7 +182,7 @@
                 <button
                   onclick={() => onRsvpChange(ev)}
                   disabled={ev.readonly}
-                  class="w-full py-0.5 rounded text-sm font-medium transition-colors
+                  class="w-full sm:w-auto px-5 py-0.5 rounded text-sm font-medium transition-colors
 									{ev.rsvp ? 'bg-yes hover:bg-yes-dark' : 'bg-no hover:bg-no-dark'}"
                 >
                   {ev.rsvp ? 'Yes' : 'No'}
@@ -204,8 +204,8 @@
                   {/each}
                 </select>
               {:else if ev.enabled && ev.niyaz}
-                <div class="flex flex-col gap-1">
-                  <label class="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-1 text-xs">
+                <div class="flex flex-col text-right gap-1">
+                  <label class="label-count">
                     <input
                       type="number"
                       bind:value={ev.adults}
@@ -215,7 +215,7 @@
                     />
                     Adults
                   </label>
-                  <label class="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-1 text-xs">
+                  <label class="label-count">
                     <input
                       type="number"
                       bind:value={ev.kids}

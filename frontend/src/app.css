@@ -20,7 +20,7 @@
     @apply bg-gray-200 text-gray-600 text-xs uppercase tracking-wide text-left;
   }
   th {
-    @apply px-3 py-2 font-bold;
+    @apply px-1 py-2 font-bold;
   }
   tbody tr {
     @apply border-b border-gray-200;
@@ -32,7 +32,7 @@
     @apply w-full text-sm border-collapse;
   }
   td {
-    @apply px-3 py-2;
+    @apply px-1 py-2;
   }
   label {
     @apply text-sm;
@@ -66,6 +66,16 @@
   /* Transparent filter select (print table header row) */
   .select-filter {
     @apply w-full text-xs bg-transparent focus:outline-none;
+  }
+
+  /* Label with inline input/select (e.g. filter row) */
+  .label-row {
+    @apply flex items-center gap-0.5;
+  }
+
+  /* Label with stacked-then-inline input (e.g. niyaz count fields) */
+  .label-count {
+    @apply flex flex-col sm:flex-row sm:items-center gap-0.5 text-xs;
   }
 
   /* Dark rounded badge (menu names, size labels, etc.) */
