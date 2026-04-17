@@ -108,7 +108,7 @@ class RsvpService
                 $entry['kids'] = 0;
             }
             if ($entry['adults'] + $entry['kids'] == 0) {
-                $entry['rsvp'] = false;
+                $entry['rsvp'] = 0;
             }
         }
 

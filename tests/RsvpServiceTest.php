@@ -248,7 +248,7 @@ class RsvpServiceTest extends TestCase
             "MD",
         );
 
-        $this->assertFalse($result["rsvp"]);
+        $this->assertSame(0, $result["rsvp"]);
     }
 
     public function test_validate_entry_uses_default_size_when_not_set(): void
