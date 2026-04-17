@@ -98,19 +98,20 @@ sub html {
     open OUT, ">$_.backup" or die "Cannot open $!";
     while ($line = <IN>) {
         # CSS names
-        $line =~ s/btn-secondary/bt-sc/g;
-        $line =~ s/btn-primary/bt-pr/g;
+        $line =~ s/-brand-dark/-b-dk/g;
+        $line =~ s/-gray-(\d)00/-g-$1/g;
+        $line =~ s/-no-dark/-n-dk/g;
+        $line =~ s/-yes-dark/-y-dk/g;
+        $line =~ s/badge/bdg/g;
         $line =~ s/btn-danger/bt-dg/g;
+        $line =~ s/btn-primary/bt-pr/g;
+        $line =~ s/btn-secondary/bt-sc/g;
+        $line =~ s/font-medium/f-med/g;
         $line =~ s/input-inline/i-in/g;
         $line =~ s/input-sm/i-sm/g;
         $line =~ s/select-filter/s-ft/g;
-        $line =~ s/badge/bdg/g;
-        $line =~ s/-brand-dark/-b-dk/g;
-        $line =~ s/-yes-dark/-y-dk/g;
-        $line =~ s/-no-dark/-n-dk/g;
-        $line =~ s/font-medium/f-med/g;
+        $line =~ s/text-center/t-cnr/g;
         $line =~ s/transition-colors/t-col/g;
-        $line =~ s/-gray-(\d)00/-g-$1/g;
 
         # Comments
         $line =~ s|/\*[^*]+\*/||;
