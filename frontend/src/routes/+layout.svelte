@@ -19,6 +19,7 @@
     { href: '/family', label: 'Family', icon: 'users', adminOnly: true },
     { href: '/event', label: 'Events', icon: 'utensils', adminOnly: true },
     { href: '/measure', label: 'Measure', icon: 'scale', adminOnly: true },
+    { onclick: handleLogout, label: 'Logout', icon: 'logout', adminOnly: false },
   ];
 
   const navItems = $derived(ALL_NAV.filter((n) => !n.adminOnly || admin));
@@ -60,7 +61,7 @@
       onclick={menuToggle}
       aria-label={menuBig ? 'Collapse menu' : 'Expand menu'}
       aria-expanded={menuBig}
-      class="flex items-center gap-2 px-2 py-3 bg-brand text-white hover:bg-brand-dark focus:outline-none transition-colors"
+      class="flex gap-2 px-2 py-3 bg-brand text-white hover:bg-brand-dark transition-colors"
       style="min-height: 44px;"
     >
       <span class="text-lg leading-none shrink-0">&#9776;</span>
@@ -71,39 +72,20 @@
 
     <!-- Nav links -->
     {#each navItems as item}
+      {@const active = !item.onclick && activeRoute === item.href}
       <Tooltip text={menuBig ? '' : item.label} side="right">
-        <a
-          href="{__BASE_PATH__}{item.href}"
+        <button
+          onclick={item.onclick ?? (() => goto(__BASE_PATH__ + item.href))}
           aria-label={item.label}
-          aria-current={activeRoute === item.href ? 'page' : undefined}
-          class="flex items-center gap-2 px-2 py-3 transition-colors focus:outline-none
-					{activeRoute === item.href
-            ? 'text-gray-400 pointer-events-none'
-            : 'text-gray-600 hover:bg-gray-200'}"
+          aria-current={active ? 'page' : undefined}
+          class="w-full flex gap-2 px-2 py-3 transition-colors
+            {active ? 'text-gray-400 pointer-events-none' : 'text-gray-600 hover:bg-gray-200'}"
         >
           <span class="shrink-0"><Icon name={item.icon} size={20} /></span>
-          {#if menuBig}
-            <span class="whitespace-nowrap text-sm">{item.label}</span>
-          {/if}
-        </a>
-      </Tooltip>
-    {/each}
-
-    <!-- Logout -->
-    <div class="mt-auto">
-      <Tooltip text={menuBig ? '' : 'Logout'} side="right">
-        <button
-          onclick={handleLogout}
-          aria-label="Logout"
-          class="w-full flex items-center gap-2 px-2 py-2 text-gray-600 hover:bg-gray-200 focus:outline-none transition-colors"
-        >
-          <span class="shrink-0"><Icon name="logout" size={20} /></span>
-          {#if menuBig}
-            <span class="whitespace-nowrap text-sm">Logout</span>
-          {/if}
+          {#if menuBig}<span class="whitespace-nowrap text-sm">{item.label}</span>{/if}
         </button>
       </Tooltip>
-    </div>
+    {/each}
   </nav>
 
   <main
