@@ -2,6 +2,8 @@ node_modules/
 vendor/
 .phpunit.result.cache
 build/
+build-svelte/
+config/
 .DS_Store
 rsvp.sublime-project
 rsvp.sublime-workspace
