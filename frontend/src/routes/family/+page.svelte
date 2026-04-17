@@ -49,7 +49,107 @@
 {#if ps.loading}
   <Loading />
 {:else}
-  <div class="overflow-x-auto">
+  <!-- Mobile card view -->
+  <div class="sm:hidden space-y-3">
+    {#each families as f, i}
+      <div class="border border-gray-200 rounded p-3 text-sm {i % 2 === 1 ? 'bg-gray-50' : ''}">
+        <div class="grid grid-cols-2 gap-x-4 gap-y-2">
+          <div>
+            <div class="text-xs text-gray-500 mb-0.5">Thaali #{f.thaali} / ITS</div>
+            <input
+              type="text"
+              bind:value={f.its}
+              oninput={() => (dirty = true)}
+              placeholder="ITS ID"
+              class="input-inline"
+            />
+          </div>
+          <div>
+            <div class="text-xs text-gray-500 mb-0.5">Area</div>
+            <input
+              type="text"
+              bind:value={f.area}
+              oninput={() => (dirty = true)}
+              placeholder="Area"
+              class="input-inline"
+            />
+          </div>
+          <div>
+            <div class="text-xs text-gray-500 mb-0.5">First Name</div>
+            <input
+              type="text"
+              bind:value={f.firstName}
+              oninput={() => (dirty = true)}
+              placeholder="First name"
+              class="input-inline"
+            />
+          </div>
+          <div>
+            <div class="text-xs text-gray-500 mb-0.5">Last Name</div>
+            <input
+              type="text"
+              bind:value={f.lastName}
+              oninput={() => (dirty = true)}
+              placeholder="Last name"
+              class="input-inline"
+            />
+          </div>
+          <div class="col-span-2">
+            <div class="text-xs text-gray-500 mb-0.5">Email</div>
+            <input
+              type="email"
+              bind:value={f.email}
+              oninput={() => (dirty = true)}
+              placeholder="Email (empty = delete)"
+              class="input-inline"
+            />
+          </div>
+          <div>
+            <div class="text-xs text-gray-500 mb-0.5">Phone</div>
+            <input
+              type="text"
+              bind:value={f.phone}
+              oninput={() => (dirty = true)}
+              placeholder="Phone"
+              class="input-inline"
+            />
+          </div>
+          <div>
+            <div class="text-xs text-gray-500 mb-0.5">POC</div>
+            <input
+              type="text"
+              bind:value={f.poc}
+              oninput={() => (dirty = true)}
+              placeholder="POC"
+              class="input-inline"
+            />
+          </div>
+          <div>
+            <div class="text-xs text-gray-500 mb-0.5">Size</div>
+            <input
+              type="text"
+              bind:value={f.size}
+              oninput={() => (dirty = true)}
+              placeholder="MD"
+              class="input-inline"
+            />
+          </div>
+          <div>
+            <div class="text-xs text-gray-500 mb-0.5">Resp</div>
+            <input
+              type="text"
+              bind:value={f.resp}
+              oninput={() => (dirty = true)}
+              class="input-inline"
+            />
+          </div>
+        </div>
+      </div>
+    {/each}
+  </div>
+
+  <!-- Desktop table (hidden on mobile) -->
+  <div class="hidden sm:block overflow-x-auto">
     <table>
       <thead>
         <tr>

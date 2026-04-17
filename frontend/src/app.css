@@ -29,7 +29,7 @@
     @apply bg-gray-100;
   }
   table {
-    @apply w-full min-w-120 text-sm border-collapse;
+    @apply w-full text-sm border-collapse;
   }
   td {
     @apply px-3 py-2;

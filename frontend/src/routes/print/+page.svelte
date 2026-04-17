@@ -235,8 +235,101 @@
 {#if ps.loading}
   <Loading />
 {:else}
-  <!-- Main table -->
-  <div class="overflow-x-auto">
+  <!-- Mobile card view -->
+  <div class="sm:hidden">
+    <!-- Mobile filters -->
+    <div class="grid grid-cols-2 gap-x-4 gap-y-1 mb-3 p-2 bg-gray-100 rounded text-xs">
+      <label class="flex items-center gap-1">
+        Area:
+        <select bind:value={filters.area} class="flex-1 bg-transparent focus:outline-none">
+          <option value="">All</option>
+          {#each areas as area}<option value={area}>{area}</option>{/each}
+        </select>
+      </label>
+      <label class="flex items-center gap-1">
+        Size:
+        <select bind:value={filters.size} class="flex-1 bg-transparent focus:outline-none">
+          <option value="">All</option>
+          {#each sizes as s}<option value={s}>{s}</option>{/each}
+        </select>
+      </label>
+      {#if !meta.niyaz}
+        <label class="flex items-center gap-1">
+          Rice:
+          <select bind:value={filters.rice} class="flex-1 bg-transparent focus:outline-none">
+            <option value="">All</option>
+            <option value="Y">Yes</option>
+            <option value="N">No</option>
+          </select>
+        </label>
+        <label class="flex items-center gap-1">
+          Here:
+          <select bind:value={filters.here} class="flex-1 bg-transparent focus:outline-none">
+            <option value="">All</option>
+            <option value="Y">Yes</option>
+            <option value="N">No</option>
+          </select>
+        </label>
+        <label class="flex items-center gap-1">
+          Filled:
+          <select bind:value={filters.filled} class="flex-1 bg-transparent focus:outline-none">
+            <option value="">All</option>
+            <option value="Y">Yes</option>
+            <option value="N">No</option>
+          </select>
+        </label>
+      {/if}
+      <label class="flex items-center gap-1 {meta.niyaz ? 'col-span-2' : ''}">
+        Name:
+        <input
+          bind:value={filters.name}
+          placeholder="Filter…"
+          class="flex-1 bg-transparent border-b border-gray-300 focus:outline-none placeholder-gray-400"
+        />
+      </label>
+    </div>
+
+    <!-- Card list -->
+    {#each sortedRows as item, i}
+      <div class="border-b border-gray-200 px-2 py-2 {i % 2 === 1 ? 'bg-gray-50' : ''}">
+        <div class="flex items-start gap-2">
+          <span class="text-xs text-gray-400 shrink-0">#{item.thaali} {item.area ?? ''}</span>
+          <span class="font-medium text-sm flex-1">{item.name ?? ''}</span>
+          <span class="badge shrink-0">{item.size ?? ''}</span>
+        </div>
+        {#if !meta.niyaz}
+          <div class="flex items-center gap-3 mt-1">
+            {#if item['bread+rice']}
+              <span class="text-xs text-gray-500 flex-1">{item['bread+rice']}</span>
+            {:else}
+              <span class="flex-1"></span>
+            {/if}
+            <label class="flex items-center gap-1 text-xs">
+              <input
+                type="checkbox"
+                bind:checked={item.here}
+                onchange={() => onCheckboxChange(item)}
+                class="cursor-pointer"
+              />
+              Here
+            </label>
+            <label class="flex items-center gap-1 text-xs">
+              <input
+                type="checkbox"
+                bind:checked={item.filled}
+                onchange={() => onCheckboxChange(item)}
+                class="cursor-pointer"
+              />
+              Filled
+            </label>
+          </div>
+        {/if}
+      </div>
+    {/each}
+  </div>
+
+  <!-- Desktop table (hidden on mobile) -->
+  <div class="hidden sm:block overflow-x-auto">
     <table>
       <thead>
         <!-- Label row -->
