@@ -235,61 +235,60 @@
 {#if ps.loading}
   <Loading />
 {:else}
-  <!-- Mobile card view -->
-  <div class="sm:hidden">
-    <!-- Mobile filters -->
-    <div class="grid grid-cols-2 gap-x-4 gap-y-1 mb-3 p-2 bg-gray-100 rounded text-xs">
+  <!-- Filters -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1 mb-3 p-2 bg-gray-100 rounded text-xs">
+    <label class="flex items-center gap-1">
+      Area:
+      <select bind:value={filters.area} class="flex-1 bg-transparent focus:outline-none">
+        <option value="">All</option>
+        {#each areas as area}<option value={area}>{area}</option>{/each}
+      </select>
+    </label>
+    <label class="flex items-center gap-1">
+      Size:
+      <select bind:value={filters.size} class="flex-1 bg-transparent focus:outline-none">
+        <option value="">All</option>
+        {#each sizes as s}<option value={s}>{s}</option>{/each}
+      </select>
+    </label>
+    {#if !meta.niyaz}
       <label class="flex items-center gap-1">
-        Area:
-        <select bind:value={filters.area} class="flex-1 bg-transparent focus:outline-none">
+        Rice:
+        <select bind:value={filters.rice} class="flex-1 bg-transparent focus:outline-none">
           <option value="">All</option>
-          {#each areas as area}<option value={area}>{area}</option>{/each}
+          <option value="Y">Yes</option>
+          <option value="N">No</option>
         </select>
       </label>
       <label class="flex items-center gap-1">
-        Size:
-        <select bind:value={filters.size} class="flex-1 bg-transparent focus:outline-none">
+        Here:
+        <select bind:value={filters.here} class="flex-1 bg-transparent focus:outline-none">
           <option value="">All</option>
-          {#each sizes as s}<option value={s}>{s}</option>{/each}
+          <option value="Y">Yes</option>
+          <option value="N">No</option>
         </select>
       </label>
-      {#if !meta.niyaz}
-        <label class="flex items-center gap-1">
-          Rice:
-          <select bind:value={filters.rice} class="flex-1 bg-transparent focus:outline-none">
-            <option value="">All</option>
-            <option value="Y">Yes</option>
-            <option value="N">No</option>
-          </select>
-        </label>
-        <label class="flex items-center gap-1">
-          Here:
-          <select bind:value={filters.here} class="flex-1 bg-transparent focus:outline-none">
-            <option value="">All</option>
-            <option value="Y">Yes</option>
-            <option value="N">No</option>
-          </select>
-        </label>
-        <label class="flex items-center gap-1">
-          Filled:
-          <select bind:value={filters.filled} class="flex-1 bg-transparent focus:outline-none">
-            <option value="">All</option>
-            <option value="Y">Yes</option>
-            <option value="N">No</option>
-          </select>
-        </label>
-      {/if}
-      <label class="flex items-center gap-1 {meta.niyaz ? 'col-span-2' : ''}">
-        Name:
-        <input
-          bind:value={filters.name}
-          placeholder="Filter…"
-          class="flex-1 bg-transparent border-b border-gray-300 focus:outline-none placeholder-gray-400"
-        />
+      <label class="flex items-center gap-1">
+        Filled:
+        <select bind:value={filters.filled} class="flex-1 bg-transparent focus:outline-none">
+          <option value="">All</option>
+          <option value="Y">Yes</option>
+          <option value="N">No</option>
+        </select>
       </label>
-    </div>
+    {/if}
+    <label class="flex items-center gap-1">
+      Name:
+      <input
+        bind:value={filters.name}
+        placeholder="Filter…"
+        class="flex-1 bg-transparent border-b border-gray-300 focus:outline-none placeholder-gray-400"
+      />
+    </label>
+  </div>
 
-    <!-- Card list -->
+  <!-- Card list -->
+  <div class="sm:grid sm:grid-cols-2 lg:grid-cols-3">
     {#each sortedRows as item, i}
       <div class="border-b border-gray-200 px-3 py-2 {i % 2 === 1 ? 'bg-gray-50' : ''}">
         <div class="flex items-center gap-2">
@@ -316,7 +315,7 @@
             </label>
           {/if}
         </div>
-        <div class="flex items-center gap-2 mt-0.5 ml-0">
+        <div class="flex items-center gap-2 mt-0.5">
           <span class="badge">{item.size ?? ''}</span>
           {#if item['bread+rice'] && !meta.niyaz}
             <span class="text-xs border border-gray-400 text-gray-600 px-1 rounded">{item['bread+rice']}</span>
@@ -327,114 +326,7 @@
     {/each}
   </div>
 
-  <!-- Desktop table (hidden on mobile) -->
-  <div class="hidden sm:block overflow-x-auto">
-    <table>
-      <thead>
-        <!-- Label row -->
-        <tr>
-          <th class="w-16 text-right">#</th>
-          <th class="w-24">Group</th>
-          {#if !meta.niyaz}<th class="w-16">Rice/<br />Bread</th>{/if}
-          <th class="w-20">Size</th>
-          {#if !meta.niyaz}
-            <th class="w-16">Here</th>
-            <th class="w-16">Filled</th>
-          {/if}
-          <th>Name</th>
-        </tr>
-        <!-- Filter row -->
-        <tr class="bg-gray-100 border-b border-gray-200">
-          <td></td>
-          <td>
-            <select bind:value={filters.area} class="select-filter">
-              <option value="">All</option>
-              {#each areas as area}
-                <option id={area} value={area}>{area}</option>
-              {/each}
-            </select>
-          </td>
-          {#if !meta.niyaz}
-            <td>
-              <select bind:value={filters.rice} class="select-filter">
-                <option value="">All</option>
-                <option value="Y">Yes</option>
-                <option value="N">No</option>
-              </select>
-            </td>
-          {/if}
-          <td>
-            <select bind:value={filters.size} class="select-filter">
-              <option value="">All</option>
-              {#each sizes as s}
-                <option value={s}>{s}</option>
-              {/each}
-            </select>
-          </td>
-          {#if !meta.niyaz}
-            <td>
-              <select bind:value={filters.here} class="select-filter">
-                <option value="">All</option>
-                <option value="Y">Yes</option>
-                <option value="N">No</option>
-              </select>
-            </td>
-            <td>
-              <select bind:value={filters.filled} class="select-filter">
-                <option value="">All</option>
-                <option value="Y">Yes</option>
-                <option value="N">No</option>
-              </select>
-            </td>
-          {/if}
-          <td>
-            <input
-              bind:value={filters.name}
-              placeholder="Filter…"
-              class="select-filter border-b border-gray-200 placeholder-gray-400"
-            />
-          </td>
-        </tr>
-      </thead>
-      <tbody>
-        {#each sortedRows as item, i}
-          <tr>
-            <td class="text-right">{item.thaali}</td>
-            <td>{item.area ?? ''}</td>
-            {#if !meta.niyaz}
-              <td>
-                {#if item['bread+rice']}
-                  <span class="text-xs border border-gray-400 text-gray-600 px-1 rounded">{item['bread+rice']}</span>
-                {/if}
-              </td>
-            {/if}
-            <td>
-              <span class="badge">{item.size ?? ''}</span>
-            </td>
-            {#if !meta.niyaz}
-              <td class="text-center">
-                <input
-                  type="checkbox"
-                  bind:checked={item.here}
-                  onchange={() => onCheckboxChange(item)}
-                  class="cursor-pointer"
-                />
-              </td>
-              <td class="text-center">
-                <input
-                  type="checkbox"
-                  bind:checked={item.filled}
-                  onchange={() => onCheckboxChange(item)}
-                  class="cursor-pointer"
-                />
-              </td>
-            {/if}
-            <td>{item.name ?? ''}</td>
-          </tr>
-        {/each}
-      </tbody>
-    </table>
-  </div>
+  <!-- stub to close the {:else} below -->
 {/if}
 
 <Message msg={ps.msg} msgType={ps.msgType} />

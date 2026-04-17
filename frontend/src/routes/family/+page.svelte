@@ -49,11 +49,10 @@
 {#if ps.loading}
   <Loading />
 {:else}
-  <!-- Mobile card view -->
-  <div class="sm:hidden space-y-3">
+  <div class="space-y-3">
     {#each families as f, i}
       <div class="border border-gray-200 rounded p-3 text-sm {i % 2 === 1 ? 'bg-gray-50' : ''}">
-        <div class="grid grid-cols-2 gap-x-4 gap-y-2">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2">
           <div>
             <div class="text-xs text-gray-500 mb-0.5">Thaali #{f.thaali} / ITS</div>
             <input
@@ -114,7 +113,7 @@
               class="input-inline"
             />
           </div>
-          <div>
+          <div class="sm:col-span-2">
             <div class="text-xs text-gray-500 mb-0.5">POC</div>
             <input
               type="text"
@@ -148,112 +147,6 @@
     {/each}
   </div>
 
-  <!-- Desktop table (hidden on mobile) -->
-  <div class="hidden sm:block overflow-x-auto">
-    <table>
-      <thead>
-        <tr>
-          <th class="w-[8%]">Num</th>
-          <th class="w-[10%]">Area</th>
-          <th class="w-[18%]">Name</th>
-          <th class="w-[6%]">Size</th>
-          <th class="w-[20%]">Email</th>
-          <th class="w-[22%]">Phone / POC</th>
-          <th class="w-[8%]">Resp</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each families as f, i}
-          <tr>
-            <!-- Thaali # + ITS -->
-            <td class="align-top">
-              <div class="text-xs mb-1">{f.thaali}</div>
-              <input
-                type="text"
-                bind:value={f.its}
-                oninput={() => (dirty = true)}
-                placeholder="ITS ID"
-                class="input-inline"
-              />
-            </td>
-            <!-- Area -->
-            <td class="align-top">
-              <input
-                type="text"
-                bind:value={f.area}
-                oninput={() => (dirty = true)}
-                placeholder="Area"
-                class="input-inline"
-              />
-            </td>
-            <!-- Name -->
-            <td class="align-top">
-              <input
-                type="text"
-                bind:value={f.firstName}
-                oninput={() => (dirty = true)}
-                placeholder="First name"
-                class="input-inline mb-1"
-              />
-              <input
-                type="text"
-                bind:value={f.lastName}
-                oninput={() => (dirty = true)}
-                placeholder="Last name"
-                class="input-inline"
-              />
-            </td>
-            <!-- Size -->
-            <td class="align-top">
-              <input
-                type="text"
-                bind:value={f.size}
-                oninput={() => (dirty = true)}
-                placeholder="MD"
-                class="input-inline"
-              />
-            </td>
-            <!-- Email -->
-            <td class="align-top">
-              <input
-                type="email"
-                bind:value={f.email}
-                oninput={() => (dirty = true)}
-                placeholder="Email (empty = delete)"
-                class="input-inline"
-              />
-            </td>
-            <!-- Phone / POC -->
-            <td class="align-top">
-              <input
-                type="text"
-                bind:value={f.phone}
-                oninput={() => (dirty = true)}
-                placeholder="Phone"
-                class="input-inline mb-1"
-              />
-              <input
-                type="text"
-                bind:value={f.poc}
-                oninput={() => (dirty = true)}
-                placeholder="POC"
-                class="input-inline"
-              />
-            </td>
-            <!-- Resp -->
-            <td class="align-top">
-              <input
-                type="text"
-                bind:value={f.resp}
-                oninput={() => (dirty = true)}
-                class="input-inline"
-              />
-            </td>
-          </tr>
-        {/each}
-      </tbody>
-    </table>
-  </div>
 {/if}
 
 <Message msg={ps.msg} msgType={ps.msgType} />
