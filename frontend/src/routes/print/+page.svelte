@@ -291,39 +291,38 @@
 
     <!-- Card list -->
     {#each sortedRows as item, i}
-      <div class="border-b border-gray-200 px-2 py-2 {i % 2 === 1 ? 'bg-gray-50' : ''}">
-        <div class="flex items-start gap-2">
-          <span class="text-xs text-gray-400 shrink-0">#{item.thaali} {item.area ?? ''}</span>
-          <span class="font-medium text-sm flex-1">{item.name ?? ''}</span>
-          <span class="badge shrink-0">{item.size ?? ''}</span>
-        </div>
-        {#if !meta.niyaz}
-          <div class="flex items-center gap-3 mt-1">
-            {#if item['bread+rice']}
-              <span class="text-xs text-gray-500 flex-1">{item['bread+rice']}</span>
-            {:else}
-              <span class="flex-1"></span>
-            {/if}
-            <label class="flex items-center gap-1 text-xs">
+      <div class="border-b border-gray-200 px-3 py-2 {i % 2 === 1 ? 'bg-gray-50' : ''}">
+        <div class="flex items-center gap-2">
+          <span class="font-semibold text-sm shrink-0">#{item.thaali}</span>
+          <span class="text-sm flex-1">{item.area ?? ''}</span>
+          {#if !meta.niyaz}
+            <label class="flex items-center gap-1 text-xs shrink-0">
               <input
                 type="checkbox"
                 bind:checked={item.here}
                 onchange={() => onCheckboxChange(item)}
-                class="cursor-pointer"
+                class="cursor-pointer w-4 h-4"
               />
               Here
             </label>
-            <label class="flex items-center gap-1 text-xs">
+            <label class="flex items-center gap-1 text-xs shrink-0">
               <input
                 type="checkbox"
                 bind:checked={item.filled}
                 onchange={() => onCheckboxChange(item)}
-                class="cursor-pointer"
+                class="cursor-pointer w-4 h-4"
               />
               Filled
             </label>
-          </div>
-        {/if}
+          {/if}
+        </div>
+        <div class="flex items-center gap-2 mt-0.5 ml-0">
+          <span class="badge">{item.size ?? ''}</span>
+          {#if item['bread+rice'] && !meta.niyaz}
+            <span class="text-xs border border-gray-400 text-gray-600 px-1 rounded">{item['bread+rice']}</span>
+          {/if}
+          <span class="text-xs text-gray-400 flex-1 text-right">{item.name ?? ''}</span>
+        </div>
       </div>
     {/each}
   </div>
@@ -403,7 +402,11 @@
             <td class="text-right">{item.thaali}</td>
             <td>{item.area ?? ''}</td>
             {#if !meta.niyaz}
-              <td class="text-xs">{item['bread+rice'] ?? ''}</td>
+              <td>
+                {#if item['bread+rice']}
+                  <span class="text-xs border border-gray-400 text-gray-600 px-1 rounded">{item['bread+rice']}</span>
+                {/if}
+              </td>
             {/if}
             <td>
               <span class="badge">{item.size ?? ''}</span>
