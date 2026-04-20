@@ -10,3 +10,4 @@ rsvp.sublime-workspace
 .env
 .env.prod
 production_dump.sql
+frontend/static/.htaccess

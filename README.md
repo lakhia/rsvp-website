@@ -125,4 +125,21 @@ Complete Local Development Prerequisites.
 
 3. Deploy all files from the `build/` directory to your web server
 
+## Apache Configuration
+
+The app uses SvelteKit client-side routing, so Apache must serve `index.html` for any path that isn't a real file. Create a `.htaccess` file in `frontend/static/` (copied to `build/` on build) handles this based on this example (deploying under a subdirectory `/rsvp/`):
+
+```apache
+RewriteEngine On
+RewriteBase /rsvp/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ /rsvp/index.html [L]
+```
+
+Place the `.htaccess` file in the deployment subdirectory (e.g. `rsvp/`), not the server root.
+
+**Requirements:**
+- Apache must have `AllowOverride All` (or at minimum `AllowOverride FileInfo`) set for the deployment directory
+- If a parent directory has a `Satisfy any` directive, add `Satisfy all` or `Require all granted` (Apache 2.4) at the top of your `.htaccess` to override it
+
 For detailed architecture and development information, see [CLAUDE.md](CLAUDE.md).
