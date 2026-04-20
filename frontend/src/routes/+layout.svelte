@@ -1,8 +1,8 @@
 <script>
   import '../app.css';
-  import { goto } from '$app/navigation';
   import { page } from '$app/state';
   import { isLoggedIn, isAdmin, logout } from '$lib/auth.js';
+  import { navigate } from '$lib/api.js';
   import Icon from '$lib/Icon.svelte';
   import Tooltip from '$lib/Tooltip.svelte';
 
@@ -31,7 +31,7 @@
     admin = isAdmin();
     menuBig = localStorage.getItem('menuBig') === '1';
     if (page.route.id !== '/login' && !loggedIn) {
-      goto(__BASE_PATH__ + '/login');
+      navigate('/login');
     }
   });
 
@@ -42,7 +42,7 @@
 
   function handleLogout() {
     logout();
-    goto(__BASE_PATH__ + '/login');
+    navigate('/login');
   }
 
   const isLogin = $derived(page.route.id === '/login');
@@ -75,7 +75,7 @@
       {@const active = !item.onclick && activeRoute === item.href}
       <Tooltip text={menuBig ? '' : item.label} side="right">
         <button
-          onclick={item.onclick ?? (() => goto(__BASE_PATH__ + item.href))}
+          onclick={item.onclick ?? (() => navigate(item.href))}
           aria-label={item.label}
           aria-current={active ? 'page' : undefined}
           class="w-full flex gap-2 px-2 py-3 transition-colors

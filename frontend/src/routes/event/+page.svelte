@@ -1,7 +1,6 @@
 <script>
-  import { goto } from '$app/navigation';
   import { page } from '$app/state';
-  import { get, post } from '$lib/api.js';
+  import { get, post, navigate } from '$lib/api.js';
   import { getDisplayDate } from '$lib/dates.js';
   import { requireAdmin } from '$lib/auth.js';
   import Loading from '$lib/Loading.svelte';
@@ -104,8 +103,8 @@
 <Message msg={ps.msg} msgType={ps.msgType} />
 
 <PageNav
-  onPrev={() => goto(`/event?offset=${offset - 7}`)}
-  onNext={() => goto(`/event?offset=${offset + 7}`)}
+  onPrev={() => navigate(`/event?offset=${offset - 7}`)}
+  onNext={() => navigate(`/event?offset=${offset + 7}`)}
   onSave={handleSave}
   {dirty}
   saving={ps.saving}

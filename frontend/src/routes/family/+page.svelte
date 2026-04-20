@@ -1,7 +1,6 @@
 <script>
-  import { goto } from '$app/navigation';
   import { page } from '$app/state';
-  import { get, post } from '$lib/api.js';
+  import { get, post, navigate } from '$lib/api.js';
   import { requireAdmin } from '$lib/auth.js';
   import Loading from '$lib/Loading.svelte';
   import { PageState } from '$lib/PageState.svelte.js';
@@ -151,8 +150,8 @@
 <Message msg={ps.msg} msgType={ps.msgType} />
 
 <PageNav
-  onPrev={() => goto(`/family?offset=${Math.max(1, offset - 10)}`)}
-  onNext={() => goto(`/family?offset=${offset + 10}`)}
+  onPrev={() => navigate(`/family?offset=${Math.max(1, offset - 10)}`)}
+  onNext={() => navigate(`/family?offset=${offset + 10}`)}
   onSave={handleSave}
   {dirty}
   saving={ps.saving}

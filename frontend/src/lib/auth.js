@@ -1,4 +1,4 @@
-import { goto } from '$app/navigation';
+import { navigate } from '$lib/api.js';
 
 export function getCookie(name) {
   const match = document.cookie.match(
@@ -26,7 +26,7 @@ export function isAdmin() {
 
 export function requireAdmin() {
   if (!isAdmin()) {
-    goto(__BASE_PATH__ + '/');
+    navigate('/');
     return false;
   }
   return true;

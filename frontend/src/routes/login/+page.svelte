@@ -1,5 +1,5 @@
 <script>
-  import { post } from '$lib/api.js';
+  import { post, navigate } from '$lib/api.js';
   import Message from '$lib/Message.svelte';
 
   let email = $state('');
@@ -15,7 +15,7 @@
       const res = await post('login.php', {}, { email, pass });
       if (res.data && !res.msg) {
         localStorage.setItem('greet', res.data);
-        window.location.href = '/';
+        navigate('/');
       } else {
         msg = res.msg || 'Login failed';
       }

@@ -1,5 +1,4 @@
 <script>
-  import { goto } from '$app/navigation';
   import { page } from '$app/state';
   import { get, post } from '$lib/api.js';
   import { getDisplayDate } from '$lib/dates.js';
@@ -9,6 +8,7 @@
   import Dialog from '$lib/Dialog.svelte';
   import PageNav from '$lib/PageNav.svelte';
   import { getIntParam } from '$lib/utils.js';
+  import { navigate } from '$lib/api.js';
 
   const ps = new PageState();
 
@@ -162,10 +162,6 @@
       filterHere: filters.here,
     });
     window.open(__BASE_PATH__ + '/generate_labels.php?' + params.toString());
-  }
-
-  function navigate(delta) {
-    goto(`/print?offset=${offset + delta}`);
   }
 
   const servingEntries = $derived(Object.entries(meta.serving ?? {}));
@@ -342,8 +338,8 @@
 {/if}
 
 <PageNav
-  onPrev={() => navigate(-1)}
-  onNext={() => navigate(1)}
+  onPrev={() => navigate(`/print?offset=${offset - 1}`)}
+  onNext={() => navigate(`/print?offset=${offset + 1}`)}
   onSave={meta.save ? handleSave : null}
   {dirty}
   saving={ps.saving}

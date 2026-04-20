@@ -1,4 +1,10 @@
+import { goto } from '$app/navigation';
+
 const TIMEOUT_MS = 8000;
+
+export function navigate(path) {
+  return goto(__BASE_PATH__ + path);
+}
 
 function buildUrl(url, params = {}) {
   const u = new URL(__BASE_PATH__ + '/' + url, window.location.origin);

@@ -1,7 +1,7 @@
 <script>
-  import { goto, beforeNavigate } from '$app/navigation';
+  import { beforeNavigate } from '$app/navigation';
   import { page } from '$app/state';
-  import { get, post } from '$lib/api.js';
+  import { get, post, navigate } from '$lib/api.js';
   import { getDisplayDate } from '$lib/dates.js';
   import Loading from '$lib/Loading.svelte';
   import { PageState } from '$lib/PageState.svelte.js';
@@ -105,13 +105,13 @@
     });
   }
 
-  function navigate(delta) {
+  function paginate(delta) {
     if (dateParam) {
       const d = new Date(dateParam + 'T00:00:00');
       d.setDate(d.getDate() + offset + delta);
-      goto(`/?date=${d.toISOString().split('T')[0]}`);
+      navigate(`/?date=${d.toISOString().split('T')[0]}`);
     } else {
-      goto(`/?offset=${offset + delta}`);
+      navigate(`/?offset=${offset + delta}`);
     }
   }
 </script>
