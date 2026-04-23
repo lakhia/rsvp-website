@@ -19,13 +19,13 @@ fi
 
 echo "Using environment file: $ENV_FILE"
 
-# Install npm dependencies
-echo "Installing npm dependencies..."
-npm install --quiet
+# Install bun dependencies
+echo "Installing bun dependencies..."
+bun install --quiet
 
 # Run the build process
 echo "Building application..."
-npm run build
+bun run build
 
 # Run deploy.pl with the env file
 echo "Running deploy.pl with environment..."

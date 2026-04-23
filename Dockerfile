@@ -9,12 +9,14 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    nodejs \
-    npm \
     perl
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install bun
+RUN curl -fsSL https://bun.sh/install | bash
+ENV PATH="/root/.bun/bin:$PATH"
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd mysqli
@@ -26,10 +28,10 @@ RUN a2enmod rewrite
 WORKDIR /var/www/html
 
 # Copy package files first for better Docker layer caching
-COPY package*.json ./
+COPY package.json bun.lockb* ./
 
 # Install Node.js dependencies
-RUN npm install
+RUN bun install
 
 # Copy application files
 COPY . /var/www/html/

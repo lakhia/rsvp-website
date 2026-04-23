@@ -10,16 +10,16 @@ This is an RSVP website for collecting meal responses and helping cooking/fillin
 
 ### Local Development (without Docker)
 ```bash
-npm install                  # Install dependencies
-npm run dev                  # Start dev server (Vite at http://localhost:5173, PHP at http://localhost:8010)
-npm run build                # Build production files to build/ directory
-npm run build:prod         # Build minified single-file output (build/index.html)
-npm run serve-prod           # Build and serve production version
+bun install                  # Install dependencies
+bun run dev                  # Start dev server (Vite at http://localhost:5173, PHP at http://localhost:8010)
+bun run build                # Build production files to build/ directory
+bun run build:prod         # Build minified single-file output (build/index.html)
+bun run serve-prod           # Build and serve production version
 ```
 
 **Note:** Use `http://localhost:5173` (Vite) during development — it proxies PHP requests to port 8010 automatically and provides HMR for instant CSS/JS updates. PHP file changes are also watched and auto-copied to `build/`.
 
-The `npm run dev:docker` command (used by Docker):
+The `bun run dev:docker` command (used by Docker):
 1. Copies PHP files to `build/` and runs `deploy.pl` for env substitution
 2. Starts PHP backend serving from `build/` (`php -S localhost:8010`)
 3. Starts Vite dev server at port 5173 (proxies PHP calls to localhost:8010)

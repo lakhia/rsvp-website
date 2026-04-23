@@ -1,15 +1,15 @@
 {
   "scripts": {
-    "build": "cd frontend && npm run build && cd .. && npm run build:php",
-    "build:prod": "BUILD_SINGLE=1 BUILD_ENV=prod npm run build && node scripts/inline-html.js",
+    "build": "cd frontend && bun run build && cd .. && bun run build:php",
+    "build:prod": "BUILD_SINGLE=1 BUILD_ENV=prod bun run build && node scripts/inline-html.js",
     "build:php": "cpx 'app/*.php' build/ && cpx 'app/lib/fpdf/**' 'build/lib/fpdf/'",
     "deploy": "perl deploy.pl .env",
     "watch:php": "cpx 'app/*.php' build/ --watch",
-    "dev": "npm run build:php && npm-run-all --parallel serve:php:build dev:svelte watch:php",
-    "dev:svelte": "cd frontend && npm run dev",
-    "dev:docker": "npm run build:php && perl deploy.pl .env && npm-run-all --parallel serve:php:build dev:svelte",
+    "dev": "bun run build:php && npm-run-all --parallel serve:php:build dev:svelte watch:php",
+    "dev:svelte": "cd frontend && bun run dev",
+    "dev:docker": "bun run build:php && perl deploy.pl .env && npm-run-all --parallel serve:php:build dev:svelte",
     "serve:php:build": "php -S localhost:8010 -t build",
-    "serve-prod": "npm run build && npm run deploy && php -S localhost:8010 -t build"
+    "serve-prod": "bun run build && bun run deploy && php -S localhost:8010 -t build"
   },
   "name": "rsvp",
   "license": "Copyright 2016",

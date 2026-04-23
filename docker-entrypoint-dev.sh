@@ -15,16 +15,16 @@ fi
 
 echo "Using environment file: $ENV_FILE"
 
-# Ensure .env is the file we're using (npm scripts reference .env)
+# Ensure .env is the file we're using (bun scripts reference .env)
 if [ "$ENV_FILE" != ".env" ]; then
-    echo "Copying $ENV_FILE to .env for npm scripts..."
+    echo "Copying $ENV_FILE to .env for bun scripts..."
     cp "$ENV_FILE" .env
 fi
 
-# Install npm dependencies (needed because volume mount overwrites node_modules)
-echo "Installing npm dependencies..."
-npm install --quiet
-cd frontend && npm install --quiet && cd ..
+# Install bun dependencies (needed because volume mount overwrites node_modules)
+echo "Installing bun dependencies..."
+bun install --quiet
+cd frontend && bun install --quiet && cd ..
 
 echo ""
 echo "=========================================="
@@ -36,8 +36,8 @@ echo "  Serving PHP: build/ directory"
 echo "=========================================="
 echo ""
 
-# Run npm dev:docker script which will:
+# Run bun dev:docker script which will:
 # 1. Copy PHP files to build/ and run deploy.pl
 # 2. Start PHP server serving from build/
 # 3. Start SvelteKit Vite dev server (proxies PHP calls to localhost:8010)
-exec npm run dev:docker
+exec bun run dev:docker
