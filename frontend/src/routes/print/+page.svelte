@@ -212,7 +212,7 @@
 
 <!-- Serving guidance -->
 {#if servingEntries.length > 0}
-  <table class="w-fill border-separate text-xs mb-3 border border-gray-200">
+  <table class="w-fill border-separate mb-3 border border-gray-200">
     <tbody>
       {#each servingEntries as [menu, portions]}
         <tr>
@@ -284,12 +284,12 @@
   <!-- Card list -->
   <div class="sm:grid sm:grid-cols-2 lg:grid-cols-3">
     {#each sortedRows as item, i}
-      <div class="border-b border-gray-200 px-3 py-2 {i % 2 === 1 ? 'bg-gray-50' : ''}">
+      <div class="border-b border-gray-200 px-1 pb-2 {i % 2 === 1 ? 'bg-gray-50' : ''}">
         <div class="flex items-center gap-2">
-          <span class="font-semibold text-sm shrink-0">#{item.thaali}</span>
-          <span class="text-sm flex-1">{item.area ?? ''}</span>
+          <span class="font-semibold shrink-0">{item.thaali}</span>
+          <span class="flex-1">{item.area ?? ''}</span>
           {#if !meta.niyaz}
-            <label class="label-row text-xs shrink-0">
+            <label class="label-row shrink-0">
               <input
                 type="checkbox"
                 bind:checked={item.here}
@@ -298,7 +298,7 @@
               />
               Here
             </label>
-            <label class="label-row text-xs shrink-0">
+            <label class="label-row shrink-0">
               <input
                 type="checkbox"
                 bind:checked={item.filled}
@@ -312,7 +312,9 @@
         <div class="flex items-center gap-2 mt-0.5">
           <span class="badge">{item.size ?? ''}</span>
           {#if item['bread+rice'] && !meta.niyaz}
-            <span class="text-xs border border-gray-400 text-gray-600 px-1 rounded">{item['bread+rice']}</span>
+            <span class="border border-gray-400 text-gray-600 px-1 rounded"
+              >{item['bread+rice']}</span
+            >
           {/if}
           <span class="text-xs text-gray-400 flex-1 text-right">{item.name ?? ''}</span>
         </div>

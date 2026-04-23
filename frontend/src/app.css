@@ -60,7 +60,7 @@
 
   /* Small bordered input / select */
   .input-sm {
-    @apply border border-gray-200 rounded px-1 py-0.5 text-sm;
+    @apply border border-gray-400 rounded px-1 py-0.5 text-sm;
   }
 
   /* Transparent filter select (print table header row) */
