@@ -6,7 +6,7 @@ This project is an RSVP website for collecting meal responses so that cooking an
 
 * PHP 8.2+
 * MySQL 5.7+
-* Node.js (for build process)
+* Bun (for build process)
 * Docker and Docker Compose (for containerized development)
 
 # Development
@@ -16,22 +16,21 @@ This project is an RSVP website for collecting meal responses so that cooking an
 *Prerequisites*
 1. Install [mysql](https://dev.mysql.com/downloads/mysql/) and run `mysql -v -u root < migration/*.sql` to bootstrap the database. For subsequent iterative migrations, add `sffaiz` as last parameter to specify the database.
 2. Install php - MacOS (Homebrew) - `brew install php`
-3. Install [node](https://nodejs.org/en/download/package-manager/)
-4. Install [npm](https://docs.npmjs.com/getting-started/installing-node)
+3. Install [bun](https://bun.sh)
 
 ### Setup
 ```bash
-npm install                  # Install dependencies
+bun install                  # Install dependencies
 cp .env.example .env         # Create local configuration
 # Edit .env with your settings
 ```
 
 ### Commands
 ```bash
-npm run dev                  # Start dev server at http://localhost:5173
-npm run build                # Build production files to build/ directory
-npm run build:prod           # Build minified single-file output for production (build/index.html)
-npm run serve-prod           # Build and serve production version
+bun run dev                  # Start dev server at http://localhost:5173
+bun run build                # Build production files to build/ directory
+bun run build:prod           # Build minified single-file output for production (build/index.html)
+bun run serve-prod           # Build and serve production version
 ```
 
 **Note:** Use the Vite URL (`http://localhost:5173`) during development — it proxies PHP requests to the backend automatically and provides hot module replacement (HMR) for instant CSS/JS updates. PHP file changes are also watched and automatically copied to `build/`.
@@ -115,7 +114,7 @@ Complete Local Development Prerequisites.
 
 1. Create `.env.prod` with production overrides (e.g. `BASE_PATH=/myapp`), then build:
    ```bash
-   npm run build:prod
+   bun run build:prod
    ```
 
 2. Run the deployment script to substitute environment variables:

@@ -1,23 +1,22 @@
 {
-  "scripts": {
-    "build": "cd frontend && bun run build && cd .. && bun run build:php",
-    "build:prod": "BUILD_SINGLE=1 BUILD_ENV=prod bun run build && node scripts/inline-html.js",
-    "build:php": "cpx 'app/*.php' build/ && cpx 'app/lib/fpdf/**' 'build/lib/fpdf/'",
-    "deploy": "perl deploy.pl .env",
-    "watch:php": "cpx 'app/*.php' build/ --watch",
-    "dev": "bun run build:php && npm-run-all --parallel serve:php:build dev:svelte watch:php",
-    "dev:svelte": "cd frontend && bun run dev",
-    "dev:docker": "bun run build:php && perl deploy.pl .env && npm-run-all --parallel serve:php:build dev:svelte",
-    "serve:php:build": "php -S localhost:8010 -t build",
-    "serve-prod": "bun run build && bun run deploy && php -S localhost:8010 -t build"
-  },
   "name": "rsvp",
+  "version": "0.1.0",
   "license": "Copyright 2016",
   "private": true,
-  "version": "0.1.0",
+  "scripts": {
+    "build": "cd frontend && bun run build && cd .. && bun run copy:php",
+    "build:prod": "BUILD_SINGLE=1 BUILD_ENV=prod bun run build && node scripts/inline-html.js",
+    "copy:php": "cpx 'app/*.php' build/ && cpx 'app/lib/fpdf/**' 'build/lib/fpdf/'",
+    "deploy": "perl deploy.pl .env",
+    "watch:php": "cpx 'app/*.php' build/ --watch",
+    "dev": "bun run copy:php && bun run --parallel serve:php dev:frontend watch:php",
+    "dev:frontend": "cd frontend && bun run dev",
+    "dev:docker": "bun run copy:php && perl deploy.pl .env && bun run --parallel serve:php dev:frontend",
+    "serve:php": "php -S localhost:8010 -t build",
+    "serve-prod": "bun run build && bun run deploy && php -S localhost:8010 -t build"
+  },
   "devDependencies": {
-    "cpx": "^1.5.0",
-    "html-minifier": "^4.0.0",
-    "npm-run-all": "^4.1.5"
+    "cpx2": "^8.0.2",
+    "html-minifier-terser": "^7.2.0"
   }
 }
