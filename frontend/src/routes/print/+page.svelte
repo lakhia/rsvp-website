@@ -93,7 +93,7 @@
     )
   );
 
-  const SIZE_ORDER = ['XS', 'SM', 'MD', 'LG', 'XL'];
+  const SIZE_ORDER = ['XL', 'LG', 'MD', 'SM', 'XS'];
 
   const sortedRows = $derived.by(() => {
     return [...filteredRows].sort((a, b) => {
