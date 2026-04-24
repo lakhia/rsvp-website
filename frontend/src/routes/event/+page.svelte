@@ -47,56 +47,37 @@
   <title>{__APP_NAME__} - Events</title>
 </svelte:head>
 
-<h2>Events from {getDisplayDate(startDate)}</h2>
+<div class="page-eyebrow mb-1">Events</div>
+<h2>Week of {getDisplayDate(startDate)}</h2>
 
 {#if ps.loading}
   <Loading />
 {:else}
-  <div class="overflow-x-auto">
-    <table>
-      <thead>
-        <tr>
-          <th class="w-[15%]">Date</th>
-          <th>Details</th>
-          <th class="text-center w-[8%]">Niyaz</th>
-          <th class="text-center w-[8%]">Enabled</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each events as ev, i}
-          <tr>
-            <td class="whitespace-nowrap">
-              {getDisplayDate(ev.date)}
-            </td>
-            <td>
-              <input
-                type="text"
-                bind:value={ev.details}
-                oninput={() => (dirty = true)}
-                placeholder="Event details (empty = delete)"
-                class="input-inline"
-              />
-            </td>
-            <td class="text-center">
-              <input
-                type="checkbox"
-                bind:checked={ev.niyaz}
-                onchange={() => (dirty = true)}
-                class="cursor-pointer"
-              />
-            </td>
-            <td class="text-center">
-              <input
-                type="checkbox"
-                bind:checked={ev.enabled}
-                onchange={() => (dirty = true)}
-                class="cursor-pointer"
-              />
-            </td>
-          </tr>
-        {/each}
-      </tbody>
-    </table>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    {#each events as ev}
+      <div class="card p-3">
+        <div class="flex items-start justify-between mb-2">
+          <div class="page-eyebrow">{getDisplayDate(ev.date)}</div>
+          <div class="flex gap-3">
+            <label class="flex items-center gap-1 text-xs text-gray-500 cursor-pointer">
+              <input type="checkbox" bind:checked={ev.niyaz} onchange={() => (dirty = true)} class="cursor-pointer" />
+              Niyaz
+            </label>
+            <label class="flex items-center gap-1 text-xs text-gray-500 cursor-pointer">
+              <input type="checkbox" bind:checked={ev.enabled} onchange={() => (dirty = true)} class="cursor-pointer" />
+              Enabled
+            </label>
+          </div>
+        </div>
+        <input
+          type="text"
+          bind:value={ev.details}
+          oninput={() => (dirty = true)}
+          placeholder="Menu details (empty = delete)"
+          class="input-inline text-sm"
+        />
+      </div>
+    {/each}
   </div>
 {/if}
 

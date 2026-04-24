@@ -43,14 +43,15 @@
   <title>{__APP_NAME__} - Families</title>
 </svelte:head>
 
+<div class="page-eyebrow mb-1">Admin</div>
 <h2>Families</h2>
 
 {#if ps.loading}
   <Loading />
 {:else}
-  <div class="space-y-3">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
     {#each families as f, i}
-      <div class="border border-gray-200 rounded p-3 text-sm {i % 2 === 1 ? 'bg-gray-50' : ''}">
+      <div class="card p-3 text-sm">
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2">
           <div>
             <div class="text-xs text-gray-500 mb-0.5">Thaali #{f.thaali} / ITS</div>

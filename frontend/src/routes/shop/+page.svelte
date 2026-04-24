@@ -35,7 +35,8 @@
   <title>{__APP_NAME__} - Shopping</title>
 </svelte:head>
 
-<h2>Shopping from {getDisplayDate(startDate)}</h2>
+<div class="page-eyebrow mb-1">Shopping</div>
+<h2>Week of {getDisplayDate(startDate)}</h2>
 
 {#if ps.loading}
   <Loading />

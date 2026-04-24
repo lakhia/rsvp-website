@@ -104,7 +104,8 @@
   <title>{__APP_NAME__} - Measures</title>
 </svelte:head>
 
-<h2>Menu Measurements, page {pageNum}</h2>
+<div class="page-eyebrow mb-1">Measurements · Page {pageNum}</div>
+<h2>Menu Measurements</h2>
 
 {#if ps.loading}
   <Loading />
