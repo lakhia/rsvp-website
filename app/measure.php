@@ -62,10 +62,11 @@ function measure_post($db, $offset, $len) {
         if (empty($menu->id)) {
             // New menu — skip if name is blank
             if (empty($name)) continue;
-            $stmt = $db->prepare("INSERT INTO menus (menu, rice) VALUES (?, ?)");
-            $stmt->bind_param("si", $name, $rice);
+            $next_id = $db->query("SELECT COALESCE(MAX(id), 0) + 1 FROM menus")->fetch_row()[0];
+            $stmt = $db->prepare("INSERT INTO menus (id, menu, rice) VALUES (?, ?, ?)");
+            $stmt->bind_param("isi", $next_id, $name, $rice);
             $stmt->execute();
-            $menu->id = $stmt->insert_id;
+            $menu->id = $next_id;
         } else {
             $id = (int)$menu->id;
             $stmt = $db->prepare("UPDATE menus SET menu = ?, rice = ? WHERE id = ?");

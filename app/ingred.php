@@ -34,8 +34,9 @@ function ingredients_post($db) {
         if (empty($name) || empty($unit)) continue;
 
         if (empty($ingred->id)) {
-            $stmt = $db->prepare("INSERT INTO ingredients (name, unit) VALUES (?, ?)");
-            $stmt->bind_param("ss", $name, $unit);
+            $next_id = $db->query("SELECT COALESCE(MAX(id), 0) + 1 FROM ingredients")->fetch_row()[0];
+            $stmt = $db->prepare("INSERT INTO ingredients (id, name, unit) VALUES (?, ?, ?)");
+            $stmt->bind_param("iss", $next_id, $name, $unit);
             $stmt->execute();
         } else {
             $id = (int)$ingred->id;
