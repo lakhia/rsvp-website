@@ -19,6 +19,7 @@
     { href: '/family', label: 'Family', icon: 'users', adminOnly: true },
     { href: '/event', label: 'Events', icon: 'utensils', adminOnly: true },
     { href: '/measure', label: 'Measure', icon: 'scale', adminOnly: true },
+    { href: '/ingred', label: 'Ingredients', icon: 'list', adminOnly: true },
     { onclick: handleLogout, label: 'Logout', icon: 'logout', adminOnly: false },
   ];
 

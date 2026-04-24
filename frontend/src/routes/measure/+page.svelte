@@ -45,6 +45,11 @@
     });
   }
 
+  function addMenu() {
+    menus = [...menus, { id: null, menu: '', rice: false, ingred: [{ name: '' }] }];
+    dirty = true;
+  }
+
   // Autocomplete logic
   function getMatches(query) {
     if (!query) return [];
@@ -121,7 +126,23 @@
       <tbody>
         {#each menus as menu, mi}
           <tr class="align-top">
-            <td>{menu.menu}</td>
+            <td>
+              <input
+                type="text"
+                bind:value={menu.menu}
+                oninput={() => (dirty = true)}
+                placeholder="Menu name"
+                class="input-inline"
+              />
+              <label class="flex items-center gap-1 mt-1 text-xs text-gray-600 cursor-pointer">
+                <input
+                  type="checkbox"
+                  bind:checked={menu.rice}
+                  onchange={() => (dirty = true)}
+                />
+                rice/bread
+              </label>
+            </td>
             <td>
               <!-- ingredient grid: 3 cols mobile, 6 cols (2×3) on large screens -->
               <div
@@ -177,6 +198,12 @@
         {/each}
       </tbody>
     </table>
+  </div>
+
+  <div class="mt-3">
+    <button type="button" onclick={addMenu} class="btn-secondary text-sm">
+      + Add Menu
+    </button>
   </div>
 {/if}
 

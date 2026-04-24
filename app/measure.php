@@ -1,5 +1,6 @@
 <?php
 require_once "bootstrap.php";
+require_once "MenuNames.php";
 
 // If token is invalid, return an empty response
 if (!AuthService::is_admin($email_cookie) ||
@@ -21,7 +22,6 @@ if ($method_server == "POST") {
 // Get details for measurement
 function measure_get($db, $offset, $len, $msg = "")
 {
-    // Make query
     $query = "SELECT * FROM menus ORDER BY menu LIMIT " .
         $offset . "," . $len . ";";
     $result = $db->query($query);
@@ -49,22 +49,39 @@ function get_ingredients($db, &$menu_row) {
 }
 
 function measure_post($db, $offset, $len) {
-  $msg = "Thank you, changes have been saved";
-  $data = json_decode(file_get_contents('php://input'), false);
-  foreach ($data as $menu) {
-    if (!isset($menu->id) || !isset($menu->ingred)) {
-      $msg = "Lost the ID or the ingredients";
-      break;
+    $msg = "Thank you, changes have been saved";
+    $data = json_decode(file_get_contents('php://input'), false);
+    foreach ($data as $menu) {
+        if (!isset($menu->ingred)) {
+            $msg = "Missing ingredients data";
+            break;
+        }
+        $name = MenuNames::canonicalize($menu->menu ?? '');
+        $rice = (isset($menu->rice) && $menu->rice) ? 1 : 0;
+
+        if (empty($menu->id)) {
+            // New menu — skip if name is blank
+            if (empty($name)) continue;
+            $stmt = $db->prepare("INSERT INTO menus (menu, rice) VALUES (?, ?)");
+            $stmt->bind_param("si", $name, $rice);
+            $stmt->execute();
+            $menu->id = $stmt->insert_id;
+        } else {
+            $id = (int)$menu->id;
+            $stmt = $db->prepare("UPDATE menus SET menu = ?, rice = ? WHERE id = ?");
+            $stmt->bind_param("sii", $name, $rice, $id);
+            $stmt->execute();
+        }
+
+        $db->query("DELETE FROM cooking WHERE menu_id = " . $menu->id);
+        foreach ($menu->ingred as $ingred) {
+            if (!empty($ingred->name) && isset($ingred->id)) {
+                $db->query("INSERT INTO cooking VALUES(" . $menu->id . ", " . $ingred->id . ","
+                    . $ingred->multiplier . ");");
+            }
+        }
     }
-    $db->query("DELETE FROM cooking WHERE menu_id = " . $menu->id);
-    foreach ($menu->ingred as $ingred) {
-      if (!empty($ingred->name)) {
-        $db->query("INSERT INTO cooking VALUES(" . $menu->id . ", " . $ingred->id . "," 
-            . $ingred->multiplier . ");");
-      }
-    }
-  }
-  return measure_get($db, $offset, $len, $msg);
+    return measure_get($db, $offset, $len, $msg);
 }
 
 ?>
