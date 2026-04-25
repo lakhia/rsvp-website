@@ -65,6 +65,10 @@
       matches: getMatches(ingred.name),
       highlighted: 0,
     };
+    // Auto-add a new blank row when typing in the last ingredient slot
+    if (ii === menus[mi].ingred.length - 1 && ingred.name) {
+      menus[mi].ingred = [...menus[mi].ingred, { name: '' }];
+    }
   }
 
   function onIngredKeydown(e, mi, ii, ingred) {
@@ -115,89 +119,73 @@
 {#if ps.loading}
   <Loading />
 {:else}
-  <div class="overflow-x-auto">
-    <table>
-      <thead>
-        <tr>
-          <th class="w-[25%]">Menu</th>
-          <th>Ingredients per thaali</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each menus as menu, mi}
-          <tr class="align-top">
-            <td>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    {#each menus as menu, mi}
+      <div class="card p-3">
+        <!-- Card header: menu name + rice/bread toggle -->
+        <div class="flex items-start justify-between gap-2 mb-3">
+          <input
+            type="text"
+            bind:value={menu.menu}
+            oninput={() => (dirty = true)}
+            placeholder="Menu name"
+            class="input-inline font-medium flex-1"
+          />
+          <label class="flex items-center gap-1 text-xs text-gray-400 cursor-pointer select-none shrink-0 mt-1">
+            <input
+              type="checkbox"
+              bind:checked={menu.rice}
+              onchange={() => (dirty = true)}
+              class="cursor-pointer"
+            />
+            rice/bread
+          </label>
+        </div>
+
+        <!-- Ingredient rows: 3-col on mobile, 6-col (2 per row) on larger screens -->
+        <div class="grid items-center gap-x-2 gap-y-1 [grid-template-columns:56px_40px_1fr] lg:[grid-template-columns:56px_40px_1fr_56px_40px_1fr]">
+          {#each menu.ingred as ingred, ii}
+            <input
+              type="number"
+              bind:value={ingred.multiplier}
+              oninput={() => (dirty = true)}
+              placeholder="0.0"
+              step="0.01"
+              class="input-inline text-right text-sm"
+            />
+            <span class="text-xs text-gray-400">{ingred.unit ?? ''}</span>
+            <div class="relative">
               <input
                 type="text"
-                bind:value={menu.menu}
-                oninput={() => (dirty = true)}
-                placeholder="Menu name"
-                class="input-inline"
+                bind:value={ingred.name}
+                oninput={() => onIngredInput(mi, ii, ingred)}
+                onkeydown={(e) => onIngredKeydown(e, mi, ii, ingred)}
+                onblur={onIngredBlur}
+                placeholder="ingredient"
+                class="input-inline text-sm"
               />
-              <label class="flex items-center gap-1 mt-1 text-xs text-gray-600 cursor-pointer">
-                <input
-                  type="checkbox"
-                  bind:checked={menu.rice}
-                  onchange={() => (dirty = true)}
-                />
-                rice/bread
-              </label>
-            </td>
-            <td>
-              <!-- ingredient grid: 3 cols mobile, 6 cols (2×3) on large screens -->
-              <div
-                class="grid items-center gap-x-3 gap-y-1 [grid-template-columns:60px_50px_1fr] lg:[grid-template-columns:60px_50px_1fr_60px_50px_1fr]"
-              >
-                {#each menu.ingred as ingred, ii}
-                  <!-- Amount -->
-                  <input
-                    type="number"
-                    bind:value={ingred.multiplier}
-                    oninput={() => (dirty = true)}
-                    placeholder="0.0"
-                    step="0.01"
-                    class="input-inline text-right"
-                  />
-                  <!-- Unit -->
-                  <span class="text-sm">{ingred.unit ?? ''}</span>
-                  <!-- Name + autocomplete dropdown -->
-                  <div class="relative">
-                    <input
-                      type="text"
-                      bind:value={ingred.name}
-                      oninput={() => onIngredInput(mi, ii, ingred)}
-                      onkeydown={(e) => onIngredKeydown(e, mi, ii, ingred)}
-                      onblur={onIngredBlur}
-                      placeholder="ingredient"
-                      class="input-inline"
-                    />
-                    {#if dropdown?.menuIdx === mi && dropdown?.ingredIdx === ii && dropdown.matches.length > 0}
-                      <ul
-                        class="absolute z-20 left-0 right-0 top-full mt-0.5 bg-white border border-gray-200 rounded shadow-lg max-h-48 overflow-y-auto text-sm"
+              {#if dropdown?.menuIdx === mi && dropdown?.ingredIdx === ii && dropdown.matches.length > 0}
+                <ul class="absolute z-20 left-0 right-0 top-full mt-0.5 bg-white border border-gray-200 rounded shadow-lg max-h-48 overflow-y-auto text-sm">
+                  {#each dropdown.matches as match, k}
+                    <li>
+                      <button
+                        type="button"
+                        onmousedown={() => selectMatch(ingred, match)}
+                        class="w-full text-left px-2 py-1 hover:bg-gray-100 transition-colors
+                          {k === dropdown.highlighted ? 'bg-gray-100 font-medium' : ''}"
                       >
-                        {#each dropdown.matches as match, k}
-                          <li>
-                            <button
-                              type="button"
-                              onmousedown={() => selectMatch(ingred, match)}
-                              class="w-full text-left hover:bg-gray-200 transition-colors
-															{k === dropdown.highlighted ? 'bg-gray-200 font-medium' : ''}"
-                            >
-                              {match.name}
-                              <span class="text-xs ml-1">{match.unit}</span>
-                            </button>
-                          </li>
-                        {/each}
-                      </ul>
-                    {/if}
-                  </div>
-                {/each}
-              </div>
-            </td>
-          </tr>
-        {/each}
-      </tbody>
-    </table>
+                        {match.name}
+                        <span class="text-xs text-gray-400 ml-1">{match.unit}</span>
+                      </button>
+                    </li>
+                  {/each}
+                </ul>
+              {/if}
+            </div>
+          {/each}
+        </div>
+      </div>
+    {/each}
   </div>
 
   <div class="mt-3">
