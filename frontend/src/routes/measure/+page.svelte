@@ -114,16 +114,19 @@
 </svelte:head>
 
 <div class="page-eyebrow mb-1">Measurements · Page {pageNum}</div>
-<h2>Menu Measurements</h2>
+<div class="flex items-center justify-between mb-0">
+  <h2>Menu Measurements</h2>
+  <button type="button" onclick={addMenu} class="btn-secondary text-sm">+ Add Menu</button>
+</div>
 
 {#if ps.loading}
   <Loading />
 {:else}
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+  <div class="space-y-5">
     {#each menus as menu, mi}
-      <div class="card p-3">
-        <!-- Card header: menu name + rice/bread toggle -->
-        <div class="flex items-start justify-between gap-2 mb-3">
+      <div>
+        <!-- Menu section heading -->
+        <div class="flex items-center gap-3 mb-2">
           <input
             type="text"
             bind:value={menu.menu}
@@ -131,7 +134,7 @@
             placeholder="Menu name"
             class="input-inline font-medium flex-1"
           />
-          <label class="flex items-center gap-1 text-xs text-gray-400 cursor-pointer select-none shrink-0 mt-1">
+          <label class="flex items-center gap-1 text-xs text-gray-400 cursor-pointer select-none shrink-0">
             <input
               type="checkbox"
               bind:checked={menu.rice}
@@ -142,45 +145,49 @@
           </label>
         </div>
 
-        <!-- Ingredient rows: 3-col on mobile, 6-col (2 per row) on larger screens -->
-        <div class="grid items-center gap-x-2 gap-y-1 [grid-template-columns:56px_40px_1fr] lg:[grid-template-columns:56px_40px_1fr_56px_40px_1fr]">
+        <!-- Ingredient cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {#each menu.ingred as ingred, ii}
-            <input
-              type="number"
-              bind:value={ingred.multiplier}
-              oninput={() => (dirty = true)}
-              placeholder="0.0"
-              step="0.01"
-              class="input-inline text-right text-sm"
-            />
-            <span class="text-xs text-gray-400">{ingred.unit ?? ''}</span>
-            <div class="relative">
-              <input
-                type="text"
-                bind:value={ingred.name}
-                oninput={() => onIngredInput(mi, ii, ingred)}
-                onkeydown={(e) => onIngredKeydown(e, mi, ii, ingred)}
-                onblur={onIngredBlur}
-                placeholder="ingredient"
-                class="input-inline text-sm"
-              />
-              {#if dropdown?.menuIdx === mi && dropdown?.ingredIdx === ii && dropdown.matches.length > 0}
-                <ul class="absolute z-20 left-0 right-0 top-full mt-0.5 bg-white border border-gray-200 rounded shadow-lg max-h-48 overflow-y-auto text-sm">
-                  {#each dropdown.matches as match, k}
-                    <li>
-                      <button
-                        type="button"
-                        onmousedown={() => selectMatch(ingred, match)}
-                        class="w-full text-left px-2 py-1 hover:bg-gray-100 transition-colors
-                          {k === dropdown.highlighted ? 'bg-gray-100 font-medium' : ''}"
-                      >
-                        {match.name}
-                        <span class="text-xs text-gray-400 ml-1">{match.unit}</span>
-                      </button>
-                    </li>
-                  {/each}
-                </ul>
-              {/if}
+            <div class="card px-3 py-2">
+              <div class="grid items-center gap-x-3 [grid-template-columns:56px_36px_1fr]">
+                <input
+                  type="number"
+                  bind:value={ingred.multiplier}
+                  oninput={() => (dirty = true)}
+                  placeholder="0.0"
+                  step="0.01"
+                  class="input-inline text-right text-sm"
+                />
+                <span class="text-xs text-gray-400">{ingred.unit ?? ''}</span>
+                <div class="relative">
+                  <input
+                    type="text"
+                    bind:value={ingred.name}
+                    oninput={() => onIngredInput(mi, ii, ingred)}
+                    onkeydown={(e) => onIngredKeydown(e, mi, ii, ingred)}
+                    onblur={onIngredBlur}
+                    placeholder="ingredient"
+                    class="input-inline text-sm"
+                  />
+                  {#if dropdown?.menuIdx === mi && dropdown?.ingredIdx === ii && dropdown.matches.length > 0}
+                    <ul class="absolute z-20 left-0 right-0 top-full mt-0.5 bg-white border border-gray-200 rounded shadow-lg max-h-48 overflow-y-auto text-sm">
+                      {#each dropdown.matches as match, k}
+                        <li>
+                          <button
+                            type="button"
+                            onmousedown={() => selectMatch(ingred, match)}
+                            class="w-full text-left px-2 py-1 hover:bg-gray-100 transition-colors
+                              {k === dropdown.highlighted ? 'bg-gray-100 font-medium' : ''}"
+                          >
+                            {match.name}
+                            <span class="text-xs text-gray-400 ml-1">{match.unit}</span>
+                          </button>
+                        </li>
+                      {/each}
+                    </ul>
+                  {/if}
+                </div>
+              </div>
             </div>
           {/each}
         </div>
@@ -188,11 +195,7 @@
     {/each}
   </div>
 
-  <div class="mt-3">
-    <button type="button" onclick={addMenu} class="btn-secondary text-sm">
-      + Add Menu
-    </button>
-  </div>
+
 {/if}
 
 <Message msg={ps.msg} msgType={ps.msgType} />
