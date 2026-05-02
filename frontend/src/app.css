@@ -1,119 +1,386 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 
 @theme {
-  --color-brand: rgb(75, 134, 183);
-  --color-brand-dark: rgb(55, 110, 155);
-  --color-yes: rgb(146, 185, 139);
-  --color-yes-dark: rgb(124, 157, 118);
-  --color-no: rgb(185, 97, 92);
-  --color-no-dark: rgb(157, 81, 77);
+  --color-brand: #0f766e;
+  --color-brand-dark: #0d6561;
+  --color-yes: #16a34a;
+  --color-yes-dark: #15803d;
+  --color-no: #dc2626;
+  --color-no-dark: #b91c1c;
+}
+
+:root {
+  --bg: #fafaf9;
+  --surface: #ffffff;
+  --subtle: #f5f5f4;
+  --border: #e7e5e4;
+  --border-strong: #d6d3d1;
+  --muted: #78716c;
+  --text: #1c1917;
+  --accent: #0f766e;
+  --accent-soft: #ccfbf1;
+  --yes: #16a34a;
+  --yes-soft: #dcfce7;
+  --no: #dc2626;
+  --no-soft: #fee2e2;
+  --sz-xs: #cbd5e1;
+  --sz-sm: #94a3b8;
+  --sz-md: #64748b;
+  --sz-lg: #475569;
+  --sz-xl: #1e293b;
+}
+
+body {
+  font-family: 'Inter', ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background: var(--bg);
+  color: var(--text);
 }
 
 @layer base {
-  :disabled {
-    opacity: 0.6;
-  }
+  :disabled { opacity: 0.6; }
+
   h2 {
-    @apply text-xl font-semibold text-gray-800 mb-4;
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 1rem;
   }
+
   thead tr:first-child {
-    @apply bg-gray-200 text-gray-600 text-xs uppercase tracking-wide text-left;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: left;
+    color: var(--muted);
+    background: var(--subtle);
   }
-  th {
-    @apply px-1 py-2 font-bold;
-  }
-  tbody tr {
-    @apply border-b border-gray-200;
-  }
-  tbody tr:nth-child(even) {
-    @apply bg-gray-100;
-  }
-  table {
-    @apply w-full text-sm border-collapse;
-  }
-  td {
-    @apply px-1 py-2;
-  }
-  label {
-    @apply text-sm;
-  }
+  th { @apply px-1 py-2 font-bold; }
+  tbody tr { border-bottom: 1px solid var(--border); }
+  tbody tr:nth-child(even) { background: var(--subtle); }
+  table { @apply w-full text-sm border-collapse; }
+  td { @apply px-1 py-2; }
+  label { @apply text-sm; }
 }
 
 @layer components {
-  /* Outline/secondary button */
+  /* ── Buttons ─────────────────────────────────────────── */
   .btn-secondary {
-    @apply px-4 py-1.5 text-sm border border-gray-400 rounded hover:bg-gray-200 transition-colors;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-family: inherit;
+    font-weight: 400;
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.1s;
   }
-  /* Brand/primary button */
+  .btn-secondary:hover:not(:disabled) { background: var(--subtle); }
+
   .btn-primary {
-    @apply px-4 py-1.5 text-sm rounded text-white bg-brand hover:bg-brand-dark transition-colors;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: inherit;
+    border: none;
+    border-radius: 6px;
+    background: var(--accent);
+    color: white;
+    cursor: pointer;
+    transition: opacity 0.1s;
   }
-  /* Destructive button */
+  .btn-primary:hover:not(:disabled) { opacity: 0.88; }
+
+  .btn-dark {
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: inherit;
+    border: none;
+    border-radius: 6px;
+    background: var(--text);
+    color: white;
+    cursor: pointer;
+  }
+
   .btn-danger {
-    @apply px-4 py-1.5 text-sm rounded text-white bg-red-500 hover:bg-red-600 transition-colors;
+    padding: 6px 16px;
+    font-size: 0.875rem;
+    font-family: inherit;
+    border-radius: 6px;
+    color: white;
+    background: #ef4444;
+    border: none;
+    cursor: pointer;
+    transition: background 0.1s;
   }
+  .btn-danger:hover { background: #dc2626; }
 
-  /* Transparent border-bottom inline editing input (table cells) */
+  /* ── Inputs ───────────────────────────────────────────── */
   .input-inline {
-    @apply w-full bg-transparent border-b border-transparent hover:border-gray-200 focus:border-brand focus:outline-none placeholder-gray-400;
+    @apply w-full bg-transparent focus:outline-none placeholder-gray-400;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.1s;
   }
+  .input-inline:hover { border-color: var(--border); }
+  .input-inline:focus { border-color: var(--accent); }
 
-  /* Small bordered input / select */
   .input-sm {
-    @apply border border-gray-400 rounded px-1 py-0.5 text-sm;
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    padding: 3px 6px;
+    font-size: 12px;
+    font-family: inherit;
+    background: var(--surface);
+    color: var(--text);
   }
 
-  /* Transparent filter select */
-  .select-filter {
-    @apply w-full text-xs bg-transparent focus:outline-none;
-  }
+  .select-filter { @apply w-full text-xs bg-transparent focus:outline-none; }
+  .label-row { @apply flex items-center gap-0.5; }
+  .label-count { @apply flex flex-col sm:flex-row sm:items-center gap-0.5 text-xs; }
 
-  /* Label with inline input/select */
-  .label-row {
-    @apply flex items-center gap-0.5;
-  }
-
-  /* Label with stacked-then-inline input */
-  .label-count {
-    @apply flex flex-col sm:flex-row sm:items-center gap-0.5 text-xs;
-  }
-
-  /* Dark rounded badge (menu names, size labels) */
-  .badge {
-    @apply inline-block text-xs font-medium bg-gray-500 text-white px-1.5 py-0.5 rounded;
-  }
-
-  /* Card: bordered rounded white container. Add p-N in the template. */
+  /* ── Cards ────────────────────────────────────────────── */
   .card {
-    @apply border border-gray-200 rounded-lg bg-white transition-colors;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .card-today {
+    border: 1.5px solid var(--accent) !important;
+    box-shadow: 0 4px 14px rgba(15, 118, 110, 0.08);
   }
 
-  /* Segmented control wrapper (All / Tiffin / Togo style) */
+  /* ── Size pills (colored inline badges) ───────────────── */
+  .sz {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border-radius: 4px;
+    padding: 2px 6px;
+    color: white;
+    line-height: 1;
+    min-width: 24px;
+    white-space: nowrap;
+  }
+  .sz-XS { background: var(--sz-xs); }
+  .sz-SM { background: var(--sz-sm); }
+  .sz-MD { background: var(--sz-md); }
+  .sz-LG { background: var(--sz-lg); }
+  .sz-XL { background: var(--sz-xl); }
+
+  /* Legacy .badge kept for non-redesigned pages */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border-radius: 4px;
+    padding: 2px 6px;
+    color: white;
+    line-height: 1;
+    min-width: 24px;
+    background: var(--muted);
+  }
+
+  /* ── Segmented control ────────────────────────────────── */
   .segmented {
-    @apply flex rounded border border-gray-300 overflow-hidden;
+    display: inline-flex;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 7px;
+    padding: 2px;
+    gap: 1px;
+  }
+  .segmented button {
+    padding: 5px 12px;
+    border-radius: 5px;
+    border: none;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: inherit;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s;
+    white-space: nowrap;
+  }
+  .segmented button.active {
+    background: var(--accent);
+    color: white;
   }
 
-  /* Toggle action button (T / F style) */
-  .action-btn {
-    @apply w-8 h-8 rounded flex items-center justify-center text-xs font-bold
-      transition-colors border border-gray-300 text-gray-400
-      hover:border-brand hover:text-brand;
+  /* ── Round size selector buttons ─────────────────────── */
+  .round-size-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s, border-color 0.1s;
+  }
+  .round-size-btn.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+  .round-size-btn:disabled { opacity: 0.4; cursor: default; }
+
+  /* ── Yes / No pill toggle ─────────────────────────────── */
+  .yes-no-pill {
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: inherit;
+    letter-spacing: 0.04em;
+    min-width: 62px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .yes-no-pill.yes {
+    background: var(--yes-soft);
+    color: var(--yes);
+    border: 1px solid var(--yes);
+  }
+  .yes-no-pill.no {
+    background: var(--no-soft);
+    color: var(--no);
+    border: 1px solid var(--no);
+  }
+  .yes-no-pill .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+  .yes-no-pill:disabled { opacity: 0.5; cursor: default; }
+
+  /* ── Final pill (Tiffin / Filled toggles) ─────────────── */
+  .final-pill {
+    padding: 5px 12px;
+    border-radius: 999px;
+    min-width: 64px;
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+    font-family: inherit;
+    letter-spacing: 0.02em;
+    display: inline-flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s, border-color 0.1s;
+    white-space: nowrap;
+  }
+  .final-pill.on-dark {
+    background: var(--text);
+    color: white;
+    border-color: var(--text);
+  }
+  .final-pill.on-accent {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+  .final-pill .dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 3px;
+    background: currentColor;
+    flex-shrink: 0;
   }
 
-  /* Small uppercase section label above a title */
+  /* ── Eyebrow label ────────────────────────────────────── */
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
   .page-eyebrow {
-    @apply text-xs text-gray-400 uppercase tracking-wider;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
   }
 
-  /* Clickable size pill (SM / MD / LG / XL selectors) */
-  .size-pill {
-    @apply px-2 py-0.5 rounded text-xs font-medium border transition-colors
-      border-gray-200 text-gray-400 hover:border-gray-400 disabled:opacity-30;
+  /* ── Filling list row ─────────────────────────────────── */
+  .filling-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    transition: background 0.1s, border-color 0.1s;
   }
+  .filling-row.filled {
+    background: rgba(15, 118, 110, 0.05);
+    border-color: rgba(15, 118, 110, 0.28);
+  }
+
+  /* ── Legacy components kept for non-redesigned pages ──── */
+  .action-btn {
+    @apply w-8 h-8 rounded flex items-center justify-center text-xs font-bold transition-colors;
+    border: 1px solid var(--border-strong);
+    color: var(--muted);
+  }
+  .action-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .size-pill {
+    @apply px-2 py-0.5 rounded text-xs font-medium border transition-colors disabled:opacity-30;
+    border-color: var(--border);
+    color: var(--muted);
+  }
+  .size-pill:hover:not(:disabled) { border-color: var(--border-strong); }
+
+  /* ── Filter search input ──────────────────────────────── */
+  .filter-input {
+    padding: 6px 12px;
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: inherit;
+    width: 180px;
+    background: var(--surface);
+    color: var(--text);
+  }
+  .filter-input::placeholder { color: var(--muted); }
+  .filter-input:focus { outline: none; border-color: var(--accent); }
 }
 
 @media print {
-  .no-print {
-    display: none !important;
-  }
+  .no-print { display: none !important; }
 }

@@ -6,6 +6,7 @@
   import { PageState } from '$lib/PageState.svelte.js';
   import Message from '$lib/Message.svelte';
   import Dialog from '$lib/Dialog.svelte';
+  import PageNav from '$lib/PageNav.svelte';
   import { getIntParam } from '$lib/utils.js';
 
   const ps = new PageState();
@@ -156,31 +157,42 @@
   <title>{__APP_NAME__} - RSVP</title>
 </svelte:head>
 
-<!-- Header -->
-<div class="mb-5">
-  {#if weekNum}
-    <div class="page-eyebrow mb-1">
-      Thaali · Week {weekNum}{thaali ? ` · #${thaali}` : ''}
+<!-- Page header -->
+<div
+  class="-mx-3 -mt-3 mb-5 px-8 pt-5 pb-4"
+  style="background: var(--surface); border-bottom: 1px solid var(--border);"
+>
+  <div class="flex items-end justify-between gap-6 flex-wrap">
+    <div>
+      {#if weekNum}
+        <div class="eyebrow">RSVP · Week {weekNum}{thaali ? ` · #${thaali}` : ''}</div>
+      {/if}
+      <h1 style="margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.015em; color: var(--text);">
+        RSVP for {name}
+      </h1>
+      <p style="font-size: 13px; color: var(--muted); margin: 4px 0 0;">
+        Your week at a glance. Tap a day to adjust.
+      </p>
     </div>
-  {/if}
-  <h2 class="mb-2">RSVP for {name}</h2>
 
-  {#if sizes.length}
-    <div class="flex flex-wrap items-center justify-end gap-2">
-      <span class="text-xs text-gray-500">Size</span>
-      <div class="flex gap-1">
-        {#each sizes as s}
-          <button
-            onclick={() => (weekSize = s)}
-            class="size-pill {weekSize === s ? 'bg-gray-700 text-white border-gray-700' : ''}"
-          >{s}</button>
-        {/each}
+    {#if sizes.length}
+      <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-end;">
+        <div class="flex items-center gap-2">
+          <div class="flex gap-1">
+            {#each sizes as s}
+              <button
+                onclick={() => (weekSize = s)}
+                class="round-size-btn {weekSize === s ? 'active' : ''}"
+              >{s}</button>
+            {/each}
+          </div>
+          <button onclick={applyToWeek} class="btn-primary" style="white-space: nowrap;">
+            Apply to week →
+          </button>
+        </div>
       </div>
-      <button onclick={applyToWeek} class="btn-primary text-xs">
-        Apply to week →
-      </button>
-    </div>
-  {/if}
+    {/if}
+  </div>
 </div>
 
 {#if pendingHref}
@@ -200,96 +212,98 @@
 {#if ps.loading}
   <Loading />
 {:else}
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
     {#each events as ev}
       {@const cd = formatCardDate(ev.date)}
-      <div
-        class="card p-3
-          {cd.isToday ? 'border-2 border-gray-600' : ''}
-          {dirty[ev.date] ? 'bg-blue-50' : ''}"
-      >
-        <!-- Card header: day label + RSVP button -->
-        <div class="flex items-center justify-between mb-2">
-          <div class="flex items-center gap-2">
-            <span class="text-xs font-bold text-gray-400">{cd.day}</span>
-            <span class="text-sm text-gray-600">{cd.monthDay}</span>
+      <div class="card p-3.5 {cd.isToday ? 'card-today' : ''}">
+
+        <!-- Card header row -->
+        <div class="flex items-start justify-between mb-2">
+          <div class="flex items-baseline gap-2 flex-wrap">
+            <span style="font-size: 11px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; color: var(--muted);">{cd.day}</span>
+            <span style="font-size: 13px; font-weight: 500;">{cd.monthDay}</span>
             {#if cd.isToday}
-              <span class="text-xs bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded font-medium">TODAY</span>
+              <span style="font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); padding: 2px 6px; border-radius: 3px;">TODAY</span>
+            {/if}
+            {#if ev.niyaz}
+              <span style="font-size: 9px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--subtle); padding: 2px 6px; border-radius: 3px;">COUNT DAY</span>
             {/if}
           </div>
           {#if ev.enabled}
             <button
               onclick={() => onRsvpChange(ev)}
               disabled={ev.readonly}
-              class="flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium transition-colors
-                {ev.rsvp
-                  ? 'bg-yes text-white hover:bg-yes-dark'
-                  : 'bg-no text-white hover:bg-no-dark'}"
+              class="yes-no-pill {ev.rsvp ? 'yes' : 'no'}"
+              style="flex-shrink: 0; margin-left: 8px;"
             >
-              <span class="w-2 h-2 rounded-full inline-block bg-white"></span>
+              <span class="dot"></span>
               {ev.rsvp ? 'Yes' : 'No'}
             </button>
           {/if}
         </div>
 
-        <!-- Menu text -->
-        <div class="text-sm font-medium text-gray-800 mb-3 leading-snug">
+        <!-- Dish list -->
+        <div style="font-size: 13px; line-height: 1.5; color: var(--text); margin-bottom: 10px; min-height: 20px;">
           {ev.details ?? ''}
         </div>
 
-        <!-- Footer: no bread/rice + size badges, or niyaz counts -->
-        {#if ev.enabled && !ev.niyaz}
-          <div class="flex items-center justify-between">
-            <label class="flex items-center gap-1.5 text-xs text-gray-400 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                bind:checked={ev.lessRice}
-                disabled={ev.readonly || !ev.rsvp}
-                onchange={() => mark(ev)}
-                class="cursor-pointer"
-              />
-              no bread / rice
-            </label>
-            <div class="flex gap-1">
-              {#each getSizes(ev.size) as s}
-                <button
-                  onclick={() => { ev.size = s; mark(ev); }}
+        <!-- Card footer: size / count (only when RSVP'd yes) -->
+        {#if ev.enabled && ev.rsvp}
+          <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px dashed var(--border); min-height: 40px;">
+            {#if ev.niyaz}
+              <!-- Count stepper for niyaz events -->
+              <div class="flex gap-4">
+                <div class="flex items-center gap-1.5">
+                  <button
+                    onclick={() => { ev.adults = Math.max(0, (ev.adults ?? 0) - 1); onCountChange(ev); }}
+                    disabled={ev.readonly}
+                    style="width: 22px; height: 22px; border-radius: 999px; border: 1px solid var(--border-strong); background: var(--surface); font-size: 14px; line-height: 1; padding: 0; cursor: pointer; color: var(--muted); font-family: inherit;"
+                  >−</button>
+                  <span style="min-width: 16px; text-align: center; font-weight: 600; font-size: 13px; font-variant-numeric: tabular-nums;">{ev.adults ?? 0}</span>
+                  <button
+                    onclick={() => { ev.adults = (ev.adults ?? 0) + 1; onCountChange(ev); }}
+                    disabled={ev.readonly}
+                    style="width: 22px; height: 22px; border-radius: 999px; border: 1px solid var(--border-strong); background: var(--surface); font-size: 14px; line-height: 1; padding: 0; cursor: pointer; color: var(--muted); font-family: inherit;"
+                  >+</button>
+                  <span style="font-size: 11px; color: var(--muted);">adults</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <button
+                    onclick={() => { ev.kids = Math.max(0, (ev.kids ?? 0) - 1); onCountChange(ev); }}
+                    disabled={ev.readonly}
+                    style="width: 22px; height: 22px; border-radius: 999px; border: 1px solid var(--border-strong); background: var(--surface); font-size: 14px; line-height: 1; padding: 0; cursor: pointer; color: var(--muted); font-family: inherit;"
+                  >−</button>
+                  <span style="min-width: 16px; text-align: center; font-weight: 600; font-size: 13px; font-variant-numeric: tabular-nums;">{ev.kids ?? 0}</span>
+                  <button
+                    onclick={() => { ev.kids = (ev.kids ?? 0) + 1; onCountChange(ev); }}
+                    disabled={ev.readonly}
+                    style="width: 22px; height: 22px; border-radius: 999px; border: 1px solid var(--border-strong); background: var(--surface); font-size: 14px; line-height: 1; padding: 0; cursor: pointer; color: var(--muted); font-family: inherit;"
+                  >+</button>
+                  <span style="font-size: 11px; color: var(--muted);">kids</span>
+                </div>
+              </div>
+            {:else}
+              <!-- Less rice + size selector -->
+              <label style="display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); cursor: pointer; user-select: none;">
+                <input
+                  type="checkbox"
+                  bind:checked={ev.lessRice}
                   disabled={ev.readonly || !ev.rsvp}
-                  class="size-pill {ev.size === s ? 'bg-gray-700 text-white border-gray-700' : ''}"
-                >{s}</button>
-              {/each}
-            </div>
-          </div>
-        {:else if ev.enabled && ev.niyaz && ev.rsvp}
-          <div class="flex gap-4 text-sm">
-            <div class="flex items-center gap-1">
-              <button
-                onclick={() => { ev.adults = Math.max(0, (ev.adults ?? 0) - 1); onCountChange(ev); }}
-                disabled={ev.readonly}
-                class="w-6 h-6 rounded border border-gray-300 flex items-center justify-center hover:bg-gray-100"
-              >−</button>
-              <span class="w-6 text-center font-medium">{ev.adults ?? 0}</span>
-              <button
-                onclick={() => { ev.adults = (ev.adults ?? 0) + 1; onCountChange(ev); }}
-                disabled={ev.readonly}
-                class="w-6 h-6 rounded border border-gray-300 flex items-center justify-center hover:bg-gray-100"
-              >+</button>
-              <span class="text-xs text-gray-400 ml-1">adults</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <button
-                onclick={() => { ev.kids = Math.max(0, (ev.kids ?? 0) - 1); onCountChange(ev); }}
-                disabled={ev.readonly}
-                class="w-6 h-6 rounded border border-gray-300 flex items-center justify-center hover:bg-gray-100"
-              >−</button>
-              <span class="w-6 text-center font-medium">{ev.kids ?? 0}</span>
-              <button
-                onclick={() => { ev.kids = (ev.kids ?? 0) + 1; onCountChange(ev); }}
-                disabled={ev.readonly}
-                class="w-6 h-6 rounded border border-gray-300 flex items-center justify-center hover:bg-gray-100"
-              >+</button>
-              <span class="text-xs text-gray-400 ml-1">kids</span>
-            </div>
+                  onchange={() => mark(ev)}
+                  class="cursor-pointer"
+                />
+                no rice / bread
+              </label>
+              <div class="flex gap-1">
+                {#each getSizes(ev.size) as s}
+                  <button
+                    onclick={() => { ev.size = s; mark(ev); }}
+                    disabled={ev.readonly}
+                    class="round-size-btn {ev.size === s ? 'active' : ''}"
+                  >{s}</button>
+                {/each}
+              </div>
+            {/if}
           </div>
         {/if}
       </div>
@@ -299,12 +313,10 @@
 
 <Message msg={ps.msg} msgType={ps.msgType} />
 
-<div class="mt-4 flex justify-between items-center">
-  <button onclick={() => paginate(-7)} class="btn-secondary">‹ prev</button>
-  {#if hasDirty}
-    <button onclick={handleSave} disabled={ps.saving} class="btn-primary min-w-22">
-      {ps.saving ? 'Saving…' : 'Save'}
-    </button>
-  {/if}
-  <button onclick={() => paginate(7)} class="btn-secondary">next ›</button>
-</div>
+<PageNav
+  onPrev={() => paginate(-7)}
+  onNext={() => paginate(7)}
+  onSave={hasDirty ? handleSave : null}
+  dirty={hasDirty}
+  saving={ps.saving}
+/>

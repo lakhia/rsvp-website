@@ -26,7 +26,6 @@
   const navItems = $derived(ALL_NAV.filter((n) => !n.adminOnly || admin));
 
   $effect(() => {
-    // Re-read cookies on every navigation so admin state is always current
     const _ = page.url.pathname;
     loggedIn = isLoggedIn();
     admin = isAdmin();
@@ -54,16 +53,16 @@
   {@render children()}
 {:else}
   <nav
-    class="fixed left-0 top-0 bottom-0 flex flex-col bg-gray-100 z-10 transition-all duration-200"
-    style="width: {menuBig ? '140px' : '40px'}"
+    class="fixed left-0 top-0 bottom-0 flex flex-col z-10 transition-all duration-200"
+    style="width: {menuBig ? '140px' : '38px'}; background: var(--surface); border-right: 1px solid var(--border);"
   >
     <!-- Toggle / app name -->
     <button
       onclick={menuToggle}
       aria-label={menuBig ? 'Collapse menu' : 'Expand menu'}
       aria-expanded={menuBig}
-      class="flex gap-2 px-2 py-3 bg-brand text-white hover:bg-brand-dark transition-colors"
-      style="min-height: 44px;"
+      class="flex gap-2 px-2 py-3 transition-opacity hover:opacity-90"
+      style="min-height: 44px; background: var(--accent); color: white;"
     >
       <span class="text-lg leading-none shrink-0">&#9776;</span>
       {#if menuBig}
@@ -79,8 +78,8 @@
           onclick={item.onclick ?? (() => navigate(item.href))}
           aria-label={item.label}
           aria-current={active ? 'page' : undefined}
-          class="w-full flex gap-2 px-2 py-3 transition-colors
-            {active ? 'text-gray-400 pointer-events-none' : 'text-gray-600 hover:bg-gray-200'}"
+          class="w-full flex gap-2 px-2 py-3 transition-colors"
+          style="color: {active ? 'var(--accent)' : 'var(--muted)'}; {active ? 'pointer-events: none;' : ''}"
         >
           <span class="shrink-0"><Icon name={item.icon} size={20} /></span>
           {#if menuBig}<span class="whitespace-nowrap text-sm">{item.label}</span>{/if}
@@ -91,25 +90,19 @@
 
   <main
     class="transition-all duration-200 p-3 overflow-x-hidden"
-    style="margin-left: {menuBig ? '140px' : '40px'}"
+    style="margin-left: {menuBig ? '140px' : '56px'}; min-height: 100vh; background: var(--bg);"
   >
     {@render children()}
-    <footer class="mt-8 pt-4 border-t border-gray-200 text-xs text-gray-400">
-      Please provide <a href={__LINK_FEEDBACK__} class="underline"
-        >thaali feedback</a
-      >. Contact us via
-      <a href="mailto:{__EMAIL_CONTACT__}" class="underline">email</a>.
+    <footer class="mt-8 pt-4 text-xs" style="border-top: 1px solid var(--border); color: var(--muted);">
+      Please provide <a href={__LINK_FEEDBACK__} style="color: var(--accent);">thaali feedback</a>.
+      Contact us via <a href="mailto:{__EMAIL_CONTACT__}" style="color: var(--accent);">email</a>.
     </footer>
   </main>
 {/if}
 
 <style>
   @media print {
-    nav {
-      display: none !important;
-    }
-    main {
-      margin-left: 0 !important;
-    }
+    nav { display: none !important; }
+    main { margin-left: 0 !important; }
   }
 </style>
