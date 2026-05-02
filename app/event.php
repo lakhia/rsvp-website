@@ -100,7 +100,7 @@ function event_post($db)
                 break;
             }
         } else {
-            $details = MenuNames::fix_details($details);
+            $details = fix_details($details);
             $stmt->bind_param("ssiisii",
                               $date, $details, $enabled, $niyaz, 
                               $details, $enabled, $niyaz);

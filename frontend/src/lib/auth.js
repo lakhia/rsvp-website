@@ -13,7 +13,8 @@ export function setCookie(name, value, days = 60) {
 }
 
 export function clearCookie(name) {
-  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+  const path = __BASE_PATH__ || '/';
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}`;
 }
 
 export function isLoggedIn() {

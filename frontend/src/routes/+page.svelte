@@ -167,7 +167,7 @@
 
   {#if sizes.length}
     <div class="flex flex-wrap items-center justify-end gap-2">
-      <span class="text-xs text-gray-500">Usual size</span>
+      <span class="text-xs text-gray-500">Size</span>
       <div class="flex gap-1">
         {#each sizes as s}
           <button
@@ -224,9 +224,9 @@
               class="flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium transition-colors
                 {ev.rsvp
                   ? 'bg-yes text-white hover:bg-yes-dark'
-                  : 'bg--200 text-gray-500 hover:bg-gray-300'}"
+                  : 'bg-no text-white hover:bg-no-dark'}"
             >
-              <span class="w-2 h-2 rounded-full inline-block {ev.rsvp ? 'bg-white' : 'bg-gray-400'}"></span>
+              <span class="w-2 h-2 rounded-full inline-block bg-white"></span>
               {ev.rsvp ? 'Yes' : 'No'}
             </button>
           {/if}
@@ -300,11 +300,11 @@
 <Message msg={ps.msg} msgType={ps.msgType} />
 
 <div class="mt-4 flex justify-between items-center">
-  <button onclick={() => paginate(-1)} class="btn-secondary">‹ prev</button>
+  <button onclick={() => paginate(-7)} class="btn-secondary">‹ prev</button>
   {#if hasDirty}
     <button onclick={handleSave} disabled={ps.saving} class="btn-primary min-w-22">
       {ps.saving ? 'Saving…' : 'Save'}
     </button>
   {/if}
-  <button onclick={() => paginate(1)} class="btn-secondary">next ›</button>
+  <button onclick={() => paginate(7)} class="btn-secondary">next ›</button>
 </div>

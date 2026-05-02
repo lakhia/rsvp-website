@@ -5,8 +5,8 @@
   --color-brand-dark: rgb(55, 110, 155);
   --color-yes: rgb(146, 185, 139);
   --color-yes-dark: rgb(124, 157, 118);
-  --color-no: rgb(168, 127, 124);
-  --color-no-dark: rgb(143, 108, 105);
+  --color-no: rgb(185, 97, 92);
+  --color-no-dark: rgb(157, 81, 77);
 }
 
 @layer base {

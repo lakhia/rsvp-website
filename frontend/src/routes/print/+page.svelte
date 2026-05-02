@@ -115,7 +115,7 @@
 
   const sizeCounts = $derived.by(() => {
     const counts = {};
-    for (const r of rows) counts[r.size] = (counts[r.size] ?? 0) + 1;
+    for (const r of rows) if (!r.filled) counts[r.size] = (counts[r.size] ?? 0) + 1;
     return counts;
   });
 
@@ -172,23 +172,6 @@
 <div class="flex flex-wrap items-start justify-between gap-3 mb-3 no-print">
   <div class="flex-1 min-w-0">
     <h2 class="mb-1">Filling for {getDisplayDate(date)}</h2>
-
-    {#if !meta.niyaz && rows.length > 0}
-      <div class="mt-2 w-full">
-        <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
-          <span class="font-medium">{filledCount} filled · {((filledCount / rows.length) * 100).toFixed(0)}%</span>
-          <span>{rows.length - filledCount} remaining · {rows.length} total RSVPs</span>
-        </div>
-        <div class="h-1.5 bg-gray-200 rounded-full overflow-hidden">
-          <div
-            class="h-full bg-brand rounded-full transition-all"
-            style="width: {((filledCount / rows.length) * 100).toFixed(1)}%"
-          ></div>
-        </div>
-      </div>
-    {:else if meta.niyaz}
-      <div class="text-sm text-gray-500 mt-1">{niyazSummary}</div>
-    {/if}
   </div>
 
   <div class="flex flex-col items-end gap-2 shrink-0">
@@ -224,6 +207,23 @@
     </div>
   </div>
 </div>
+
+{#if !meta.niyaz && rows.length > 0}
+  <div class="mt-2 w-full">
+    <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
+      <span class="font-medium">{filledCount} filled · {((filledCount / rows.length) * 100).toFixed(0)}%</span>
+      <span>{rows.length - filledCount} remaining · {rows.length} total RSVPs</span>
+    </div>
+    <div class="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+      <div
+        class="h-full bg-brand rounded-full transition-all"
+        style="width: {((filledCount / rows.length) * 100).toFixed(1)}%"
+      ></div>
+    </div>
+  </div><br>
+{:else if meta.niyaz}
+  <div class="text-sm text-gray-500 mt-1">{niyazSummary}</div>
+{/if}
 
 {#if dateWarning}
   <Dialog
