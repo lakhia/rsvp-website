@@ -8,11 +8,13 @@ if (!AuthService::verify_token($db, $email_cookie, $thaali_cookie)) {
 }
 
 // Parameter handling
-$filterDate  = preg_replace("/[^_a-zA-Z0-9-]+/", "", $_GET["date"] ?? date('Y-m-d'));
-$filterArea  = $_GET['filterArea'] ?? '';
-$filterSize  = $_GET['filterSize'] ?? '';
-$filterHere  = $_GET['filterHere'] ?? '';
-$sort        = $_GET['sort'] ?? '';
+$filterDate   = preg_replace("/[^_a-zA-Z0-9-]+/", "", $_GET["date"] ?? date('Y-m-d'));
+$filterArea   = $_GET['filterArea'] ?? '';
+$filterSize   = $_GET['filterSize'] ?? '';
+$filterHere   = $_GET['filterHere'] ?? '';
+$filterFilled = $_GET['filterFilled'] ?? '';
+$filterRice   = $_GET['filterRice'] ?? '';
+$sort         = $_GET['sort'] ?? '';
 
 // Event details
 $event_query = 'SELECT details, enabled from events where date="' . $filterDate . '";';
@@ -45,8 +47,18 @@ if ($filterSize !== '') {
 }
 if ($filterHere !== '') {
     $where[] = "here = ?";
-    $params[] = $filterHere;
-    $types   .= "s";
+    $params[] = $filterHere === 'Y' ? 1 : 0;
+    $types   .= "i";
+}
+if ($filterFilled !== '') {
+    $where[] = "filled = ?";
+    $params[] = $filterFilled === 'Y' ? 1 : 0;
+    $types   .= "i";
+}
+if ($filterRice !== '') {
+    $where[] = "lessRice = ?";
+    $params[] = $filterRice === 'Y' ? 0 : 1;
+    $types   .= "i";
 }
 $allowedSorts = [
     'thaali' => 'thaali_id',

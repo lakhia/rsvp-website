@@ -188,6 +188,8 @@
       filterArea: filters.area,
       filterSize: filters.size,
       filterHere: filters.here,
+      filterFilled: filters.filled,
+      filterRice: filters.rice,
     });
     window.open(__BASE_PATH__ + '/generate_labels.php?' + params.toString());
   }
