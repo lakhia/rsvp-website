@@ -249,7 +249,7 @@
                     disabled={ev.readonly}
                     class="stepper-btn"
                   >−</button>
-                  <span style="min-width: 16px; text-align: center; font-weight: 600; font-size: 13px; font-variant-numeric: tabular-nums;">{ev.adults ?? 0}</span>
+                  <span class="stepper-count">{ev.adults ?? 0}</span>
                   <button
                     onclick={() => { ev.adults = (ev.adults ?? 0) + 1; onCountChange(ev); }}
                     disabled={ev.readonly}
@@ -263,7 +263,7 @@
                     disabled={ev.readonly}
                     class="stepper-btn"
                   >−</button>
-                  <span style="min-width: 16px; text-align: center; font-weight: 600; font-size: 13px; font-variant-numeric: tabular-nums;">{ev.kids ?? 0}</span>
+                  <span class="stepper-count">{ev.kids ?? 0}</span>
                   <button
                     onclick={() => { ev.kids = (ev.kids ?? 0) + 1; onCountChange(ev); }}
                     disabled={ev.readonly}
@@ -310,3 +310,13 @@
   dirty={hasDirty}
   saving={ps.saving}
 />
+
+<style>
+  .stepper-count {
+    min-width: 16px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+</style>

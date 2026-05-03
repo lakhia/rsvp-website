@@ -204,54 +204,55 @@
 <!-- Page header -->
 <div class="page-header px-7 pt-4 pb-3.5 no-print">
   <div class="flex items-center gap-4 flex-wrap">
-    <!-- Progress ring -->
-    {#if !meta.niyaz && rows.length > 0}
-      <div style="position: relative; width: 68px; height: 68px; flex-shrink: 0;">
-        <svg width="68" height="68">
-          <circle cx="34" cy="34" r="26" stroke="var(--border-strong)" stroke-width="4" fill="none"/>
-          <circle cx="34" cy="34" r="26" stroke="var(--accent)" stroke-width="4" fill="none"
-            stroke-dasharray="{ringCircum}"
-            stroke-dashoffset="{ringCircum * (1 - filledPct)}"
-            transform="rotate(-90 34 34)"
-            stroke-linecap="round"/>
-        </svg>
-        <div style="position: absolute; inset: 0; display: grid; place-items: center; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums;">
-          {Math.round(filledPct * 100)}%
-        </div>
-      </div>
-    {/if}
-
-    <!-- Title block -->
-    <div style="flex: 1; min-width: 0;">
-      <div class="eyebrow mb-0.5">Kitchen · {getDisplayDate(date)}</div>
-      <h1 class="truncate" style="font-size: 20px; margin-bottom: 3px;">{menuTitle}</h1>
+    <!-- Left group: ring + title always wrap together -->
+    <div style="flex: 1; min-width: 0; display: flex; align-items: center; gap: 16px;">
       {#if !meta.niyaz && rows.length > 0}
-        <div class="page-subtitle" style="margin: 0;">
-          <b style="color: var(--text);">{filledCount}</b> filled ·
-          {rows.length - filledCount} to go ·
-          {rows.length} RSVPs total
+        <div style="position: relative; width: 68px; height: 68px; flex-shrink: 0;">
+          <svg width="68" height="68">
+            <circle cx="34" cy="34" r="26" stroke="var(--border-strong)" stroke-width="4" fill="none"/>
+            <circle cx="34" cy="34" r="26" stroke="var(--accent)" stroke-width="4" fill="none"
+              stroke-dasharray="{ringCircum}"
+              stroke-dashoffset="{ringCircum * (1 - filledPct)}"
+              transform="rotate(-90 34 34)"
+              stroke-linecap="round"/>
+          </svg>
+          <div style="position: absolute; inset: 0; display: grid; place-items: center; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums;">
+            {Math.round(filledPct * 100)}%
+          </div>
         </div>
-      {:else if meta.niyaz}
-        <div class="page-subtitle" style="margin: 0;">{niyazSummary}</div>
       {/if}
+      <div style="min-width: 0;">
+        <div class="eyebrow mb-0.5">Kitchen · {getDisplayDate(date)}</div>
+        <h1 class="truncate" style="font-size: 20px; margin-bottom: 3px;">{menuTitle}</h1>
+        {#if !meta.niyaz && rows.length > 0}
+          <div class="page-subtitle" style="margin: 0;">
+            <b class="text-content">{filledCount}</b> filled ·
+            {rows.length - filledCount} to go ·
+            {rows.length} RSVPs total
+          </div>
+        {:else if meta.niyaz}
+          <div class="page-subtitle" style="margin: 0;">{niyazSummary}</div>
+        {/if}
+      </div>
     </div>
 
-    <!-- Size summary buttons (counts adjust with active filters, click to toggle size filter) -->
-    {#if !meta.niyaz && rows.length > 0}
-      <div class="flex gap-1.5 flex-wrap">
-        {#each SIZE_ORDER.filter((s) => sizeCountsFiltered[s]) as s}
-          <button
-            onclick={() => toggleSizeFilter(s)}
-            class="size-stat-btn {filters.size === s ? 'active' : ''}"
-          >
-            <div style="font-size: 10px; font-weight: 700; letter-spacing: .08em; opacity: .75;">{s}</div>
-            <div style="font-size: 16px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums;">{sizeCountsFiltered[s]}</div>
-          </button>
-        {/each}
-      </div>
-    {/if}
-
-    <button onclick={generateLabels} class="btn-dark">Print labels →</button>
+    <!-- Right group: size buttons + print labels wrap together and fill row when alone -->
+    <div style="flex: 1; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end;">
+      {#if !meta.niyaz && rows.length > 0}
+        <div class="flex gap-1.5 flex-wrap">
+          {#each SIZE_ORDER.filter((s) => sizeCountsFiltered[s]) as s}
+            <button
+              onclick={() => toggleSizeFilter(s)}
+              class="size-stat-btn {filters.size === s ? 'active' : ''}"
+            >
+              <div class="size-stat-label">{s}</div>
+              <div class="size-stat-count">{sizeCountsFiltered[s]}</div>
+            </button>
+          {/each}
+        </div>
+      {/if}
+      <button onclick={generateLabels} class="btn-dark">Print labels →</button>
+    </div>
   </div>
 </div>
 
@@ -300,7 +301,7 @@
       </div>
 
       <!-- Sort -->
-      <label class="label-row text-xs" style="color: var(--muted);">
+      <label class="label-row text-xs text-muted">
         Sort:
         <select bind:value={sortCol} class="input-sm text-xs">
           <option value=""></option>
@@ -316,7 +317,7 @@
 
       <!-- Area filter -->
       {#if areas.length > 1}
-        <label class="label-row text-xs" style="color: var(--muted);">
+        <label class="label-row text-xs text-muted">
           Area:
           <select bind:value={filters.area} class="input-sm text-xs">
             <option value="">All</option>
@@ -327,7 +328,7 @@
 
       <div style="flex: 1;"></div>
 
-      <span style="font-size: 11px; color: var(--muted); white-space: nowrap;">{shownCount} of {rows.length}</span>
+      <span class="count-label">{shownCount} of {rows.length}</span>
 
       {#if meta.save && shownCount > 0 && currentStatus !== 'filled'}
         <button onclick={markAllFilled} class="btn-primary" style="font-size: 11px; font-weight: 600; padding: 6px 12px;">
@@ -338,47 +339,36 @@
   {/if}
 
   <!-- Rows -->
-  {#if meta.niyaz}
-    <div class="grid grid-cols-2 lg:grid-cols-3 gap-2">
-      {#each sortedRows as item}
-        <div class="card p-2">
-          <div class="flex items-center gap-2">
-            <div style="width: 36px; text-align: center; font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text); flex-shrink: 0;">{item.thaali}</div>
-            <div style="flex: 1; min-width: 0; font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text);">{item.name ?? ''}</div>
-          </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+    {#each sortedRows as item}
+      <div class="filling-row {item.filled ? 'filled' : ''}">
+        <!-- Row 1: thaali | name -->
+        <div style="text-align: center;">{item.thaali}</div>
+        <div style="min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{item.name ?? ''}</div>
+        <!-- Row 2: area | adult/child count (niyaz) or size+buttons -->
+        <div style="text-align: center;">{item.area ?? ''}</div>
+        <div style="display: flex; align-items: center; gap: 5px;">
+          {#if meta.niyaz}
+            <span class="text-sm">{item.size}</span>
+          {:else}
+            <span class="sz sz-{item.size}">{item.size ?? ''}</span>
+            <span style="flex: 1;"></span>
+            <button
+              onclick={() => { item.here = item.here ? 0 : 1; onCheckboxChange(item); }}
+              class="final-pill {item.here ? 'on-dark' : ''}"
+            ><span class="dot"></span>Tiffin</button>
+            <button
+              onclick={() => { item.filled = item.filled ? 0 : 1; onCheckboxChange(item); }}
+              class="final-pill {item.filled ? 'on-accent' : ''}"
+            ><span class="dot"></span>Filled</button>
+          {/if}
         </div>
-      {/each}
-    </div>
-  {:else}
-    <div class="grid grid-cols-2 lg:grid-cols-3 gap-1.5">
-      {#each sortedRows as item}
-        <div class="filling-row {item.filled ? 'filled' : ''}">
-          <div style="width: 28px; text-align: center; flex-shrink: 0;">
-            <div style="font-size: 14px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums;">{item.thaali}</div>
-          </div>
+      </div>
+    {/each}
+  </div>
 
-          <span class="sz sz-{item.size}">{item.size ?? ''}</span>
-
-          <div style="flex: 1; min-width: 0; font-size: 12px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-            {item.name ?? ''}
-          </div>
-
-          <button
-            onclick={() => { item.here = item.here ? 0 : 1; onCheckboxChange(item); }}
-            class="final-pill {item.here ? 'on-dark' : ''}"
-          ><span class="dot"></span>Tiffin</button>
-
-          <button
-            onclick={() => { item.filled = item.filled ? 0 : 1; onCheckboxChange(item); }}
-            class="final-pill {item.filled ? 'on-accent' : ''}"
-          ><span class="dot"></span>Filled</button>
-        </div>
-      {/each}
-    </div>
-
-    {#if sortedRows.length === 0}
-      <div class="empty-state">Nothing matches these filters.</div>
-    {/if}
+  {#if sortedRows.length === 0}
+    <div class="empty-state">Nothing matches these filters.</div>
   {/if}
 {/if}
 

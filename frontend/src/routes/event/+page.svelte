@@ -41,40 +41,71 @@
       dirty = false;
     });
   }
+
+  const enabledCount = $derived(events.filter((e) => e.enabled).length);
+  const niyazCount = $derived(events.filter((e) => e.niyaz).length);
 </script>
 
 <svelte:head>
   <title>{__APP_NAME__} - Events</title>
 </svelte:head>
 
-<div class="page-eyebrow mb-1">Events</div>
-<h2>Week of {getDisplayDate(startDate)}</h2>
+<!-- Page header -->
+<div class="page-header px-8 pt-5 pb-4">
+  <div class="flex items-end justify-between gap-6">
+    <div>
+      <div class="page-eyebrow mb-1">Admin · Events</div>
+      <h1>Week of {getDisplayDate(startDate)}</h1>
+      <div class="page-subtitle mt-1">
+        Set the menu for the week.
+        <b class="text-content">{enabledCount}</b> of {events.length} days enabled ·
+        <b class="text-content">{niyazCount}</b> niyaz.
+      </div>
+    </div>
+  </div>
+</div>
 
 {#if ps.loading}
   <Loading />
 {:else}
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 px-8 py-5">
     {#each events as ev}
-      <div class="card p-3">
-        <div class="flex items-start justify-between mb-2">
-          <div class="page-eyebrow">{getDisplayDate(ev.date)}</div>
-          <div class="flex gap-3">
-            <label class="flex items-center gap-1 text-xs text-muted cursor-pointer">
-              <input type="checkbox" bind:checked={ev.niyaz} onchange={() => (dirty = true)} class="cursor-pointer" />
-              Niyaz
-            </label>
-            <label class="flex items-center gap-1 text-xs text-muted cursor-pointer">
-              <input type="checkbox" bind:checked={ev.enabled} onchange={() => (dirty = true)} class="cursor-pointer" />
-              Enabled
-            </label>
+      {@const [dayStr, dateStr] = getDisplayDate(ev.date).split(', ')}
+      <div
+        class="card"
+        style="padding: 14px 16px; opacity: {ev.enabled ? 1 : 0.85}; {!ev.enabled ? 'background: transparent; border-style: dashed; border-color: var(--border-strong);' : ''}"
+      >
+        <!-- Card header -->
+        <div class="flex justify-between items-start gap-3 mb-3">
+          <div class="flex items-baseline gap-2">
+            <span class="page-eyebrow">{dayStr}</span>
+            <span style="font-size: 13px; font-weight: 500; color: var(--text);">{dateStr}</span>
+            {#if ev.niyaz}
+              <span class="tag tag-accent">Niyaz</span>
+            {/if}
+          </div>
+          <div class="flex gap-1.5 shrink-0">
+            <button
+              onclick={() => { ev.niyaz = !ev.niyaz; dirty = true; }}
+              disabled={!ev.enabled}
+              class="final-pill {ev.niyaz ? 'on-accent' : ''}"
+            ><span class="dot"></span>Niyaz</button>
+            <button
+              onclick={() => { ev.enabled = !ev.enabled; dirty = true; }}
+              class="final-pill {ev.enabled ? 'on-dark' : ''}"
+            ><span class="dot"></span>Enabled</button>
           </div>
         </div>
+
+        <!-- Dish input -->
         <input
           type="text"
           bind:value={ev.details}
           oninput={() => (dirty = true)}
-          placeholder="Menu details (empty = delete)"
+          disabled={!ev.enabled}
+          placeholder={ev.enabled ? 'Menu (comma separated)…' : 'Day is off — enable to add dishes'}
           class="input-inline text-sm"
+          style="border-bottom-color: {ev.enabled ? 'var(--border)' : 'transparent'};"
         />
       </div>
     {/each}

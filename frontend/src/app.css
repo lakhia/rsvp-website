@@ -405,6 +405,18 @@ body {
     background: var(--accent);
     color: white;
   }
+  .size-stat-btn .size-stat-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    opacity: 0.75;
+  }
+  .size-stat-btn .size-stat-count {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
 
   /* ── Eyebrow labels ───────────────────────────────────── */
   .eyebrow {
@@ -423,15 +435,23 @@ body {
     font-weight: 600;
   }
 
+  .count-label {
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
   /* ── Filling list row ─────────────────────────────────── */
   .filling-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    column-gap: 10px;
+    row-gap: 3px;
     align-items: center;
-    gap: 10px;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 9px 12px;
+    padding: 8px 12px;
     transition: background 0.1s, border-color 0.1s;
   }
   .filling-row.filled {
