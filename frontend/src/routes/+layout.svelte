@@ -61,8 +61,7 @@
       onclick={menuToggle}
       aria-label={menuBig ? 'Collapse menu' : 'Expand menu'}
       aria-expanded={menuBig}
-      class="flex gap-2 px-2 py-3 transition-opacity hover:opacity-90"
-      style="min-height: 44px; background: var(--accent); color: white;"
+      class="nav-toggle flex gap-2 px-2 py-3 transition-opacity hover:opacity-90"
     >
       <span class="text-lg leading-none shrink-0">&#9776;</span>
       {#if menuBig}
@@ -78,8 +77,7 @@
           onclick={item.onclick ?? (() => navigate(item.href))}
           aria-label={item.label}
           aria-current={active ? 'page' : undefined}
-          class="w-full flex gap-2 px-2 py-3 transition-colors"
-          style="color: {active ? 'var(--accent)' : 'var(--muted)'}; {active ? 'pointer-events: none;' : ''}"
+          class="nav-link w-full flex gap-2 px-2 py-3 transition-colors"
         >
           <span class="shrink-0"><Icon name={item.icon} size={20} /></span>
           {#if menuBig}<span class="whitespace-nowrap text-sm">{item.label}</span>{/if}
@@ -94,13 +92,22 @@
   >
     {@render children()}
     <footer class="mt-8 pt-4 text-xs" style="border-top: 1px solid var(--border); color: var(--muted);">
-      Please provide <a href={__LINK_FEEDBACK__} style="color: var(--accent);">thaali feedback</a>.
-      Contact us via <a href="mailto:{__EMAIL_CONTACT__}" style="color: var(--accent);">email</a>.
+      Please provide <a href={__LINK_FEEDBACK__} class="text-brand">thaali feedback</a>.
+      Contact us via <a href="mailto:{__EMAIL_CONTACT__}" class="text-brand">email</a>.
     </footer>
   </main>
 {/if}
 
 <style>
+  .nav-toggle {
+    min-height: 44px;
+    background: var(--accent);
+    color: white;
+  }
+
+  .nav-link { color: var(--muted); }
+  .nav-link[aria-current="page"] { color: var(--accent); pointer-events: none; }
+
   @media print {
     nav { display: none !important; }
     main { margin-left: 0 !important; }

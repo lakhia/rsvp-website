@@ -158,25 +158,18 @@
 </svelte:head>
 
 <!-- Page header -->
-<div
-  class="-mx-3 -mt-3 mb-5 px-8 pt-5 pb-4"
-  style="background: var(--surface); border-bottom: 1px solid var(--border);"
->
+<div class="page-header mb-5 px-8 pt-5 pb-4">
   <div class="flex items-end justify-between gap-6 flex-wrap">
     <div>
       {#if weekNum}
-        <div class="eyebrow">RSVP · Week {weekNum}{thaali ? ` · #${thaali}` : ''}</div>
+        <div class="eyebrow mb-1">RSVP · Week {weekNum}{thaali ? ` · #${thaali}` : ''}</div>
       {/if}
-      <h1 style="margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.015em; color: var(--text);">
-        RSVP for {name}
-      </h1>
-      <p style="font-size: 13px; color: var(--muted); margin: 4px 0 0;">
-        Your week at a glance. Tap a day to adjust.
-      </p>
+      <h1>RSVP for {name}</h1>
+      <p class="page-subtitle">Your week at a glance. Tap a day to adjust.</p>
     </div>
 
     {#if sizes.length}
-      <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-end;">
+      <div class="flex flex-col gap-1.5 items-end">
         <div class="flex items-center gap-2">
           <div class="flex gap-1">
             {#each sizes as s}
@@ -220,21 +213,20 @@
         <!-- Card header row -->
         <div class="flex items-start justify-between mb-2">
           <div class="flex items-baseline gap-2 flex-wrap">
-            <span style="font-size: 11px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; color: var(--muted);">{cd.day}</span>
+            <span class="eyebrow">{cd.day}</span>
             <span style="font-size: 13px; font-weight: 500;">{cd.monthDay}</span>
             {#if cd.isToday}
-              <span style="font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); padding: 2px 6px; border-radius: 3px;">TODAY</span>
+              <span class="tag tag-accent">TODAY</span>
             {/if}
             {#if ev.niyaz}
-              <span style="font-size: 9px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--subtle); padding: 2px 6px; border-radius: 3px;">COUNT DAY</span>
+              <span class="tag tag-muted">COUNT DAY</span>
             {/if}
           </div>
           {#if ev.enabled}
             <button
               onclick={() => onRsvpChange(ev)}
               disabled={ev.readonly}
-              class="yes-no-pill {ev.rsvp ? 'yes' : 'no'}"
-              style="flex-shrink: 0; margin-left: 8px;"
+              class="yes-no-pill {ev.rsvp ? 'yes' : 'no'} shrink-0 ml-2"
             >
               <span class="dot"></span>
               {ev.rsvp ? 'Yes' : 'No'}
@@ -243,13 +235,11 @@
         </div>
 
         <!-- Dish list -->
-        <div style="font-size: 13px; line-height: 1.5; color: var(--text); margin-bottom: 10px; min-height: 20px;">
-          {ev.details ?? ''}
-        </div>
+        <div class="card-text">{ev.details ?? ''}</div>
 
         <!-- Card footer: size / count (only when RSVP'd yes) -->
         {#if ev.enabled && ev.rsvp}
-          <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px dashed var(--border); min-height: 40px;">
+          <div class="card-footer">
             {#if ev.niyaz}
               <!-- Count stepper for niyaz events -->
               <div class="flex gap-4">
@@ -257,34 +247,34 @@
                   <button
                     onclick={() => { ev.adults = Math.max(0, (ev.adults ?? 0) - 1); onCountChange(ev); }}
                     disabled={ev.readonly}
-                    style="width: 22px; height: 22px; border-radius: 999px; border: 1px solid var(--border-strong); background: var(--surface); font-size: 14px; line-height: 1; padding: 0; cursor: pointer; color: var(--muted); font-family: inherit;"
+                    class="stepper-btn"
                   >−</button>
                   <span style="min-width: 16px; text-align: center; font-weight: 600; font-size: 13px; font-variant-numeric: tabular-nums;">{ev.adults ?? 0}</span>
                   <button
                     onclick={() => { ev.adults = (ev.adults ?? 0) + 1; onCountChange(ev); }}
                     disabled={ev.readonly}
-                    style="width: 22px; height: 22px; border-radius: 999px; border: 1px solid var(--border-strong); background: var(--surface); font-size: 14px; line-height: 1; padding: 0; cursor: pointer; color: var(--muted); font-family: inherit;"
+                    class="stepper-btn"
                   >+</button>
-                  <span style="font-size: 11px; color: var(--muted);">adults</span>
+                  <span class="text-xs text-muted">adults</span>
                 </div>
                 <div class="flex items-center gap-1.5">
                   <button
                     onclick={() => { ev.kids = Math.max(0, (ev.kids ?? 0) - 1); onCountChange(ev); }}
                     disabled={ev.readonly}
-                    style="width: 22px; height: 22px; border-radius: 999px; border: 1px solid var(--border-strong); background: var(--surface); font-size: 14px; line-height: 1; padding: 0; cursor: pointer; color: var(--muted); font-family: inherit;"
+                    class="stepper-btn"
                   >−</button>
                   <span style="min-width: 16px; text-align: center; font-weight: 600; font-size: 13px; font-variant-numeric: tabular-nums;">{ev.kids ?? 0}</span>
                   <button
                     onclick={() => { ev.kids = (ev.kids ?? 0) + 1; onCountChange(ev); }}
                     disabled={ev.readonly}
-                    style="width: 22px; height: 22px; border-radius: 999px; border: 1px solid var(--border-strong); background: var(--surface); font-size: 14px; line-height: 1; padding: 0; cursor: pointer; color: var(--muted); font-family: inherit;"
+                    class="stepper-btn"
                   >+</button>
-                  <span style="font-size: 11px; color: var(--muted);">kids</span>
+                  <span class="text-xs text-muted">kids</span>
                 </div>
               </div>
             {:else}
               <!-- Less rice + size selector -->
-              <label style="display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); cursor: pointer; user-select: none;">
+              <label class="flex items-center gap-1.5 text-xs text-muted cursor-pointer select-none">
                 <input
                   type="checkbox"
                   bind:checked={ev.lessRice}

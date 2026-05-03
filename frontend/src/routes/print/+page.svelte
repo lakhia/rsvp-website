@@ -202,10 +202,7 @@
 </svelte:head>
 
 <!-- Page header -->
-<div
-  class="-mx-3 -mt-3 px-7 pt-4 pb-3.5 no-print"
-  style="background: var(--surface); border-bottom: 1px solid var(--border);"
->
+<div class="page-header px-7 pt-4 pb-3.5 no-print">
   <div class="flex items-center gap-4 flex-wrap">
     <!-- Progress ring -->
     {#if !meta.niyaz && rows.length > 0}
@@ -226,18 +223,16 @@
 
     <!-- Title block -->
     <div style="flex: 1; min-width: 0;">
-      <div class="eyebrow" style="margin-bottom: 2px;">Kitchen · {getDisplayDate(date)}</div>
-      <h1 style="margin: 0 0 3px; font-size: 20px; font-weight: 600; letter-spacing: -0.015em; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-        {menuTitle}
-      </h1>
+      <div class="eyebrow mb-0.5">Kitchen · {getDisplayDate(date)}</div>
+      <h1 class="truncate" style="font-size: 20px; margin-bottom: 3px;">{menuTitle}</h1>
       {#if !meta.niyaz && rows.length > 0}
-        <div style="font-size: 12px; color: var(--muted);">
+        <div class="page-subtitle" style="margin: 0;">
           <b style="color: var(--text);">{filledCount}</b> filled ·
           {rows.length - filledCount} to go ·
           {rows.length} RSVPs total
         </div>
       {:else if meta.niyaz}
-        <div style="font-size: 12px; color: var(--muted);">{niyazSummary}</div>
+        <div class="page-subtitle" style="margin: 0;">{niyazSummary}</div>
       {/if}
     </div>
 
@@ -247,9 +242,7 @@
         {#each SIZE_ORDER.filter((s) => sizeCountsFiltered[s]) as s}
           <button
             onclick={() => toggleSizeFilter(s)}
-            style="text-align: center; padding: 6px 11px; border-radius: 8px; border: none; cursor: pointer; transition: background 0.1s;
-              background: {filters.size === s ? 'var(--accent)' : 'var(--subtle)'};
-              color: {filters.size === s ? 'white' : 'var(--text)'};"
+            class="size-stat-btn {filters.size === s ? 'active' : ''}"
           >
             <div style="font-size: 10px; font-weight: 700; letter-spacing: .08em; opacity: .75;">{s}</div>
             <div style="font-size: 16px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums;">{sizeCountsFiltered[s]}</div>
@@ -384,9 +377,7 @@
     </div>
 
     {#if sortedRows.length === 0}
-      <div style="text-align: center; padding: 40px; color: var(--muted); font-style: italic; font-size: 13px;">
-        Nothing matches these filters.
-      </div>
+      <div class="empty-state">Nothing matches these filters.</div>
     {/if}
   {/if}
 {/if}
