@@ -59,11 +59,11 @@
         <div class="flex items-start justify-between mb-2">
           <div class="page-eyebrow">{getDisplayDate(ev.date)}</div>
           <div class="flex gap-3">
-            <label class="flex items-center gap-1 text-xs text-gray-500 cursor-pointer">
+            <label class="flex items-center gap-1 text-xs text-muted cursor-pointer">
               <input type="checkbox" bind:checked={ev.niyaz} onchange={() => (dirty = true)} class="cursor-pointer" />
               Niyaz
             </label>
-            <label class="flex items-center gap-1 text-xs text-gray-500 cursor-pointer">
+            <label class="flex items-center gap-1 text-xs text-muted cursor-pointer">
               <input type="checkbox" bind:checked={ev.enabled} onchange={() => (dirty = true)} class="cursor-pointer" />
               Enabled
             </label>

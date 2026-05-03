@@ -63,7 +63,7 @@
           bind:value={ingred.unit}
           oninput={() => (dirty = true)}
           placeholder="unit (e.g. cups)"
-          class="input-inline text-sm text-gray-500"
+          class="input-inline text-sm text-muted"
         />
       </div>
     {/each}
@@ -72,7 +72,7 @@
     <button
       type="button"
       onclick={addIngred}
-      class="border-2 border-dashed border-gray-300 rounded p-2 text-gray-400 hover:border-gray-400 hover:text-gray-600 transition-colors min-h-[64px] flex items-center justify-center text-sm"
+      class="border-2 border-dashed border-rule rounded p-2 text-muted hover:border-rule hover:text-content transition-colors min-h-[64px] flex items-center justify-center text-sm"
     >
       + Add Ingredient
     </button>

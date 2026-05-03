@@ -54,7 +54,7 @@
       <div class="card p-3 text-sm">
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2">
           <div>
-            <div class="text-xs text-gray-500 mb-0.5">Thaali #{f.thaali} / ITS</div>
+            <div class="text-xs text-muted mb-0.5">Thaali #{f.thaali} / ITS</div>
             <input
               type="text"
               bind:value={f.its}
@@ -64,7 +64,7 @@
             />
           </div>
           <div>
-            <div class="text-xs text-gray-500 mb-0.5">Area</div>
+            <div class="text-xs text-muted mb-0.5">Area</div>
             <input
               type="text"
               bind:value={f.area}
@@ -74,7 +74,7 @@
             />
           </div>
           <div>
-            <div class="text-xs text-gray-500 mb-0.5">First Name</div>
+            <div class="text-xs text-muted mb-0.5">First Name</div>
             <input
               type="text"
               bind:value={f.firstName}
@@ -84,7 +84,7 @@
             />
           </div>
           <div>
-            <div class="text-xs text-gray-500 mb-0.5">Last Name</div>
+            <div class="text-xs text-muted mb-0.5">Last Name</div>
             <input
               type="text"
               bind:value={f.lastName}
@@ -94,7 +94,7 @@
             />
           </div>
           <div class="col-span-2">
-            <div class="text-xs text-gray-500 mb-0.5">Email</div>
+            <div class="text-xs text-muted mb-0.5">Email</div>
             <input
               type="email"
               bind:value={f.email}
@@ -104,7 +104,7 @@
             />
           </div>
           <div>
-            <div class="text-xs text-gray-500 mb-0.5">Phone</div>
+            <div class="text-xs text-muted mb-0.5">Phone</div>
             <input
               type="text"
               bind:value={f.phone}
@@ -114,7 +114,7 @@
             />
           </div>
           <div class="sm:col-span-2">
-            <div class="text-xs text-gray-500 mb-0.5">POC</div>
+            <div class="text-xs text-muted mb-0.5">POC</div>
             <input
               type="text"
               bind:value={f.poc}
@@ -124,7 +124,7 @@
             />
           </div>
           <div>
-            <div class="text-xs text-gray-500 mb-0.5">Size</div>
+            <div class="text-xs text-muted mb-0.5">Size</div>
             <input
               type="text"
               bind:value={f.size}
@@ -134,7 +134,7 @@
             />
           </div>
           <div>
-            <div class="text-xs text-gray-500 mb-0.5">Resp</div>
+            <div class="text-xs text-muted mb-0.5">Resp</div>
             <input
               type="text"
               bind:value={f.resp}

@@ -134,7 +134,7 @@
             placeholder="Menu name"
             class="input-inline font-medium flex-1"
           />
-          <label class="flex items-center gap-1 text-xs text-gray-400 cursor-pointer select-none shrink-0">
+          <label class="flex items-center gap-1 text-xs text-muted cursor-pointer select-none shrink-0">
             <input
               type="checkbox"
               bind:checked={menu.rice}
@@ -158,7 +158,7 @@
                   step="0.01"
                   class="input-inline text-right text-sm"
                 />
-                <span class="text-xs text-gray-400">{ingred.unit ?? ''}</span>
+                <span class="text-xs text-muted">{ingred.unit ?? ''}</span>
                 <div class="relative">
                   <input
                     type="text"
@@ -170,17 +170,17 @@
                     class="input-inline text-sm"
                   />
                   {#if dropdown?.menuIdx === mi && dropdown?.ingredIdx === ii && dropdown.matches.length > 0}
-                    <ul class="absolute z-20 left-0 right-0 top-full mt-0.5 bg-white border border-gray-200 rounded shadow-lg max-h-48 overflow-y-auto text-sm">
+                    <ul class="absolute z-20 left-0 right-0 top-full mt-0.5 bg-surface border border-line rounded shadow-lg max-h-48 overflow-y-auto text-sm">
                       {#each dropdown.matches as match, k}
                         <li>
                           <button
                             type="button"
                             onmousedown={() => selectMatch(ingred, match)}
-                            class="w-full text-left px-2 py-1 hover:bg-gray-100 transition-colors
-                              {k === dropdown.highlighted ? 'bg-gray-100 font-medium' : ''}"
+                            class="w-full text-left px-2 py-1 hover:bg-subtle transition-colors
+                              {k === dropdown.highlighted ? 'bg-subtle font-medium' : ''}"
                           >
                             {match.name}
-                            <span class="text-xs text-gray-400 ml-1">{match.unit}</span>
+                            <span class="text-xs text-muted ml-1">{match.unit}</span>
                           </button>
                         </li>
                       {/each}
