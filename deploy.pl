@@ -112,6 +112,8 @@ sub html {
         $line =~ s/select-filter/s-ft/g;
         $line =~ s/text-center/t-cnr/g;
         $line =~ s/transition-colors/t-col/g;
+        $line =~ s/whitespace-nowrap/ws-nw/g;
+        $line =~ s/eyebrow/eyb/g;
 
         # Comments
         $line =~ s|/\*[^*]+\*/||;

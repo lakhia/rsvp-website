@@ -441,6 +441,14 @@ body {
     white-space: nowrap;
   }
 
+  /* ── Serving guidance table ──────────────────────────── */
+  .serving-cell {
+    padding: 5px 10px;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .serving-cell:first-child { text-align: left; }
+
   /* ── Filling list row ─────────────────────────────────── */
   .filling-row {
     display: grid;

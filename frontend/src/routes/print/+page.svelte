@@ -195,6 +195,23 @@
   }
 
   const servingEntries = $derived(Object.entries(meta.serving ?? {}));
+
+  const sizeSummary = $derived.by(() => {
+    const togo = {};
+    const tiffins = {};
+    const total = {};
+    for (const r of rows) {
+      const s = r.size;
+      if (!s) continue;
+      total[s] = (total[s] ?? 0) + 1;
+      if (r.here) {
+        tiffins[s] = (tiffins[s] ?? 0) + 1;
+      } else {
+        togo[s] = (togo[s] ?? 0) + 1;
+      }
+    }
+    return { togo, tiffins, total };
+  });
 </script>
 
 <svelte:head>
@@ -266,13 +283,41 @@
 
 <!-- Serving guidance -->
 {#if servingEntries.length > 0}
-  <table class="w-full border-separate mt-3 mb-3 border no-print" style="border-color: var(--border);">
+  {@const usedSizes = SIZE_ORDER.filter((s) => sizeSummary.total[s] > 0)}
+  <table class="mt-3 mb-3 no-print text-xs" style="border: 1px solid var(--border);">
+    <thead>
+      <tr>
+        <th class="serving-cell font-medium text-muted"></th>
+        {#each usedSizes as s}
+          <th class="serving-cell font-semibold">{s}</th>
+        {/each}
+      </tr>
+    </thead>
     <tbody>
+      <tr>
+        <td class="serving-cell text-muted">Togo</td>
+        {#each usedSizes as s}
+          <td class="serving-cell">{sizeSummary.togo[s] ?? 0}</td>
+        {/each}
+      </tr>
+      <tr>
+        <td class="serving-cell text-muted">Tiffins</td>
+        {#each usedSizes as s}
+          <td class="serving-cell">{sizeSummary.tiffins[s] ?? 0}</td>
+        {/each}
+      </tr>
+      <tr style="border-bottom: 2px solid var(--border);">
+        <td class="serving-cell font-medium">Total</td>
+        {#each usedSizes as s}
+          <td class="serving-cell font-medium">{sizeSummary.total[s] ?? 0}</td>
+        {/each}
+      </tr>
       {#each servingEntries as [menu, portions]}
         <tr>
-          <td class="font-medium border-r" style="border-color: var(--border);">{menu}</td>
-          {#each portions as q}
-            <td class="border-r" style="border-color: var(--border);">{q}</td>
+          <td class="serving-cell font-medium">{menu}</td>
+          {#each usedSizes as s}
+            {@const match = portions.find((p) => p.startsWith(s + ':'))}
+            <td class="serving-cell">{match ? match.slice(s.length + 2) : ''}</td>
           {/each}
         </tr>
       {/each}
