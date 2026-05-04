@@ -6,6 +6,7 @@
     dirty = false,
     saving = false,
     prevDisabled = false,
+    nextDisabled = false,
     class: klass = '',
     children,
   } = $props();
@@ -25,5 +26,5 @@
       {saving ? 'Saving…' : 'Save'}
     </button>
   {/if}
-  <button onclick={onNext} class="btn-secondary"> Next &raquo; </button>
+  <button onclick={onNext} disabled={nextDisabled} class="btn-secondary"> Next &raquo; </button>
 </div>

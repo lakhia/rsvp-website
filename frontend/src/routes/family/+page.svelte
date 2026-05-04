@@ -12,31 +12,70 @@
 
   let families = $state([]);
   let dirty = $state(false);
+  let hasMore = $state(false);
+
+  // URL is source of truth for all navigation state
+  const urlQ      = $derived(page.url.searchParams.get('q') ?? '');
+  const urlArea   = $derived(page.url.searchParams.get('area') ?? '');
+  const urlOffset = $derived(getIntParam(page.url.searchParams, 'offset', 0));
+  // Effective offset: search uses 0-based row index, normal uses 1-based thaali number
+  const curOffset = $derived(urlQ || urlArea ? urlOffset : (urlOffset || 1));
+
+  // Local input state — committed to URL only on Enter
   let q = $state('');
   let areaFilter = $state('');
 
-  // Family uses thaali number as offset (1-indexed), not week offset
-  const offset = $derived(getIntParam(page.url.searchParams, 'offset', 1));
+  // Keep inputs in sync when URL changes (e.g. browser back/forward)
+  $effect(() => { q = urlQ; });
+  $effect(() => { areaFilter = urlArea; });
 
+  // Load data whenever URL params change
   $effect(() => {
     if (!requireAdmin()) return;
-    loadData(offset);
+    fetchFamilies();
   });
 
-  async function loadData(o) {
+  function pageParams(offset) {
+    const p = { offset };
+    if (urlQ) p.q = urlQ;
+    if (urlArea) p.area = urlArea;
+    return p;
+  }
+
+  async function fetchFamilies() {
     await ps.load(async () => {
-      const res = await get('family.php', { offset: o });
+      const res = await get('family.php', pageParams(curOffset));
       families = res.data || [];
       ps.msg = res.msg || '';
       dirty = false;
-      q = '';
-      areaFilter = '';
+      hasMore = res.other?.hasMore ?? false;
     });
+  }
+
+  function buildPageUrl(newOffset) {
+    return '/family?' + new URLSearchParams(pageParams(newOffset)).toString();
+  }
+
+  function submitSearch() {
+    const params = new URLSearchParams();
+    if (q) params.set('q', q);
+    if (areaFilter) params.set('area', areaFilter);
+    if (q || areaFilter) params.set('offset', '0');
+    const qs = params.toString();
+    navigate('/family' + (qs ? '?' + qs : ''));
+  }
+
+  function prevPage() {
+    navigate(buildPageUrl(Math.max(urlQ || urlArea ? 0 : 1, curOffset - 10)));
+  }
+
+  function nextPage() {
+    navigate(buildPageUrl(curOffset + 10));
   }
 
   async function handleSave() {
     await ps.save(async () => {
-      const res = await post('family.php', { offset }, families);
+      const res = await post('family.php', { offset: curOffset }, families);
       families = res.data || [];
       ps.msg = res.msg || 'Saved';
       dirty = false;
@@ -44,15 +83,6 @@
   }
 
   const incomplete = $derived(families.filter((f) => !f.its || !f.phone || !f.poc).length);
-
-  const visible = $derived(
-    families.filter((f) => {
-      if (areaFilter && f.area?.toLowerCase() !== areaFilter.toLowerCase()) return false;
-      if (!q) return true;
-      const hay = `${f.firstName} ${f.lastName} ${f.email} ${f.its} ${f.poc}`.toLowerCase();
-      return hay.includes(q.toLowerCase());
-    })
-  );
 </script>
 
 <svelte:head>
@@ -86,6 +116,7 @@
   <input
     type="search"
     bind:value={q}
+    onkeydown={(e) => e.key === 'Enter' && submitSearch()}
     placeholder="Search name, ITS, email…"
     class="filter-input"
   />
@@ -94,19 +125,20 @@
     <input
       type="text"
       bind:value={areaFilter}
+      onkeydown={(e) => e.key === 'Enter' && submitSearch()}
       placeholder="All"
       class="input-sm area-filter"
     />
   </label>
   <div class="flex-1"></div>
-  <span class="count-label">{visible.length} of {families.length}</span>
+  <span class="count-label">{families.length}{hasMore ? '+' : ''} results</span>
 </div>
 
 {#if ps.loading}
   <Loading />
 {:else}
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 px-8 py-4">
-    {#each visible as f}
+    {#each families as f}
       {@const isIncomplete = !f.its || !f.phone || !f.poc}
       <div class="card family-card">
         <!-- Top row: number badge + name + incomplete dot -->
@@ -211,12 +243,13 @@
 <Message msg={ps.msg} msgType={ps.msgType} />
 
 <PageNav
-  onPrev={() => navigate(`/family?offset=${Math.max(1, offset - 10)}`)}
-  onNext={() => navigate(`/family?offset=${offset + 10}`)}
+  onPrev={prevPage}
+  onNext={nextPage}
   onSave={handleSave}
   {dirty}
   saving={ps.saving}
-  prevDisabled={offset <= 1}
+  prevDisabled={curOffset <= (urlQ || urlArea ? 0 : 1)}
+  nextDisabled={(urlQ || urlArea) && !hasMore}
 />
 
 <style>

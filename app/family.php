@@ -22,6 +22,50 @@ if ($method_server == "POST") {
 // Get details for all families
 function family_get($db, $thaali, $msg)
 {
+    $q    = Helper::get_param('q', '');
+    $area = Helper::get_param('area', '');
+
+    if ($q !== '' || $area !== '') {
+        $conditions = [];
+        $binds = [];
+        $types = '';
+
+        if ($q !== '') {
+            $like = '%' . $q . '%';
+            $conditions[] = "(firstName LIKE ? OR lastName LIKE ? OR email LIKE ? OR its LIKE ?)";
+            array_push($binds, $like, $like, $like, $like);
+            $types .= 'ssss';
+        }
+
+        if ($area !== '') {
+            $conditions[] = "LOWER(area) = LOWER(?)";
+            $binds[] = $area;
+            $types .= 's';
+        }
+
+        $row_offset = (int) Helper::get_param('offset', 0);
+        $limit = 11; // fetch one extra to detect if there's a next page
+
+        $where = implode(' AND ', $conditions);
+        $binds[] = $limit;
+        $binds[] = $row_offset;
+        $types .= 'ii';
+        $stmt  = $db->prepare("SELECT * FROM family WHERE $where ORDER BY thaali LIMIT ? OFFSET ?");
+        $stmt->bind_param($types, ...$binds);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $rows = [];
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
+        $has_more = count($rows) === $limit;
+        if ($has_more) {
+            array_pop($rows);
+        }
+        Helper::print_to_json($rows, $msg, null, ['hasMore' => $has_more]);
+        return;
+    }
+
     $offset = Helper::get_param('offset', 1);
     $end = $offset + 10;
 

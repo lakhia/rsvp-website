@@ -355,10 +355,12 @@
             <span style="flex: 1;"></span>
             <button
               onclick={() => { item.here = item.here ? 0 : 1; onCheckboxChange(item); }}
+              disabled={!meta.save}
               class="final-pill {item.here ? 'on-dark' : ''}"
             ><span class="dot"></span>Tiffin</button>
             <button
               onclick={() => { item.filled = item.filled ? 0 : 1; onCheckboxChange(item); }}
+              disabled={!meta.save}
               class="final-pill {item.filled ? 'on-accent' : ''}"
             ><span class="dot"></span>Filled</button>
           {/if}
