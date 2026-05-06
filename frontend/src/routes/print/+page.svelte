@@ -196,6 +196,10 @@
 
   const servingEntries = $derived(Object.entries(meta.serving ?? {}));
 
+  const thaals = $derived(
+    Math.round(((meta.adults ?? 0) / 8 + (meta.kids ?? 0) / 10) * 10) / 10
+  );
+
   const sizeSummary = $derived.by(() => {
     const togo = {};
     const tiffins = {};
@@ -282,7 +286,12 @@
 {/if}
 
 <!-- Serving guidance -->
-{#if servingEntries.length > 0}
+{#if meta.niyaz}
+  <div class="mt-3 mb-3 px-1 text-sm">
+    <div>{niyazSummary}</div>
+    <div>Thaals: {thaals}</div>
+  </div>
+{:else if servingEntries.length > 0}
   {@const usedSizes = SIZE_ORDER.filter((s) => sizeSummary.total[s] > 0)}
   <table class="mt-3 mb-3 no-print text-xs" style="border: 1px solid var(--border);">
     <thead>
