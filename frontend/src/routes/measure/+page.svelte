@@ -116,7 +116,7 @@
 <div class="page-eyebrow mb-1">Measurements · Page {pageNum}</div>
 <div class="flex items-center justify-between mb-0">
   <h2>Menu Measurements</h2>
-  <button type="button" onclick={addMenu} class="btn-secondary text-sm">+ Add Menu</button>
+  <button type="button" onclick={addMenu} class="btn-dark">Add Menu</button>
 </div>
 
 {#if ps.loading}

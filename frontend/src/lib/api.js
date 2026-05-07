@@ -46,3 +46,11 @@ export async function post(url, params = {}, body) {
     body: JSON.stringify(body),
   });
 }
+
+export async function postText(url, params = {}, text) {
+  return request(buildUrl(url, params), {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/csv' },
+    body: text,
+  });
+}

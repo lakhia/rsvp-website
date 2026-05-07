@@ -1,6 +1,6 @@
 <script>
   import { page } from '$app/state';
-  import { get, post, navigate } from '$lib/api.js';
+  import { get, post, postText, navigate } from '$lib/api.js';
   import { getDisplayDate } from '$lib/dates.js';
   import { requireAdmin } from '$lib/auth.js';
   import Loading from '$lib/Loading.svelte';
@@ -44,6 +44,22 @@
 
   const enabledCount = $derived(events.filter((e) => e.enabled).length);
   const niyazCount = $derived(events.filter((e) => e.niyaz).length);
+
+  let csvFileInput = $state(null);
+  let csvFileName = $state('');
+
+  async function handleImport() {
+    const file = csvFileInput?.files?.[0];
+    if (!file) return;
+    await ps.save(async () => {
+      const text = await file.text();
+      const res = await postText('dump.php', { table: 'events' }, text);
+      ps.msg = res.msg || 'Imported';
+      csvFileName = '';
+      csvFileInput.value = '';
+      await loadData(offset);
+    });
+  }
 </script>
 
 <svelte:head>
@@ -61,6 +77,23 @@
         <b class="text-content">{enabledCount}</b> of {events.length} days enabled ·
         <b class="text-content">{niyazCount}</b> niyaz.
       </div>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <input
+        bind:this={csvFileInput}
+        type="file"
+        accept=".csv"
+        class="hidden"
+        onchange={() => { csvFileName = csvFileInput?.files?.[0]?.name ?? ''; }}
+      />
+      <button class="btn-dark" onclick={() => csvFileInput.click()}>
+        {csvFileName || 'Upload CSV'}
+      </button>
+      {#if csvFileName}
+        <button class="btn-dark" onclick={handleImport} disabled={ps.saving}>
+          Upload
+        </button>
+      {/if}
     </div>
   </div>
 </div>

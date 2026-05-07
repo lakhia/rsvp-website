@@ -33,6 +33,10 @@ class DB {
         return $this->mysqli->prepare($query_string);
     }
 
+    public function escape($value) {
+        return $this->mysqli->real_escape_string($value);
+    }
+
     public function query($query_string) {
         if (!$this->connected) {
             return false;

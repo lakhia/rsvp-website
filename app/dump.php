@@ -70,10 +70,10 @@ function dump_post($db, $table, $types) {
     // Process each line
     while (($buf = fgets($input, 4096)) !== false) {
 
-        $data = str_getcsv($buf);
+        $data = str_getcsv(trim($buf), ',', '"', '');
 
         // Figure out column names and types
-        if (count($cols) == 0) {
+        if (empty($cols)) {
             $cols = implode(",", $data);
             foreach ($data as $val) {
                 $integers[] = strpos($types[$val], "int");
@@ -84,7 +84,7 @@ function dump_post($db, $table, $types) {
         // If column is string, enclose in quotes
         for ($i=0; $i < count($data); $i++) {
             if ($integers[$i] === false) {
-                $data[$i] = '"' . $data[$i] . '"';
+                $data[$i] = '"' . $db->escape($data[$i]) . '"';
             }
         }
         $data = implode(",", $data);

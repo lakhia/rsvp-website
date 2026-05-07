@@ -105,7 +105,7 @@
         Edit family details
       </div>
     </div>
-    <button onclick={() => window.open(__BASE_PATH__ + '/dump.php?table=family')} class="btn-secondary">
+    <button onclick={() => window.open(__BASE_PATH__ + '/dump.php?table=family')} class="btn-dark">
       Export CSV
     </button>
   </div>
