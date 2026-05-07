@@ -113,9 +113,6 @@
           <div class="flex items-baseline gap-2">
             <span class="page-eyebrow">{dayStr}</span>
             <span style="font-size: 13px; font-weight: 500; color: var(--text);">{dateStr}</span>
-            {#if ev.niyaz}
-              <span class="tag tag-accent">Niyaz</span>
-            {/if}
           </div>
           <div class="flex gap-1.5 shrink-0">
             <button

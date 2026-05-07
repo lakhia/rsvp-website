@@ -218,9 +218,6 @@
             {#if cd.isToday}
               <span class="tag tag-accent">TODAY</span>
             {/if}
-            {#if ev.niyaz}
-              <span class="tag tag-muted">COUNT DAY</span>
-            {/if}
           </div>
           {#if ev.enabled}
             <button

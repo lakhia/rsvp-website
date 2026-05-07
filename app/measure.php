@@ -76,7 +76,7 @@ function measure_post($db, $offset, $len) {
 
         $db->query("DELETE FROM cooking WHERE menu_id = " . $menu->id);
         foreach ($menu->ingred as $ingred) {
-            if (!empty($ingred->name) && isset($ingred->id)) {
+            if (!empty($ingred->name) && isset($ingred->id) && !empty($ingred->multiplier)) {
                 $db->query("INSERT INTO cooking VALUES(" . $menu->id . ", " . $ingred->id . ","
                     . $ingred->multiplier . ");");
             }

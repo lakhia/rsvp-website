@@ -174,12 +174,11 @@
                   class="input-inline area-input"
                 />
               </span>
-              {#if f.resp}
-                <span class="separator">·</span>
-                <span class="tag tag-muted">
-                  {f.resp === 'F' ? 'Filling Team' : ''}
-                </span>
-              {/if}
+              <span class="separator">·</span>
+              <button
+                onclick={() => { f.resp = f.resp === 'F' ? null : 'F'; dirty = true; }}
+                class="tag {f.resp === 'F' ? 'tag-accent' : 'tag-muted'} tag-toggle"
+              >Filling Team</button>
             </div>
           </div>
           {#if isIncomplete}
@@ -305,6 +304,12 @@
   }
 
   .separator { color: var(--border-strong); }
+
+  .tag-toggle {
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+  }
 
   .incomplete-dot {
     width: 6px;
