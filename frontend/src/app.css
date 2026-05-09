@@ -153,6 +153,7 @@ body {
   .btn-danger:hover { background: var(--no); }
 
   /* ── Inputs ───────────────────────────────────────────── */
+  input[type="checkbox"] { accent-color: var(--accent); }
   .input-inline {
     @apply w-full bg-transparent focus:outline-none placeholder-gray-400;
     border-bottom: 1px solid transparent;

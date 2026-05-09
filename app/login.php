@@ -11,6 +11,11 @@ if ($data) {
   $email = '';
 }
 
+// Thaali must be a non-empty integer string
+if (!ctype_digit($thaali) || $thaali === '') {
+    Helper::json_error("Login failed");
+}
+
 // Get name from credentials
 $name = AuthService::get_name($db, $email, $thaali);
 if ($name == "") {

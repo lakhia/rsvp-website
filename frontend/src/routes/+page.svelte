@@ -160,7 +160,6 @@
         <div class="eyebrow mb-1">RSVP · Week {weekNum}{thaali ? ` · #${thaali}` : ''}</div>
       {/if}
       <h1>RSVP for {name}</h1>
-      <p class="page-subtitle">Your week at a glance. Tap a day to adjust.</p>
     </div>
 
     {#if sizes.length}
@@ -188,6 +187,7 @@
     message="You have unsaved changes. Discard them and leave?"
     confirmLabel="Discard"
     cancelLabel="Stay"
+    danger={true}
     onConfirm={() => {
       dirty = {};
       goto(pendingHref);
