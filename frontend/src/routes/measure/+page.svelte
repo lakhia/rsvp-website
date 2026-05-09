@@ -8,6 +8,7 @@
   import PageNav from '$lib/PageNav.svelte';
   import { getIntParam } from '$lib/utils.js';
   const ps = new PageState();
+  const PAGE_SIZE = 10;
 
   let menus = $state([]);
   let allIngreds = $state([]); // full ingredient list for autocomplete
@@ -15,7 +16,7 @@
   let dropdown = $state(null);
 
   const offset = $derived(getIntParam(page.url.searchParams, 'offset'));
-  const pageNum = $derived(offset / 10 + 1);
+  const pageNum = $derived(offset / PAGE_SIZE + 1);
 
   $effect(() => {
     if (!requireAdmin()) return;
@@ -26,7 +27,7 @@
     dropdown = null;
     await ps.load(async () => {
       const [menuRes, ingredRes] = await Promise.all([
-        get('measure.php', { offset: o, len: 10 }),
+        get('measure.php', { offset: o, len: PAGE_SIZE }),
         get('ingred.php'),
       ]);
       menus = menuRes.data || [];
@@ -38,7 +39,7 @@
 
   async function handleSave() {
     await ps.save(async () => {
-      const res = await post('measure.php', { offset, len: 10 }, menus);
+      const res = await post('measure.php', { offset, len: PAGE_SIZE }, menus);
       menus = res.data || [];
       ps.msg = res.msg || 'Saved';
       dirty = false;
@@ -102,10 +103,7 @@
   }
 
   function onIngredBlur() {
-    // Small delay so click on dropdown item fires first
-    setTimeout(() => {
-      dropdown = null;
-    }, 150);
+    dropdown = null;
   }
 </script>
 
@@ -113,7 +111,7 @@
   <title>{__APP_NAME__} - Measures</title>
 </svelte:head>
 
-<div class="page-eyebrow mb-1">Measurements · Page {pageNum}</div>
+<div class="eyebrow mb-1">Measurements · Page {pageNum}</div>
 <div class="flex items-center justify-between mb-0">
   <h2>Menu Measurements</h2>
   <button type="button" onclick={addMenu} class="btn-dark">Add Menu</button>
@@ -199,8 +197,8 @@
 <Message msg={ps.msg} msgType={ps.msgType} />
 
 <PageNav
-  onPrev={() => navigate(`/measure?offset=${Math.max(0, offset - 10)}`)}
-  onNext={() => navigate(`/measure?offset=${offset + 10}`)}
+  onPrev={() => navigate(`/measure?offset=${Math.max(0, offset - PAGE_SIZE)}`)}
+  onNext={() => navigate(`/measure?offset=${offset + PAGE_SIZE}`)}
   onSave={handleSave}
   {dirty}
   saving={ps.saving}

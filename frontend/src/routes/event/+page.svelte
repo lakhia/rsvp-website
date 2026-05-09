@@ -70,7 +70,7 @@
 <div class="page-header">
   <div class="flex items-end justify-between gap-6">
     <div>
-      <div class="page-eyebrow mb-1">Admin · Events</div>
+      <div class="eyebrow mb-1">Admin · Events</div>
       <h1>Week of {getDisplayDate(startDate)}</h1>
       <div class="page-subtitle">
         Set the menu for the week.
@@ -105,13 +105,12 @@
     {#each events as ev}
       {@const [dayStr, dateStr] = getDisplayDate(ev.date).split(', ')}
       <div
-        class="card"
-        style="padding: 14px 16px; opacity: {ev.enabled ? 1 : 0.85}; {!ev.enabled ? 'background: transparent; border-style: dashed; border-color: var(--border-strong);' : ''}"
+        class="card py-3.5 px-4 {ev.enabled ? '' : 'card-disabled'}"
       >
         <!-- Card header -->
         <div class="flex justify-between items-start gap-3 mb-3">
           <div class="flex items-baseline gap-2">
-            <span class="page-eyebrow">{dayStr}</span>
+            <span class="eyebrow">{dayStr}</span>
             <span style="font-size: 13px; font-weight: 500; color: var(--text);">{dateStr}</span>
           </div>
           <div class="flex gap-1.5 shrink-0">

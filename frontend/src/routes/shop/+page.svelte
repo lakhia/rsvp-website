@@ -36,7 +36,7 @@
 </svelte:head>
 
 <div class="page-header">
-  <div class="page-eyebrow mb-1">Shopping</div>
+  <div class="eyebrow mb-1">Shopping</div>
   <h1>Week of {getDisplayDate(startDate)}</h1>
 </div>
 

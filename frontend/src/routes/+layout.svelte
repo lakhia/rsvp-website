@@ -26,11 +26,11 @@
   const navItems = $derived(ALL_NAV.filter((n) => !n.adminOnly || admin));
 
   $effect(() => {
-    const _ = page.url.pathname;
+    const routeId = page.route.id;
     loggedIn = isLoggedIn();
     admin = isAdmin();
     menuBig = localStorage.getItem('menuBig') === '1';
-    if (page.route.id !== '/login' && !loggedIn) {
+    if (routeId !== '/login' && !loggedIn) {
       navigate('/login');
     }
   });

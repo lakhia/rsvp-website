@@ -86,7 +86,7 @@ body {
   /* ── Page layout ─────────────────────────────────────── */
   .page-header {
     margin-top: -0.75rem;
-    padding: 1.25rem 2rem 1rem;
+    padding: 0.75rem 1rem;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
   }
@@ -193,6 +193,12 @@ body {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 10px;
+  }
+  .card-disabled {
+    opacity: 0.85;
+    background: transparent;
+    border-style: dashed;
+    border-color: var(--border-strong);
   }
   .card-today {
     border: 1.5px solid var(--accent) !important;
@@ -423,14 +429,6 @@ body {
   .eyebrow {
     font-size: 11px;
     letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 600;
-  }
-
-  .page-eyebrow {
-    font-size: 10px;
-    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--muted);
     font-weight: 600;

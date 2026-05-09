@@ -7,6 +7,7 @@
   import Message from '$lib/Message.svelte';
   import PageNav from '$lib/PageNav.svelte';
   import { getIntParam } from '$lib/utils.js';
+  import { SIZE_ORDER } from '$lib/constants.js';
 
   const ps = new PageState();
 
@@ -26,8 +27,7 @@
   let areaFilter = $state('');
 
   // Keep inputs in sync when URL changes (e.g. browser back/forward)
-  $effect(() => { q = urlQ; });
-  $effect(() => { areaFilter = urlArea; });
+  $effect(() => { q = urlQ; areaFilter = urlArea; });;
 
   // Load data whenever URL params change
   $effect(() => {
@@ -94,7 +94,7 @@
 <div class="page-header">
   <div class="flex items-end justify-between gap-6">
     <div>
-      <div class="page-eyebrow mb-1">Admin · Families</div>
+      <div class="eyebrow mb-1">Admin · Families</div>
       <h1>
         Families
       </h1>
@@ -118,7 +118,7 @@
     bind:value={q}
     onkeydown={(e) => e.key === 'Enter' && submitSearch()}
     onblur={submitSearch}
-    placeholder="Search name, ITS, email…"
+    placeholder="Search name, ITS, email"
     class="filter-input"
   />
   <label class="label-row">
@@ -142,7 +142,7 @@
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 py-4">
     {#each families as f}
       {@const isIncomplete = !f.its || !f.phone || !f.poc}
-      <div class="card family-card">
+      <div class="card py-3.5 px-4">
         <!-- Top row: number badge + name + incomplete dot -->
         <div class="flex items-start gap-3 mb-2.5">
           <div class="thaali-badge">
@@ -191,7 +191,7 @@
         <!-- Field grid + size -->
         <div class="field-section">
           <div class="field-grid">
-            <div class="page-eyebrow">Email</div>
+            <div class="eyebrow">Email</div>
             <input
               type="email"
               bind:value={f.email}
@@ -199,7 +199,7 @@
               placeholder="—"
               class="input-inline input-mono"
             />
-            <div class="page-eyebrow">Phone</div>
+            <div class="eyebrow">Phone</div>
             <input
               type="text"
               bind:value={f.phone}
@@ -207,7 +207,7 @@
               placeholder="—"
               class="input-inline input-mono"
             />
-            <div class="page-eyebrow">ITS</div>
+            <div class="eyebrow">ITS</div>
             <input
               type="text"
               bind:value={f.its}
@@ -215,7 +215,7 @@
               placeholder="——"
               class="input-inline input-tabular"
             />
-            <div class="page-eyebrow">POC</div>
+            <div class="eyebrow">POC</div>
             <input
               type="text"
               bind:value={f.poc}
@@ -224,11 +224,9 @@
               class="input-inline"
               style="font-size: 12.5px;"
             />
-          </div>
-          <div class="flex items-center gap-2 mt-2.5">
-            <div class="page-eyebrow">Size</div>
+            <div class="eyebrow">Size</div>
             <div class="flex gap-1">
-              {#each ['XS', 'SM', 'MD', 'LG', 'XL'] as s}
+              {#each SIZE_ORDER as s}
                 <button
                   onclick={() => { f.size = s; dirty = true; }}
                   class="round-size-btn {f.size === s ? 'active' : ''}"
@@ -266,8 +264,6 @@
     width: 52px;
     text-align: center;
   }
-
-  .family-card { padding: 14px 16px; }
 
   .thaali-badge {
     width: 34px;

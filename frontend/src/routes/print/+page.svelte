@@ -8,6 +8,7 @@
   import Dialog from '$lib/Dialog.svelte';
   import PageNav from '$lib/PageNav.svelte';
   import { getIntParam } from '$lib/utils.js';
+  import { SIZE_ORDER } from '$lib/constants.js';
 
   const ps = new PageState();
 
@@ -33,7 +34,7 @@
     loadData(offset);
   });
 
-  let warnedDate = '';
+  let warnedDate = $state('');
 
   function applyResponse(res, defaultMsg = '') {
     rows = res.data || [];
@@ -109,8 +110,6 @@
     [...new Set(rows.map((r) => r.area).filter(Boolean))].sort()
   );
 
-  const SIZE_ORDER = ['XL', 'LG', 'MD', 'SM', 'XS'];
-
   const sizes = $derived(
     [...new Set(rows.map((r) => r.size).filter(Boolean))].sort(
       (a, b) => SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b)
@@ -130,7 +129,8 @@
 
   const filledCount = $derived(rows.filter((r) => r.filled).length);
   const filledPct = $derived(rows.length ? filledCount / rows.length : 0);
-  const ringCircum = 2 * Math.PI * 26;
+  const RING_RADIUS = 26;
+  const ringCircum = 2 * Math.PI * RING_RADIUS;
 
   const shownCount = $derived(filteredRows.length);
 
@@ -219,39 +219,39 @@
   <title>{__APP_NAME__} - Print</title>
 </svelte:head>
 
+<!-- Floating progress ring -->
+{#if !meta.niyaz && rows.length > 0}
+  <div class="progress-ring no-print" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 50;">
+    <svg viewBox="0 0 68 68" width="100%" height="100%">
+      <circle cx="34" cy="34" r={RING_RADIUS} stroke="var(--border-strong)" stroke-width="4" fill="none"/>
+      <circle cx="34" cy="34" r={RING_RADIUS} stroke="var(--accent)" stroke-width="4" fill="none"
+        stroke-dasharray="{ringCircum}"
+        stroke-dashoffset="{ringCircum * (1 - filledPct)}"
+        transform="rotate(-90 34 34)"
+        stroke-linecap="round"/>
+    </svg>
+    <div style="position: absolute; inset: 0; display: grid; place-items: center; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums;">
+      {Math.round(filledPct * 100)}%
+    </div>
+  </div>
+{/if}
+
 <!-- Page header -->
 <div class="page-header no-print">
   <div class="flex items-center gap-4 flex-wrap">
-    <!-- Left group: ring + title always wrap together -->
-    <div style="flex: 1; min-width: 0; display: flex; align-items: center; gap: 16px;">
+    <!-- Left group: title -->
+    <div style="flex: 1; min-width: 0;">
+      <div class="eyebrow mb-0.5">{getDisplayDate(date)}</div>
+      <h1>{menuTitle}</h1>
       {#if !meta.niyaz && rows.length > 0}
-        <div style="position: relative; width: 68px; height: 68px; flex-shrink: 0;">
-          <svg width="68" height="68">
-            <circle cx="34" cy="34" r="26" stroke="var(--border-strong)" stroke-width="4" fill="none"/>
-            <circle cx="34" cy="34" r="26" stroke="var(--accent)" stroke-width="4" fill="none"
-              stroke-dasharray="{ringCircum}"
-              stroke-dashoffset="{ringCircum * (1 - filledPct)}"
-              transform="rotate(-90 34 34)"
-              stroke-linecap="round"/>
-          </svg>
-          <div style="position: absolute; inset: 0; display: grid; place-items: center; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums;">
-            {Math.round(filledPct * 100)}%
-          </div>
+        <div class="page-subtitle">
+          <b class="text-content">{filledCount}</b> filled ·
+          {rows.length - filledCount} to go ·
+          {rows.length} RSVPs total
         </div>
+      {:else if meta.niyaz}
+        <div class="page-subtitle">{niyazSummary}</div>
       {/if}
-      <div style="min-width: 0;">
-        <div class="eyebrow mb-0.5">Kitchen · {getDisplayDate(date)}</div>
-        <h1 class="truncate" style="font-size: 20px; margin-bottom: 3px;">{menuTitle}</h1>
-        {#if !meta.niyaz && rows.length > 0}
-          <div class="page-subtitle" style="margin: 0;">
-            <b class="text-content">{filledCount}</b> filled ·
-            {rows.length - filledCount} to go ·
-            {rows.length} RSVPs total
-          </div>
-        {:else if meta.niyaz}
-          <div class="page-subtitle" style="margin: 0;">{niyazSummary}</div>
-        {/if}
-      </div>
     </div>
 
     <!-- Right group: size buttons + print labels wrap together and fill row when alone -->
@@ -458,3 +458,19 @@
     </button>
   {/if}
 </PageNav>
+
+<style>
+  .progress-ring {
+    width: 68px;
+    height: 68px;
+  }
+  @media (max-width: 480px) {
+    .progress-ring {
+      width: 44px;
+      height: 44px;
+    }
+    .progress-ring div {
+      font-size: 11px;
+    }
+  }
+</style>
