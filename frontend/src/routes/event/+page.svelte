@@ -67,12 +67,12 @@
 </svelte:head>
 
 <!-- Page header -->
-<div class="page-header px-8 pt-5 pb-4">
+<div class="page-header">
   <div class="flex items-end justify-between gap-6">
     <div>
       <div class="page-eyebrow mb-1">Admin · Events</div>
       <h1>Week of {getDisplayDate(startDate)}</h1>
-      <div class="page-subtitle mt-1">
+      <div class="page-subtitle">
         Set the menu for the week.
         <b class="text-content">{enabledCount}</b> of {events.length} days enabled ·
         <b class="text-content">{niyazCount}</b> niyaz.
@@ -101,7 +101,7 @@
 {#if ps.loading}
   <Loading />
 {:else}
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 px-8 py-5">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 py-5">
     {#each events as ev}
       {@const [dayStr, dateStr] = getDisplayDate(ev.date).split(', ')}
       <div

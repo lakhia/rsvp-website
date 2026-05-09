@@ -87,7 +87,7 @@
   </nav>
 
   <main
-    class="transition-all duration-200 p-3 overflow-x-hidden"
+    class="transition-all duration-200 py-3 pr-3 overflow-x-hidden"
     style="margin-left: {menuBig ? '140px' : '56px'}; min-height: 100vh; background: var(--bg);"
   >
     {@render children()}

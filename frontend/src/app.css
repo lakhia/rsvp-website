@@ -85,7 +85,8 @@ body {
 @layer components {
   /* ── Page layout ─────────────────────────────────────── */
   .page-header {
-    margin: -0.75rem -0.75rem 0;
+    margin-top: -0.75rem;
+    padding: 1.25rem 2rem 1rem;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
   }
@@ -171,7 +172,7 @@ body {
   }
 
   .select-filter { @apply w-full text-xs bg-transparent focus:outline-none; }
-  .label-row { @apply flex items-center gap-0.5; }
+  .label-row { @apply flex items-center gap-0.5; font-size: 0.75rem; color: var(--muted); }
   .label-count { @apply flex flex-col sm:flex-row sm:items-center gap-0.5 text-xs; }
 
   .filter-input {

@@ -158,7 +158,7 @@
 </svelte:head>
 
 <!-- Page header -->
-<div class="page-header mb-5 px-8 pt-5 pb-4">
+<div class="page-header mb-5">
   <div class="flex items-end justify-between gap-6 flex-wrap">
     <div>
       {#if weekNum}

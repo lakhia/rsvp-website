@@ -57,6 +57,7 @@
   }
 
   function submitSearch() {
+    if (q === urlQ && areaFilter === urlArea) return;
     const params = new URLSearchParams();
     if (q) params.set('q', q);
     if (areaFilter) params.set('area', areaFilter);
@@ -90,15 +91,14 @@
 </svelte:head>
 
 <!-- Page header -->
-<div class="page-header px-8 pt-5 pb-4">
+<div class="page-header">
   <div class="flex items-end justify-between gap-6">
     <div>
       <div class="page-eyebrow mb-1">Admin · Families</div>
       <h1>
         Families
-        <span class="heading-count">· {families.length}</span>
       </h1>
-      <div class="page-subtitle mt-1">
+      <div class="page-subtitle">
         {#if incomplete > 0}
           <b class="warning-count">{incomplete}</b> with missing details ·
         {/if}
@@ -117,15 +117,17 @@
     type="search"
     bind:value={q}
     onkeydown={(e) => e.key === 'Enter' && submitSearch()}
+    onblur={submitSearch}
     placeholder="Search name, ITS, email…"
     class="filter-input"
   />
-  <label class="label-row text-xs text-muted">
+  <label class="label-row">
     Area
     <input
       type="text"
       bind:value={areaFilter}
       onkeydown={(e) => e.key === 'Enter' && submitSearch()}
+      onblur={submitSearch}
       placeholder="All"
       class="input-sm area-filter"
     />
@@ -137,7 +139,7 @@
 {#if ps.loading}
   <Loading />
 {:else}
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 px-8 py-4">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 py-4">
     {#each families as f}
       {@const isIncomplete = !f.its || !f.phone || !f.poc}
       <div class="card family-card">
@@ -189,7 +191,7 @@
         <!-- Field grid + size -->
         <div class="field-section">
           <div class="field-grid">
-            <div class="field-label">Email</div>
+            <div class="page-eyebrow">Email</div>
             <input
               type="email"
               bind:value={f.email}
@@ -197,7 +199,7 @@
               placeholder="—"
               class="input-inline input-mono"
             />
-            <div class="field-label">Phone</div>
+            <div class="page-eyebrow">Phone</div>
             <input
               type="text"
               bind:value={f.phone}
@@ -205,7 +207,7 @@
               placeholder="—"
               class="input-inline input-mono"
             />
-            <div class="field-label">ITS</div>
+            <div class="page-eyebrow">ITS</div>
             <input
               type="text"
               bind:value={f.its}
@@ -213,17 +215,18 @@
               placeholder="——"
               class="input-inline input-tabular"
             />
-            <div class="field-label">POC</div>
+            <div class="page-eyebrow">POC</div>
             <input
               type="text"
               bind:value={f.poc}
               oninput={() => (dirty = true)}
               placeholder="Unassigned"
-              class="input-inline input-data"
+              class="input-inline"
+              style="font-size: 12.5px;"
             />
           </div>
           <div class="flex items-center gap-2 mt-2.5">
-            <div class="field-label">Size</div>
+            <div class="page-eyebrow">Size</div>
             <div class="flex gap-1">
               {#each ['XS', 'SM', 'MD', 'LG', 'XL'] as s}
                 <button
@@ -252,13 +255,6 @@
 />
 
 <style>
-  .heading-count {
-    color: var(--muted);
-    font-weight: 400;
-    font-size: 18px;
-    margin-left: 6px;
-  }
-
   .warning-count { color: #b45309; }
 
   .filter-bar {
@@ -334,16 +330,6 @@
   .input-tabular {
     font-size: 12.5px;
     font-variant-numeric: tabular-nums;
-  }
-
-  .input-data { font-size: 12.5px; }
-
-  .field-label {
-    font-size: 10px;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 600;
   }
 
   .field-grid {

@@ -97,6 +97,9 @@
       if (f.here === 'N' && r.here) continue;
       if (f.filled === 'Y' && !r.filled) continue;
       if (f.filled === 'N' && r.filled) continue;
+      const riceVal = r['bread+rice'];
+      if (f.rice === 'Y' && riceVal) continue;
+      if (f.rice === 'N' && !riceVal) continue;
       counts[r.size] = (counts[r.size] ?? 0) + 1;
     }
     return counts;
@@ -139,16 +142,10 @@
     Object.keys(meta.serving ?? {}).join(' + ') || getDisplayDate(date)
   );
 
-  const currentStatus = $derived(
-    filters.filled === '' ? 'all' : filters.filled === 'N' ? 'unfilled' : 'filled'
-  );
   const currentTiffin = $derived(
     filters.here === '' ? 'All' : filters.here === 'Y' ? 'here' : 'tupperware'
   );
 
-  function setStatus(val) {
-    filters.filled = val === 'all' ? '' : val === 'filled' ? 'Y' : 'N';
-  }
   function setTiffin(val) {
     filters.here = val === 'All' ? '' : val === 'here' ? 'Y' : 'N';
   }
@@ -223,7 +220,7 @@
 </svelte:head>
 
 <!-- Page header -->
-<div class="page-header px-7 pt-4 pb-3.5 no-print">
+<div class="page-header no-print">
   <div class="flex items-center gap-4 flex-wrap">
     <!-- Left group: ring + title always wrap together -->
     <div style="flex: 1; min-width: 0; display: flex; align-items: center; gap: 16px;">
@@ -340,11 +337,14 @@
   <!-- Filter bar -->
   {#if !meta.niyaz}
     <div class="flex flex-wrap items-center gap-2 py-2.5 px-1 mb-3 no-print" style="border-bottom: 1px solid var(--border);">
-      <!-- Status segmented control -->
+      <!-- Unfilled toggle -->
       <div class="segmented">
-        {#each [['all','All'],['unfilled','To fill'],['filled','Filled']] as [key, label]}
-          <button class="{currentStatus === key ? 'active' : ''}" onclick={() => setStatus(key)}>{label}</button>
-        {/each}
+        <button class="{filters.filled === 'N' ? 'active' : ''}" onclick={() => { filters.filled = filters.filled === 'N' ? '' : 'N'; }}>Unfilled</button>
+      </div>
+
+      <!-- With Rice toggle -->
+      <div class="segmented">
+        <button class="{filters.rice === 'Y' ? 'active' : ''}" onclick={() => { filters.rice = filters.rice === 'Y' ? '' : 'Y'; }}>With Rice</button>
       </div>
 
       <!-- Tiffin segmented control -->
@@ -355,7 +355,7 @@
       </div>
 
       <!-- Sort -->
-      <label class="label-row text-xs text-muted">
+      <label class="label-row">
         Sort:
         <select bind:value={sortCol} class="input-sm text-xs">
           <option value=""></option>
@@ -371,7 +371,7 @@
 
       <!-- Area filter -->
       {#if areas.length > 1}
-        <label class="label-row text-xs text-muted">
+        <label class="label-row">
           Area:
           <select bind:value={filters.area} class="input-sm text-xs">
             <option value="">All</option>
@@ -384,7 +384,7 @@
 
       <span class="count-label">{shownCount} of {rows.length}</span>
 
-      {#if meta.save && shownCount > 0 && currentStatus !== 'filled'}
+      {#if meta.save && shownCount > 0}
         <button onclick={markAllFilled} class="btn-primary" style="font-size: 11px; font-weight: 600; padding: 6px 12px;">
           Fill all shown ✓
         </button>
@@ -406,6 +406,9 @@
             <span class="text-sm">{item.size}</span>
           {:else}
             <span class="sz sz-{item.size}">{item.size ?? ''}</span>
+            {#if item['bread+rice']}
+              <span class="tag tag-accent">no rice</span>
+            {/if}
             <span style="flex: 1;"></span>
             <button
               onclick={() => { item.here = item.here ? 0 : 1; onCheckboxChange(item); }}

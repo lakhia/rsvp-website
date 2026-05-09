@@ -35,13 +35,15 @@
   <title>{__APP_NAME__} - Shopping</title>
 </svelte:head>
 
-<div class="page-eyebrow mb-1">Shopping</div>
-<h2>Week of {getDisplayDate(startDate)}</h2>
+<div class="page-header">
+  <div class="page-eyebrow mb-1">Shopping</div>
+  <h1>Week of {getDisplayDate(startDate)}</h1>
+</div>
 
 {#if ps.loading}
   <Loading />
 {:else}
-  <div class="overflow-x-auto">
+  <div class="mt-4">
     <table>
       <thead>
         <tr>
@@ -52,7 +54,7 @@
       </thead>
       <tbody>
         {#each entries as [date, value], i}
-          <tr class="align-top">
+          <tr class="align-top {date === 'Total' ? 'total-row' : ''}">
             <td class="whitespace-nowrap">
               {date === 'Total' ? 'Total' : getDisplayDate(date)}
             </td>
@@ -72,9 +74,9 @@
             </td>
             <td>
               {#each Object.entries(value.count ?? {}) as [k, v]}
-                <div>
-                  <span>{k}:</span>
-                  {v}
+                <div class="flex items-baseline gap-1.5 mb-0.5">
+                  <span class="count-key">{k}</span>
+                  <span>{v}</span>
                 </div>
               {/each}
             </td>
@@ -86,6 +88,21 @@
 {/if}
 
 <Message msg={ps.msg} msgType={ps.msgType} />
+
+<style>
+  .count-key {
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .total-row {
+    border-top: 2px solid var(--border-strong) !important;
+  }
+</style>
 
 <PageNav
   onPrev={() => navigate(`/shop?offset=${offset - 7}`)}
