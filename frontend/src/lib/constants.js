@@ -1,1 +1,1 @@
-export const SIZE_ORDER = ['XL', 'LG', 'MD', 'SM', 'XS'];
+export const SIZE_ORDER = ['XS', 'SM', 'MD', 'LG', 'XL'];

@@ -7,7 +7,7 @@
   import Message from '$lib/Message.svelte';
   import Dialog from '$lib/Dialog.svelte';
   import PageNav from '$lib/PageNav.svelte';
-  import { getIntParam } from '$lib/utils.js';
+  import { getIntParam, paginateUrl, dateToOffset } from '$lib/utils.js';
 
   const ps = new PageState();
 
@@ -21,9 +21,10 @@
   const dateParam = $derived(page.url.searchParams.get('date') || '');
   const hasDirty = $derived(Object.keys(dirty).length > 0);
   const todayStr = new Date().toLocaleDateString('en-CA');
+  const effectiveOffset = $derived(dateParam ? dateToOffset(dateParam) : offset);
 
   $effect(() => {
-    loadData(offset, dateParam);
+    loadData(effectiveOffset);
   });
 
   $effect(() => {
@@ -42,9 +43,9 @@
     if (hasDirty) e.preventDefault();
   }
 
-  async function loadData(o, d) {
+  async function loadData(o) {
     await ps.load(async () => {
-      const res = await get('rsvp.php', { offset: o, date: d });
+      const res = await get('rsvp.php', { offset: o });
       events = res.data || [];
       sizes = res.other || [];
       ps.msg = res.msg || '';
@@ -112,7 +113,7 @@
       }
     }
     await ps.save(async () => {
-      const res = await post('rsvp.php', { offset }, body);
+      const res = await post('rsvp.php', { offset: effectiveOffset }, body);
       events = res.data || [];
       sizes = res.other || [];
       ps.msg = res.msg || 'Saved';
@@ -121,13 +122,7 @@
   }
 
   function paginate(delta) {
-    if (dateParam) {
-      const d = new Date(dateParam + 'T00:00:00');
-      d.setDate(d.getDate() + delta * 7);
-      navigate(`/?date=${d.toISOString().split('T')[0]}`);
-    } else {
-      navigate(`/?offset=${offset + delta}`);
-    }
+    navigate(paginateUrl('/', dateParam, offset, delta));
   }
 
   function formatCardDate(dateStr) {

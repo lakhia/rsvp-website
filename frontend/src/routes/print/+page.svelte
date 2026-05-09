@@ -7,7 +7,7 @@
   import Message from '$lib/Message.svelte';
   import Dialog from '$lib/Dialog.svelte';
   import PageNav from '$lib/PageNav.svelte';
-  import { getIntParam } from '$lib/utils.js';
+  import { getIntParam, paginateUrl, dateToOffset } from '$lib/utils.js';
   import { SIZE_ORDER } from '$lib/constants.js';
 
   const ps = new PageState();
@@ -29,9 +29,12 @@
   });
 
   const offset = $derived(getIntParam(page.url.searchParams, 'offset'));
+  const dateParam = $derived(page.url.searchParams.get('date') || '');
+
+  const effectiveOffset = $derived(dateParam ? dateToOffset(dateParam) : offset);
 
   $effect(() => {
-    loadData(offset);
+    loadData(effectiveOffset);
   });
 
   let warnedDate = $state('');
@@ -160,7 +163,7 @@
       filled: r.filled ? 1 : 0,
     }));
     await ps.save(async () => {
-      const res = await post('print.php', { offset }, body);
+      const res = await post('print.php', { offset: effectiveOffset }, body);
       applyResponse(res, 'Saved');
       dirty = false;
     });
@@ -189,6 +192,10 @@
       filterRice: filters.rice,
     });
     window.open(__BASE_PATH__ + '/generate_labels.php?' + params.toString());
+  }
+
+  function paginate(delta) {
+    navigate(paginateUrl('/print', dateParam, offset, delta));
   }
 
   const servingEntries = $derived(Object.entries(meta.serving ?? {}));
@@ -445,8 +452,8 @@
 {/if}
 
 <PageNav
-  onPrev={() => navigate(`/print?offset=${offset - 1}`)}
-  onNext={() => navigate(`/print?offset=${offset + 1}`)}
+  onPrev={() => paginate(-1)}
+  onNext={() => paginate(1)}
   onSave={meta.save ? handleSave : null}
   {dirty}
   saving={ps.saving}
