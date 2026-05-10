@@ -25,7 +25,7 @@ function print_filling($db, $from, $offset, $msg = "")
         // Get RSVP and family
         $query =
             "SELECT thaali_id as thaali, CONCAT(firstName, ' ', lastName) AS name, " .
-            "adults, kids, rsvps.size, area, here, filled, lessRice FROM rsvps " .
+            "adults, kids, rsvps.size, area, here, filled, lessRice AS norice FROM rsvps " .
             "LEFT JOIN `family` on family.thaali = rsvps.thaali_id " .
             "WHERE `rsvp` = 1 AND `date` = '" .
             $from .
@@ -42,13 +42,6 @@ function print_filling($db, $from, $offset, $msg = "")
                 unset($row["adults"]);
                 unset($row["kids"]);
             }
-
-            // Convert lessRice boolean to text
-            if ($row["lessRice"] == 1) {
-                $row["bread+rice"] = "No";
-            }
-            unset($row["lessRice"]);
-
             $rows[] = $row;
         }
     }

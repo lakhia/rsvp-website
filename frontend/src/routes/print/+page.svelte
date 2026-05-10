@@ -8,7 +8,7 @@
   import Dialog from '$lib/Dialog.svelte';
   import PageNav from '$lib/PageNav.svelte';
   import { getIntParam, paginateUrl, dateToOffset } from '$lib/utils.js';
-  import { SIZE_ORDER } from '$lib/constants.js';
+  import { SIZE_ORDER, SIZE_WEIGHT } from '$lib/constants.js';
 
   const ps = new PageState();
 
@@ -25,7 +25,7 @@
     size: '',
     here: '',
     filled: '',
-    rice: '',
+    norice: '',
   });
 
   const offset = $derived(getIntParam(page.url.searchParams, 'offset'));
@@ -75,49 +75,38 @@
     ps.msg = '';
   }
 
-  const filteredRows = $derived.by(() => {
-    const f = filters;
-    return rows.filter((item) => {
-      if (f.area && item.area !== f.area) return false;
-      if (f.size && item.size !== f.size) return false;
-      if (f.here === 'Y' && !item.here) return false;
-      if (f.here === 'N' && item.here) return false;
-      if (f.filled === 'Y' && !item.filled) return false;
-      if (f.filled === 'N' && item.filled) return false;
-      const riceVal = item['bread+rice'];
-      if (f.rice === 'Y' && riceVal) return false;
-      if (f.rice === 'N' && !riceVal) return false;
-      return true;
-    });
-  });
+  function applyFilters(r, f, skip = null) {
+    if (skip !== 'area' && f.area && r.area !== f.area) return false;
+    if (skip !== 'size' && f.size && r.size !== f.size) return false;
+    if (f.here === 'Y' && !r.here) return false;
+    if (f.here === 'N' && r.here) return false;
+    if (f.filled === 'Y' && !r.filled) return false;
+    if (f.filled === 'N' && r.filled) return false;
+    if (f.norice === 'N' && r.norice) return false;
+    return true;
+  }
+
+  const filteredRows = $derived(rows.filter((r) => applyFilters(r, filters)));
 
   // Size counts that update with all filters except size itself
   const sizeCountsFiltered = $derived.by(() => {
-    const f = filters;
     const counts = {};
     for (const r of rows) {
-      if (f.area && r.area !== f.area) continue;
-      if (f.here === 'Y' && !r.here) continue;
-      if (f.here === 'N' && r.here) continue;
-      if (f.filled === 'Y' && !r.filled) continue;
-      if (f.filled === 'N' && r.filled) continue;
-      const riceVal = r['bread+rice'];
-      if (f.rice === 'Y' && riceVal) continue;
-      if (f.rice === 'N' && !riceVal) continue;
+      if (!applyFilters(r, filters, 'size')) continue;
       counts[r.size] = (counts[r.size] ?? 0) + 1;
     }
     return counts;
   });
 
-  const areas = $derived(
-    [...new Set(rows.map((r) => r.area).filter(Boolean))].sort()
+  const areasFiltered = $derived(
+    [...new Set(rows.filter((r) => applyFilters(r, filters, 'area')).map((r) => r.area).filter(Boolean))].sort()
   );
 
-  const sizes = $derived(
-    [...new Set(rows.map((r) => r.size).filter(Boolean))].sort(
-      (a, b) => SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b)
-    )
-  );
+  $effect(() => {
+    if (filters.area && !areasFiltered.includes(filters.area)) {
+      filters.area = '';
+    }
+  });
 
   const sortedRows = $derived.by(() => {
     return [...filteredRows].sort((a, b) => {
@@ -131,8 +120,10 @@
   });
 
   const filledCount = $derived(rows.filter((r) => r.filled).length);
-  const filledPct = $derived(rows.length ? filledCount / rows.length : 0);
-  const RING_RADIUS = 26;
+  const weightedTotal = $derived(rows.reduce((s, r) => s + (SIZE_WEIGHT[r.size] ?? 1), 0));
+  const weightedFilled = $derived(rows.filter((r) => r.filled).reduce((s, r) => s + (SIZE_WEIGHT[r.size] ?? 1), 0));
+  const filledPct = $derived(weightedTotal ? weightedFilled / weightedTotal : 0);
+  const RING_RADIUS = 32;
   const ringCircum = 2 * Math.PI * RING_RADIUS;
 
   const shownCount = $derived(filteredRows.length);
@@ -189,7 +180,7 @@
       filterSize: filters.size,
       filterHere: filters.here,
       filterFilled: filters.filled,
-      filterRice: filters.rice,
+      filterNorice: filters.norice,
     });
     window.open(__BASE_PATH__ + '/generate_labels.php?' + params.toString());
   }
@@ -351,7 +342,7 @@
 
       <!-- With Rice toggle -->
       <div class="segmented">
-        <button class="{filters.rice === 'Y' ? 'active' : ''}" onclick={() => { filters.rice = filters.rice === 'Y' ? '' : 'Y'; }}>With Rice</button>
+        <button class="{filters.norice === 'N' ? 'active' : ''}" onclick={() => { filters.norice = filters.norice === 'N' ? '' : 'N'; }}>With Rice</button>
       </div>
 
       <!-- Tiffin segmented control -->
@@ -372,20 +363,18 @@
           <option value="name">Name</option>
           <option value="here">Tiffin</option>
           <option value="filled">Filled</option>
-          <option value="bread+rice">Rice</option>
+          <option value="norice">No Rice</option>
         </select>
       </label>
 
       <!-- Area filter -->
-      {#if areas.length > 1}
-        <label class="label-row">
-          Area:
-          <select bind:value={filters.area} class="input-sm text-xs">
-            <option value="">All</option>
-            {#each areas as area}<option value={area}>{area}</option>{/each}
-          </select>
-        </label>
-      {/if}
+      <label class="label-row">
+        Area:
+        <select bind:value={filters.area} class="input-sm text-xs">
+          <option value="">All</option>
+          {#each areasFiltered as area}<option value={area}>{area}</option>{/each}
+        </select>
+      </label>
 
       <div style="flex: 1;"></div>
 
@@ -393,7 +382,7 @@
 
       {#if meta.save && shownCount > 0}
         <button onclick={markAllFilled} class="btn-primary" style="font-size: 11px; font-weight: 600; padding: 6px 12px;">
-          Fill all shown ✓
+          Fill all shown
         </button>
       {/if}
     </div>
@@ -413,7 +402,7 @@
             <span class="text-sm">{item.size}</span>
           {:else}
             <span class="sz sz-{item.size}">{item.size ?? ''}</span>
-            {#if item['bread+rice']}
+            {#if item.norice}
               <span class="tag tag-accent">no rice</span>
             {/if}
             <span style="flex: 1;"></span>

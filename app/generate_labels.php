@@ -13,7 +13,7 @@ $filterArea   = $_GET['filterArea'] ?? '';
 $filterSize   = $_GET['filterSize'] ?? '';
 $filterHere   = $_GET['filterHere'] ?? '';
 $filterFilled = $_GET['filterFilled'] ?? '';
-$filterRice   = $_GET['filterRice'] ?? '';
+$filterNorice = $_GET['filterNorice'] ?? '';
 $sort         = $_GET['sort'] ?? '';
 
 // Event details
@@ -55,9 +55,9 @@ if ($filterFilled !== '') {
     $params[] = $filterFilled === 'Y' ? 1 : 0;
     $types   .= "i";
 }
-if ($filterRice !== '') {
+if ($filterNorice !== '') {
     $where[] = "lessRice = ?";
-    $params[] = $filterRice === 'Y' ? 0 : 1;
+    $params[] = $filterNorice === 'N' ? 0 : 1;
     $types   .= "i";
 }
 $allowedSorts = [
