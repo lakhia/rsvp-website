@@ -136,13 +136,6 @@
     Object.keys(meta.serving ?? {}).join(' + ') || getDisplayDate(date)
   );
 
-  const currentTiffin = $derived(
-    filters.here === '' ? 'All' : filters.here === 'Y' ? 'here' : 'tupperware'
-  );
-
-  function setTiffin(val) {
-    filters.here = val === 'All' ? '' : val === 'here' ? 'Y' : 'N';
-  }
   function toggleSizeFilter(s) {
     filters.size = filters.size === s ? '' : s;
   }
@@ -299,15 +292,15 @@
     </thead>
     <tbody>
       <tr>
-        <td class="serving-cell text-muted">Togo</td>
-        {#each usedSizes as s}
-          <td class="serving-cell">{sizeSummary.togo[s] ?? 0}</td>
-        {/each}
-      </tr>
-      <tr>
         <td class="serving-cell text-muted">Tiffins</td>
         {#each usedSizes as s}
           <td class="serving-cell">{sizeSummary.tiffins[s] ?? 0}</td>
+        {/each}
+      </tr>
+      <tr>
+        <td class="serving-cell text-muted">Togo</td>
+        {#each usedSizes as s}
+          <td class="serving-cell">{sizeSummary.togo[s] ?? 0}</td>
         {/each}
       </tr>
       <tr style="border-bottom: 2px solid var(--border);">
@@ -347,8 +340,8 @@
 
       <!-- Tiffin segmented control -->
       <div class="segmented">
-        {#each [['All','All'],['here','Tiffin'],['tupperware','Togo']] as [key, label]}
-          <button class="{currentTiffin === key ? 'active' : ''}" onclick={() => setTiffin(key)}>{label}</button>
+        {#each [['','All'],['Y','Tiffin'],['N','Togo']] as [key, label]}
+          <button class="{filters.here === key ? 'active' : ''}" onclick={() => filters.here = key}>{label}</button>
         {/each}
       </div>
 

@@ -51,7 +51,7 @@
       ps.msg = res.msg || '';
       dirty = {};
       if (sizes.length && (!weekSize || !sizes.includes(weekSize))) {
-        weekSize = sizes[0];
+        weekSize = sizes[sizes.length - 2] ?? sizes[0];
       }
     });
   }
@@ -234,7 +234,7 @@
           <div class="card-footer">
             {#if ev.niyaz}
               <!-- Count stepper for niyaz events -->
-              <div class="flex gap-4">
+              <div class="flex gap-4 justify-end w-full">
                 <div class="flex items-center gap-1.5">
                   <button
                     onclick={() => { ev.adults = Math.max(0, (ev.adults ?? 0) - 1); onCountChange(ev); }}

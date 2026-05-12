@@ -38,5 +38,4 @@ export function logout() {
   clearCookie('thaali');
   clearCookie('email');
   clearCookie('adv');
-  localStorage.clear();
 }
