@@ -23,6 +23,8 @@ sub wanted {
         php_helper($_);
     } elsif (m/index\.html/) {
         html($_);
+    } elsif (m/\.htaccess/) {
+        htaccess_config($_);
     }
 }
 
@@ -84,6 +86,21 @@ sub php_helper {
     open OUT, ">$_.backup" or die "Cannot open $!";
     while ($line = <IN>) {
         $line =~ s/admin\@sfjamaat.org/$config{EMAIL_ADMIN}/;
+        print OUT $line;
+    }
+    close OUT;
+    close IN;
+    rename "$_.backup", $_;
+}
+
+sub htaccess_config {
+    my $base = $config{BASE_PATH} || '';
+    my $line;
+    $_ = shift;
+    open IN, $_ or die "Cannot open $!";
+    open OUT, ">$_.backup" or die "Cannot open $!";
+    while ($line = <IN>) {
+        $line =~ s|BASE_PATH|$base|g;
         print OUT $line;
     }
     close OUT;
