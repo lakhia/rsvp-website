@@ -113,6 +113,7 @@
       const av = a[sortCol] ?? '';
       const bv = b[sortCol] ?? '';
       if (sortCol === 'size') {
+        if (meta.niyaz) return (a.count ?? 0) - (b.count ?? 0);
         return SIZE_ORDER.indexOf(av) - SIZE_ORDER.indexOf(bv);
       }
       return av < bv ? -1 : av > bv ? 1 : 0;
@@ -129,7 +130,7 @@
   const shownCount = $derived(filteredRows.length);
 
   const niyazSummary = $derived(
-    `Adults: ${meta.adults ?? 0}, Kids: ${meta.kids ?? 0}`
+    `Adults: ${meta.adults ?? 0}, Kids: ${meta.kids ?? 0}, Thaals: ${Math.round(((meta.adults ?? 0) / 8 + (meta.kids ?? 0) / 10) * 10) / 10}`
   );
 
   const menuTitle = $derived(
@@ -165,6 +166,11 @@
     confirmingReset = false;
   }
 
+  function exportCSV() {
+    const params = new URLSearchParams({ table: 'rsvps', date });
+    window.open(__BASE_PATH__ + '/dump.php?' + params.toString());
+  }
+
   function generateLabels() {
     const params = new URLSearchParams({
       date,
@@ -184,11 +190,7 @@
 
   const servingEntries = $derived(Object.entries(meta.serving ?? {}));
 
-  const thaals = $derived(
-    Math.round(((meta.adults ?? 0) / 8 + (meta.kids ?? 0) / 10) * 10) / 10
-  );
-
-  const sizeSummary = $derived.by(() => {
+const sizeSummary = $derived.by(() => {
     const togo = {};
     const tiffins = {};
     const total = {};
@@ -260,7 +262,8 @@
           {/each}
         </div>
       {/if}
-      <button onclick={generateLabels} class="btn-dark">Print labels →</button>
+      <button onclick={exportCSV} class="btn-secondary">Export</button>
+      <button onclick={generateLabels} class="btn-dark">Print labels</button>
     </div>
   </div>
 </div>
@@ -274,76 +277,75 @@
 {/if}
 
 <!-- Serving guidance -->
-{#if meta.niyaz}
-  <div class="mt-3 mb-3 px-1 text-sm">
-    <div>{niyazSummary}</div>
-    <div>Thaals: {thaals}</div>
-  </div>
-{:else if servingEntries.length > 0}
+{#if !meta.niyaz && servingEntries.length > 0}
   {@const usedSizes = SIZE_ORDER.filter((s) => sizeSummary.total[s] > 0)}
-  <table class="mt-3 mb-3 no-print text-xs" style="border: 1px solid var(--border);">
-    <thead>
-      <tr>
-        <th class="serving-cell font-medium text-muted"></th>
-        {#each usedSizes as s}
-          <th class="serving-cell font-semibold">{s}</th>
-        {/each}
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="serving-cell text-muted">Tiffins</td>
-        {#each usedSizes as s}
-          <td class="serving-cell">{sizeSummary.tiffins[s] ?? 0}</td>
-        {/each}
-      </tr>
-      <tr>
-        <td class="serving-cell text-muted">Togo</td>
-        {#each usedSizes as s}
-          <td class="serving-cell">{sizeSummary.togo[s] ?? 0}</td>
-        {/each}
-      </tr>
-      <tr style="border-bottom: 2px solid var(--border);">
-        <td class="serving-cell font-medium">Total</td>
-        {#each usedSizes as s}
-          <td class="serving-cell font-medium">{sizeSummary.total[s] ?? 0}</td>
-        {/each}
-      </tr>
-      {#each servingEntries as [menu, portions]}
+  <div style="overflow-x: auto;">
+    <table class="mt-3 mb-3 no-print text-xs" style="border: 1px solid var(--border);">
+      <thead>
         <tr>
-          <td class="serving-cell font-medium">{menu}</td>
+          <th class="serving-cell font-medium text-muted"></th>
           {#each usedSizes as s}
-            {@const match = portions.find((p) => p.startsWith(s + ':'))}
-            <td class="serving-cell">{match ? match.slice(s.length + 2) : ''}</td>
+            <th class="serving-cell font-semibold">{s}</th>
           {/each}
         </tr>
-      {/each}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="serving-cell text-muted">Tiffins</td>
+          {#each usedSizes as s}
+            <td class="serving-cell">{sizeSummary.tiffins[s] ?? 0}</td>
+          {/each}
+        </tr>
+        <tr>
+          <td class="serving-cell text-muted">Togo</td>
+          {#each usedSizes as s}
+            <td class="serving-cell">{sizeSummary.togo[s] ?? 0}</td>
+          {/each}
+        </tr>
+        <tr style="border-bottom: 2px solid var(--border);">
+          <td class="serving-cell font-medium">Total</td>
+          {#each usedSizes as s}
+            <td class="serving-cell font-medium">{sizeSummary.total[s] ?? 0}</td>
+          {/each}
+        </tr>
+        {#each servingEntries as [menu, portions]}
+          <tr>
+            <td class="serving-cell font-medium">{menu}</td>
+            {#each usedSizes as s}
+              {@const match = portions.find((p) => p.startsWith(s + ':'))}
+              <td class="serving-cell">{match ? match.slice(s.length + 2) : ''}</td>
+            {/each}
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+  </div>
 {/if}
 
 {#if ps.loading}
   <Loading />
 {:else}
   <!-- Filter bar -->
-  {#if !meta.niyaz}
+  {#if rows.length > 0}
     <div class="flex flex-wrap items-center gap-2 py-2.5 px-1 mb-3 no-print" style="border-bottom: 1px solid var(--border);">
-      <!-- Unfilled toggle -->
-      <div class="segmented">
-        <button class="{filters.filled === 'N' ? 'active' : ''}" onclick={() => { filters.filled = filters.filled === 'N' ? '' : 'N'; }}>Unfilled</button>
-      </div>
+      {#if !meta.niyaz}
+        <!-- Unfilled toggle -->
+        <div class="segmented">
+          <button class="{filters.filled === 'N' ? 'active' : ''}" onclick={() => { filters.filled = filters.filled === 'N' ? '' : 'N'; }}>Unfilled</button>
+        </div>
 
-      <!-- With Rice toggle -->
-      <div class="segmented">
-        <button class="{filters.norice === 'N' ? 'active' : ''}" onclick={() => { filters.norice = filters.norice === 'N' ? '' : 'N'; }}>With Rice</button>
-      </div>
+        <!-- With Rice toggle -->
+        <div class="segmented">
+          <button class="{filters.norice === 'N' ? 'active' : ''}" onclick={() => { filters.norice = filters.norice === 'N' ? '' : 'N'; }}>With Rice</button>
+        </div>
 
-      <!-- Tiffin segmented control -->
-      <div class="segmented">
-        {#each [['','All'],['Y','Tiffin'],['N','Togo']] as [key, label]}
-          <button class="{filters.here === key ? 'active' : ''}" onclick={() => filters.here = key}>{label}</button>
-        {/each}
-      </div>
+        <!-- Tiffin segmented control -->
+        <div class="segmented">
+          {#each [['','All'],['Y','Tiffin'],['N','Togo']] as [key, label]}
+            <button class="{filters.here === key ? 'active' : ''}" onclick={() => filters.here = key}>{label}</button>
+          {/each}
+        </div>
+      {/if}
 
       <!-- Sort -->
       <label class="label-row">
@@ -352,11 +354,13 @@
           <option value=""></option>
           <option value="thaali">Thaali</option>
           <option value="area">Area</option>
-          <option value="size">Size</option>
           <option value="name">Name</option>
-          <option value="here">Tiffin</option>
-          <option value="filled">Filled</option>
-          <option value="norice">No Rice</option>
+          <option value="size">{meta.niyaz ? 'Count' : 'Size'}</option>
+          {#if !meta.niyaz}
+            <option value="here">Tiffin</option>
+            <option value="filled">Filled</option>
+            <option value="norice">No Rice</option>
+          {/if}
         </select>
       </label>
 
@@ -373,7 +377,7 @@
 
       <span class="count-label">{shownCount} of {rows.length}</span>
 
-      {#if meta.save && shownCount > 0}
+      {#if !meta.niyaz && meta.save && shownCount > 0}
         <button onclick={markAllFilled} class="btn-primary" style="font-size: 11px; font-weight: 600; padding: 6px 12px;">
           Fill all shown
         </button>
@@ -390,7 +394,7 @@
         <div style="min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{item.name ?? ''}</div>
         <!-- Row 2: area | adult/child count (niyaz) or size+buttons -->
         <div style="text-align: center;">{item.area ?? ''}</div>
-        <div style="display: flex; align-items: center; gap: 5px;">
+        <div style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
           {#if meta.niyaz}
             <span class="text-sm">{item.size}</span>
           {:else}
@@ -398,11 +402,11 @@
             {#if item.norice}
               <span class="tag tag-accent">no rice</span>
             {/if}
-            <span style="flex: 1;"></span>
             <button
               onclick={() => { item.here = item.here ? 0 : 1; onCheckboxChange(item); }}
               disabled={!meta.save}
               class="final-pill {item.here ? 'on-dark' : ''}"
+              style="margin-left: auto;"
             ><span class="dot"></span>Tiffin</button>
             <button
               onclick={() => { item.filled = item.filled ? 0 : 1; onCheckboxChange(item); }}

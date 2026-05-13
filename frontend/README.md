@@ -1,42 +1,71 @@
-# sv
+# RSVP Website — Frontend
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Svelte 5 / SvelteKit single-page application for the jamaat RSVP and thaali management system.
 
-## Creating a project
+## Stack
 
-If you're seeing this, you've probably already done this step. Congrats!
+- **Svelte 5** with runes (`$state`, `$derived`, `$effect`)
+- **SvelteKit** with `adapter-static` — SSR disabled, client-side SPA
+- **Tailwind CSS v4**
+- **Vite 8**
 
-```sh
-# create a new project
-npx sv create my-app
+## Development
+
+Development is managed from the **repo root**, not this directory. See the root `CLAUDE.md` for full setup instructions.
+
+```bash
+# From repo root
+bun install
+bun run dev        # Vite at http://localhost:5173, PHP at http://localhost:8010
 ```
 
-To recreate this project with the same configuration:
+Vite proxies `.php` requests to the PHP backend on port 8010 automatically.
 
-```sh
-# recreate this project
-npx sv@0.14.1 create --template minimal --no-types --install npm .
+To format frontend code:
+
+```bash
+cd frontend
+bun run format     # Prettier + prettier-plugin-svelte
 ```
 
-## Developing
+## Routes
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+| Route | Description |
+|-------|-------------|
+| `/` | Home / RSVP submission page |
+| `/login` | Authentication |
+| `/event` | Event management (admin) |
+| `/family` | Family/thaali record management (admin) |
+| `/plan` | Meal planning view |
+| `/measure` | Measurement tracking |
+| `/ingred` | Ingredient management |
+| `/shop` | Shopping list |
+| `/print` | Printable views |
 
-```sh
-npm run dev
+## Project Structure
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+```
+src/
+  routes/          # SvelteKit file-based routes
+  lib/
+    api.js         # get/post helpers (attaches offset/date params, handles auth errors)
+    auth.js        # Auth state from localStorage (token, thaali, email)
+    PageState.svelte.js  # Loading/saving/error state class used across pages
+    constants.js   # Shared constants
+    dates.js       # Date utilities
+    utils.js       # General utilities
+    Dialog.svelte  # Modal dialog component
+    Icon.svelte    # Icon component
+    Loading.svelte # Loading spinner
+    Message.svelte # Status/error message display
+    PageNav.svelte # Pagination navigation
+    Tooltip.svelte # Tooltip component
 ```
 
-## Building
+## Build
 
-To create a production version of your app:
-
-```sh
-npm run build
+```bash
+# From repo root
+bun run build        # Vite build + copies PHP files to build/
+bun run build:prod   # Single minified build/index.html (all JS/CSS inlined)
 ```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.

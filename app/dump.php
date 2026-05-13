@@ -4,9 +4,11 @@ require_once "bootstrap.php";
 
 $table = $_GET['table'];
 
-// If token is invalid, return an empty response
+// GET requires valid login, POST requires admin account
 if (!AuthService::verify_token($db, $email_cookie, $thaali_cookie)) {
     Helper::json_error("Login failed, please logout and login again");
+} else if ($method_server == "POST" && !AuthService::is_admin($email_cookie)) {
+    Helper::json_error("Admin access required");
 }
 
 // Sanitize string
@@ -35,7 +37,7 @@ function dump_get($db, $table, $cols) {
 
     // Open output file
     $output = fopen('php://output', 'w');
-    fputcsv($output, $cols);
+    fputcsv($output, $cols, ',', '"', '\\');
 
     // Make query
     $where = "";
@@ -55,7 +57,7 @@ function dump_get($db, $table, $cols) {
 
     // Output rows
     while ($row = $result->fetch_assoc()) {
-        fputcsv($output, $row);
+        fputcsv($output, $row, ',', '"', '\\');
     }
 }
 
