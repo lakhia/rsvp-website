@@ -42,6 +42,7 @@
     });
   }
 
+  const todayStr = new Date().toLocaleDateString('en-CA');
   const enabledCount = $derived(events.filter((e) => e.enabled).length);
   const niyazCount = $derived(events.filter((e) => e.niyaz).length);
 
@@ -105,7 +106,7 @@
     {#each events as ev}
       {@const [dayStr, dateStr] = getDisplayDate(ev.date).split(', ')}
       <div
-        class="card py-3.5 px-4 {ev.enabled ? '' : 'card-disabled'}"
+        class="card py-3.5 px-4 {ev.enabled ? '' : 'card-disabled'} {ev.date === todayStr ? 'card-today' : ''}"
       >
         <!-- Card header -->
         <div class="flex justify-between items-start gap-3 mb-3">

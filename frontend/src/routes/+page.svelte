@@ -8,6 +8,7 @@
   import Dialog from '$lib/Dialog.svelte';
   import PageNav from '$lib/PageNav.svelte';
   import { getIntParam, paginateUrl, dateToOffset } from '$lib/utils.js';
+  import { parseYMD, fmtWeekday, fmtMonthDay } from '$lib/dates.js';
 
   const ps = new PageState();
 
@@ -126,21 +127,17 @@
   }
 
   function formatCardDate(dateStr) {
-    const [y, m, d] = dateStr.split('-').map(Number);
-    const dt = new Date(y, m - 1, d);
-    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const dt = parseYMD(dateStr);
     return {
-      day: days[dt.getDay()].toUpperCase(),
-      monthDay: `${months[dt.getMonth()]} ${dt.getDate()}`,
+      day: fmtWeekday.format(dt).toUpperCase(),
+      monthDay: fmtMonthDay.format(dt),
       isToday: dateStr === todayStr,
     };
   }
 
   function getWeekNum(dateStr) {
-    const [y, m, d] = dateStr.split('-').map(Number);
-    const dt = new Date(y, m - 1, d);
-    return Math.ceil(((dt - new Date(y, 0, 1)) / 86400000 + 1) / 7);
+    const dt = parseYMD(dateStr);
+    return Math.ceil(((dt - new Date(dt.getFullYear(), 0, 1)) / 86400000 + 1) / 7);
   }
 
   const name = localStorage.getItem('greet') ?? '';
