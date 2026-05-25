@@ -12,7 +12,7 @@
     "dev": "bun run copy:php && bun run --parallel serve:php dev:frontend watch:php",
     "dev:frontend": "cd frontend && bun run dev",
     "dev:docker": "bun run copy:php && perl deploy.pl .env && bun run --parallel serve:php dev:frontend",
-    "serve:php": "php -S localhost:8010 -t build",
+    "serve:php": "php -S 0.0.0.0:8010 -t build",
     "serve-prod": "bun run build && bun run deploy && php -S localhost:8010 -t build"
   },
   "devDependencies": {

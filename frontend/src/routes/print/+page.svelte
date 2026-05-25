@@ -167,13 +167,13 @@
   }
 
   function exportCSV() {
-    const params = new URLSearchParams({ table: 'rsvps', date });
-    window.open(__BASE_PATH__ + '/dump.php?' + params.toString());
+    const params = new URLSearchParams({ offset: effectiveOffset });
+    window.open(__BASE_PATH__ + '/export_rsvps.php?' + params.toString());
   }
 
   function generateLabels() {
     const params = new URLSearchParams({
-      date,
+      offset: effectiveOffset,
       sort: sortCol,
       filterArea: filters.area,
       filterSize: filters.size,

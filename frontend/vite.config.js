@@ -10,11 +10,14 @@ export default defineConfig(({ mode }) => {
 		plugins: [tailwindcss(), sveltekit()],
 		build: singleFile ? { minify: 'oxc' } : {},
 		server: {
+			host: true,
 			proxy: {
 				'^/.*\\.php(\\?.*)?$': { target: 'http://localhost:8010', changeOrigin: false }
 			}
 		},
 		define: {
+			__THAALI_SIZES__:   JSON.stringify((env.THAALI_SIZES  || 'XS,SM,MD,LG,XL').split(',')),
+			__THAALI_RATIOS__:  JSON.stringify((env.THAALI_RATIOS || '0.25,0.5,1.0,1.5,2.0').split(',').map(Number)),
 			__BASE_PATH__:      JSON.stringify(env.BASE_PATH       || ''),
 			__APP_NAME__:       JSON.stringify(env.APP_NAME        || 'RSVP'),
 			__LINK_PLANNING__:  JSON.stringify(env.LINK_PLANNING   || '#'),

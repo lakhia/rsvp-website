@@ -21,6 +21,8 @@ sub wanted {
         db_config($_);
     } elsif (m/AuthService/) {
         php_helper($_);
+    } elsif (m/config\.php/) {
+        php_config($_);
     } elsif (m/index\.html/) {
         html($_);
     } elsif (m/\.htaccess/) {
@@ -86,6 +88,23 @@ sub php_helper {
     open OUT, ">$_.backup" or die "Cannot open $!";
     while ($line = <IN>) {
         $line =~ s/admin\@sfjamaat.org/$config{EMAIL_ADMIN}/;
+        print OUT $line;
+    }
+    close OUT;
+    close IN;
+    rename "$_.backup", $_;
+}
+
+sub php_config {
+    my $line;
+    $_ = shift;
+    my $php_sizes  = '["' . join('","', split(/,/, $config{THAALI_SIZES}))  . '"]';
+    my $php_ratios = '[' . $config{THAALI_RATIOS} . ']';
+    open IN, $_ or die "Cannot open $!";
+    open OUT, ">$_.backup" or die "Cannot open $!";
+    while ($line = <IN>) {
+        $line =~ s/THAALI_SIZES = \[.*?\]/THAALI_SIZES = $php_sizes/;
+        $line =~ s/THAALI_RATIOS = \[.*?\]/THAALI_RATIOS = $php_ratios/;
         print OUT $line;
     }
     close OUT;

@@ -1,2 +1,2 @@
-export const SIZE_ORDER = ['XS', 'SM', 'MD', 'LG', 'XL'];
-export const SIZE_WEIGHT = { XS: 1, SM: 2, MD: 4, LG: 6, XL: 8 };
+export const SIZE_ORDER = __THAALI_SIZES__;
+export const SIZE_WEIGHT = Object.fromEntries(__THAALI_SIZES__.map((s, i) => [s, __THAALI_RATIOS__[i]]));

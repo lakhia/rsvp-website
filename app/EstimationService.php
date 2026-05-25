@@ -98,17 +98,7 @@ class EstimationService
     /* Given thaali size, return factor */
     public static function get_factor_from_size(string $size, float $multiplier): float
     {
-        if ($size == 'XL') {
-            $factor = 2;
-        } else if ($size == 'LG') {
-            $factor = 1.5;
-        } else if ($size == 'SM') {
-            $factor = 0.5;
-        } else if ($size == 'XS') {
-            $factor = 0.25;
-        } else {
-            $factor = 1.0;
-        }
+        $factor = Config::sizes()[$size] ?? 1.0;
         return round($multiplier * $factor, 2);
     }
 }

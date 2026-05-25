@@ -2,17 +2,14 @@
 
 require_once "bootstrap.php";
 
-$table = $_GET['table'];
-
-// GET requires valid login, POST requires admin account
-if (!AuthService::verify_token($db, $email_cookie, $thaali_cookie)) {
+// Requires admin account
+if (!AuthService::is_admin($email_cookie) ||
+    !AuthService::verify_token($db, $email_cookie, $thaali_cookie)) {
     Helper::json_error("Login failed, please logout and login again");
-} else if ($method_server == "POST" && !AuthService::is_admin($email_cookie)) {
-    Helper::json_error("Admin access required");
 }
 
 // Sanitize string
-$table = preg_replace("/[^_a-zA-Z0-9]+/", "", $table);
+$table = preg_replace("/[^_a-zA-Z0-9]+/", "", $_GET['table']);
 
 // Get column names for header
 $result = $db->query("SHOW COLUMNS FROM " . $table);
