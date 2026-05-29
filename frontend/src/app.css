@@ -94,6 +94,10 @@ body {
     color: var(--muted);
     margin: 4px 0 0;
   }
+  .banner-corner {
+    height: 64px;
+    width: auto;
+  }
 
   /* ── Buttons ─────────────────────────────────────────── */
   .btn-secondary {

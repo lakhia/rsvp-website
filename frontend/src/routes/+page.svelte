@@ -8,6 +8,7 @@
   import Message from '$lib/Message.svelte';
   import Dialog from '$lib/Dialog.svelte';
   import PageNav from '$lib/PageNav.svelte';
+  import Banner from '$lib/Banner.svelte';
   import { getIntParam, paginateUrl, dateToOffset } from '$lib/utils.js';
   import { parseYMD, fmtWeekday, fmtMonthDay } from '$lib/dates.js';
 
@@ -167,23 +168,7 @@
       <h1>RSVP for {name}</h1>
     </div>
 
-    {#if sizes.length}
-      <div class="flex flex-col gap-1.5 items-end">
-        <div class="flex items-center gap-2">
-          <div class="flex gap-1">
-            {#each sizes as s}
-              <button
-                onclick={() => (weekSize = s)}
-                class="round-size-btn {weekSize === s ? 'active' : ''}"
-              >{s}</button>
-            {/each}
-          </div>
-          <button onclick={applyToWeek} class="btn-primary" style="white-space: nowrap;">
-            Apply to week →
-          </button>
-        </div>
-      </div>
-    {/if}
+    <Banner class="banner-corner rounded-lg shadow" />
   </div>
 </div>
 

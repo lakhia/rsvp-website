@@ -1,6 +1,7 @@
 <script>
   import { post, navigate } from '$lib/api.js';
   import Message from '$lib/Message.svelte';
+  import Banner from '$lib/Banner.svelte';
 
   let email = $state('');
   let pass = $state('');
@@ -31,8 +32,10 @@
   <title>{__APP_NAME__} - Login</title>
 </svelte:head>
 
-<div class="min-h-screen flex items-center justify-center bg-subtle">
-  <div class="w-full max-w-sm bg-surface rounded-lg shadow p-8" style="border: 1px solid var(--border);">
+<div class="min-h-screen flex flex-col items-center justify-center bg-subtle py-8">
+  <div class="w-full max-w-sm bg-surface rounded-lg shadow overflow-hidden" style="border: 1px solid var(--border);">
+  <Banner class="w-full block" />
+  <div class="p-8">
     <h2 class="text-xl mb-6 text-center">Enter your credentials</h2>
 
     <form onsubmit={handleSubmit} class="flex flex-col gap-4">
@@ -69,6 +72,13 @@
       >
         {loading ? 'Signing in…' : 'Next'}
       </button>
+
+      <p class="text-center text-sm">
+        New here?
+        <a href="{__BASE_PATH__}/register" class="hover:underline" style="color: var(--brand);">Create account</a>
+      </p>
+
     </form>
+  </div>
   </div>
 </div>
