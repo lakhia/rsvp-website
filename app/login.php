@@ -23,15 +23,7 @@ if ($name == "") {
 }
 
 // Verified, set cookies for 60 days
-$expires = time() + (86400 * 60); // 86400 = 1 day
-setcookie("token", AuthService::create_token($email, $thaali), $expires);
-setcookie("thaali", $thaali, $expires);
-setcookie("email", $email, $expires);
-if (AuthService::is_admin($email)) {
-    setcookie("adv", "1", $expires);
-} else {
-    setcookie("adv", "0", $expires);
-}
+AuthService::set_session_cookies($email, $thaali);
 $greet = $name . ", #" . $thaali;
 
 // Send name to indicate successful login

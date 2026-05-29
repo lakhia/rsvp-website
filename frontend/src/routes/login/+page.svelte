@@ -69,6 +69,12 @@
       >
         {loading ? 'Signing in…' : 'Next'}
       </button>
+
+      <p class="text-center text-sm">
+        New here?
+        <a href="{__BASE_PATH__}/register" class="hover:underline" style="color: var(--brand);">Create account</a>
+      </p>
+
     </form>
   </div>
 </div>

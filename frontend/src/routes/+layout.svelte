@@ -30,7 +30,7 @@
     loggedIn = isLoggedIn();
     admin = isAdmin();
     menuBig = localStorage.getItem('menuBig') === '1';
-    if (routeId !== '/login' && !loggedIn) {
+    if (routeId !== '/login' && routeId !== '/register' && !loggedIn) {
       navigate('/login');
     }
   });
@@ -45,7 +45,7 @@
     navigate('/login');
   }
 
-  const isLogin = $derived(page.route.id === '/login');
+  const isLogin = $derived(page.route.id === '/login' || page.route.id === '/register');
   const activeRoute = $derived(page.route.id);
 </script>
 
