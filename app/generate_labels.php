@@ -26,7 +26,8 @@ if (Config::DOWNLOAD_WEEK_RANGE) {
     $date = Helper::get_day($offset);
 
     // Validate event exists and is enabled
-    $event_query = 'SELECT details, enabled from events where date="' . $date . '";';
+    $event_index = (int) Helper::get_param('event_index', 0);
+    $event_query = 'SELECT details, enabled from events where date="' . $date . '" AND event_index=' . $event_index . ';';
     $result = $db->query($event_query);
     if (!$result || $result->num_rows != 1) {
         die("Error: Seems like there is no event on the day selected.");
@@ -36,9 +37,9 @@ if (Config::DOWNLOAD_WEEK_RANGE) {
         die("Error: Seems like the event is not enabled.");
     }
 
-    $where  = ["`rsvp` = 1", "rsvps.date = ?"];
-    $params = [$date];
-    $types  = "s";
+    $where  = ["`rsvp` = 1", "rsvps.date = ?", "rsvps.event_index = ?"];
+    $params = [$date, $event_index];
+    $types  = "si";
 }
 
 // Optional filters
@@ -81,7 +82,7 @@ $sql = "
     SELECT thaali_id AS id, rsvps.size, area, rsvps.date, events.details AS dish
     FROM rsvps
     LEFT JOIN `family` ON family.thaali = rsvps.thaali_id
-    LEFT JOIN `events` ON events.date = rsvps.date
+    LEFT JOIN `events` ON events.date = rsvps.date AND events.event_index = rsvps.event_index
     WHERE " . implode(" AND ", $where) . "
     ORDER BY $orderBy
 ";

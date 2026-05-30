@@ -29,11 +29,17 @@ function clean($db, $offset, $len)
     $results = [];
     foreach ($period as $date) {
         $d = $date->format("Y-m-d");
-        $query =
-            "SELECT enabled FROM `events` " . "WHERE `date` = '" . $d . "';";
+
+        // Get all events for this date
+        $query = "SELECT event_index, enabled FROM `events` WHERE `date` = '" . $d . "';";
         $result = $db->query($query);
-        $row = $result->fetch_assoc();
-        if (!$row) {
+        $events_for_date = [];
+        while ($row = $result->fetch_assoc()) {
+            $events_for_date[] = $row;
+        }
+
+        if (empty($events_for_date)) {
+            // No events at all — delete all RSVPs for this date
             $db->query("DELETE FROM rsvps WHERE date = '" . $d . "';");
             if ($db->mysqli->affected_rows > 0) {
                 $results[$d] = [
@@ -43,22 +49,24 @@ function clean($db, $offset, $len)
             }
             continue;
         }
-        if (!$row["enabled"]) {
-            $db->query("DELETE FROM rsvps WHERE date = '" . $d . "';");
-            if ($db->mysqli->affected_rows > 0) {
-                $results[$d] = [
-                    "type" => "not_enabled",
-                    "delete" => $db->mysqli->affected_rows,
-                ];
+
+        // Process each event individually
+        $total_deleted = 0;
+        foreach ($events_for_date as $ev) {
+            $ei = (int)$ev['event_index'];
+            if (!$ev["enabled"]) {
+                $db->query("DELETE FROM rsvps WHERE date = '" . $d . "' AND event_index = " . $ei . ";");
+                $total_deleted += $db->mysqli->affected_rows;
+            } else {
+                $db->query("DELETE FROM rsvps WHERE rsvp = 0 AND date = '" . $d . "' AND event_index = " . $ei . ";");
+                $total_deleted += $db->mysqli->affected_rows;
             }
-        } else {
-            $db->query("DELETE FROM rsvps WHERE rsvp = 0 AND date = '" . $d . "';");
-            if ($db->mysqli->affected_rows > 0) {
-                $results[$d] = [
-                    "type" => "enabled_no_rsvp",
-                    "delete" => $db->mysqli->affected_rows,
-                ];
-            }
+        }
+        if ($total_deleted > 0) {
+            $results[$d] = [
+                "type" => "cleaned",
+                "delete" => $total_deleted,
+            ];
         }
     }
 
