@@ -31,7 +31,7 @@ function dump_get($db, $date, $event_index) {
                 CASE WHEN rsvp = 1 THEN 'Yes' ELSE 'No' END AS rsvp
               FROM family
               LEFT JOIN rsvps
-              ON thaali_id=thaali AND date=\"" . $date . "\" AND event_index=" . $event_index . "
+              ON rsvps.thaali=family.thaali AND date=\"" . $date . "\" AND event_index=" . $event_index . "
               WHERE thaali < 400";
     $result = $db->query($query);
 

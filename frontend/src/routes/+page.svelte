@@ -114,7 +114,7 @@
           event_index: ev.event_index ?? 0,
           rsvp: ev.rsvp ? 1 : 0,
           size: ev.size,
-          lessRice: ev.lessRice ? 1 : 0,
+          norice: ev.norice ? 1 : 0,
         };
         if (ev.niyaz) {
           item.adults = ev.adults ?? 0;
@@ -259,7 +259,7 @@
               <label class="flex items-center gap-1.5 text-xs text-muted cursor-pointer select-none">
                 <input
                   type="checkbox"
-                  bind:checked={ev.lessRice}
+                  bind:checked={ev.norice}
                   disabled={ev.readonly || !ev.rsvp}
                   onchange={() => mark(ev)}
                   class="cursor-pointer"

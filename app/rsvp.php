@@ -28,9 +28,9 @@ function details_get($db, $service, $thaali, $eligible_sizes, $default_size, $ms
 
     // Make query
     $query = "SELECT events.date, events.event_index, adults, kids, niyaz, enabled, " .
-        " details, rsvp, size, lessRice FROM events " .
+        " details, rsvp, size, norice FROM events " .
         "LEFT JOIN rsvps ON rsvps.date = events.date AND rsvps.event_index = events.event_index " .
-        " AND rsvps.thaali_id = " . $thaali .
+        " AND rsvps.thaali = " . $thaali .
         " WHERE details > '' AND events.date >= '" .
         $from . "' AND events.date < '" . $to .
         "' ORDER BY events.date, events.event_index;";
@@ -77,7 +77,7 @@ function details_post($db, $service, $thaali, $eligible_sizes, $default_size)
 
         [$cols, $placeholders, $updates, $types, $values] = Helper::dict_to_upsert_parts($entry);
 
-        $stmt = $db->prepare("INSERT INTO rsvps (date, event_index, thaali_id, $cols) " .
+        $stmt = $db->prepare("INSERT INTO rsvps (date, event_index, thaali, $cols) " .
                              "VALUES (?, ?, ?, $placeholders) " .
                              "ON DUPLICATE KEY UPDATE $updates");
         $stmt->bind_param("sii$types", $date, $event_index, $thaali, ...$values);

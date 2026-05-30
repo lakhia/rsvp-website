@@ -103,8 +103,8 @@ function total_rsvp_for_event($db, $date, $event_index)
 {
     // Get total RSVP for given event
     $query =
-        "SELECT rsvps.size, lessRice FROM `rsvps` " .
-        "LEFT JOIN `family` on family.thaali = rsvps.thaali_id " .
+        "SELECT rsvps.size, norice FROM `rsvps` " .
+        "LEFT JOIN `family` on family.thaali = rsvps.thaali " .
         "WHERE `rsvp` = 1 AND `date` = '" . $date . "' AND `event_index` = " . $event_index . ";";
     $result = $db->query($query);
 
@@ -122,7 +122,7 @@ function total_rsvp_for_event($db, $date, $event_index)
         }
 
         // Count rice
-        if ($row["lessRice"]) {
+        if ($row["norice"]) {
             $size = 0;
         }
         if (!isset($count["rice+bread"])) {

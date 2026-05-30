@@ -26,13 +26,13 @@ fputcsv($output, ['date', 'menu', 'thaali', 'name', 'area', 'size', 'adults', 'k
 
 $query =
     "SELECT events.date, events.details AS menu, " .
-    "rsvps.thaali_id AS thaali, CONCAT(family.firstName, ' ', family.lastName) AS name, " .
-    "family.area, rsvps.size, rsvps.adults, rsvps.kids, rsvps.here, rsvps.filled, rsvps.lessRice AS norice " .
+    "rsvps.thaali, CONCAT(family.firstName, ' ', family.lastName) AS name, " .
+    "family.area, rsvps.size, rsvps.adults, rsvps.kids, rsvps.here, rsvps.filled, rsvps.norice " .
     "FROM rsvps " .
-    "LEFT JOIN family ON family.thaali = rsvps.thaali_id " .
+    "LEFT JOIN family ON family.thaali = rsvps.thaali " .
     "LEFT JOIN events ON events.date = rsvps.date AND events.event_index = rsvps.event_index " .
     "WHERE rsvps.rsvp = 1 AND $date_where " .
-    "ORDER BY rsvps.date, rsvps.thaali_id;";
+    "ORDER BY rsvps.date, rsvps.thaali;";
 
 $result = $db->query($query);
 while ($row = $result->fetch_assoc()) {
