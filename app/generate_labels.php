@@ -64,13 +64,13 @@ if ($filterFilled !== '') {
     $types   .= "i";
 }
 if ($filterNorice !== '') {
-    $where[] = "lessRice = ?";
+    $where[] = "norice = ?";
     $params[] = $filterNorice === 'N' ? 0 : 1;
     $types   .= "i";
 }
 
 $allowedSorts = [
-    'thaali' => 'thaali_id',
+    'thaali' => 'rsvps.thaali',
     'size'   => 'rsvps.size',
     'area'   => 'area',
 ];
@@ -79,9 +79,9 @@ $orderBy  = Config::DOWNLOAD_WEEK_RANGE ? "rsvps.date, $rowOrder" : $rowOrder;
 
 // Run query
 $sql = "
-    SELECT thaali_id AS id, rsvps.size, area, rsvps.date, events.details AS dish
+    SELECT rsvps.thaali AS id, rsvps.size, area, rsvps.date, events.details AS dish
     FROM rsvps
-    LEFT JOIN `family` ON family.thaali = rsvps.thaali_id
+    LEFT JOIN `family` ON family.thaali = rsvps.thaali
     LEFT JOIN `events` ON events.date = rsvps.date AND events.event_index = rsvps.event_index
     WHERE " . implode(" AND ", $where) . "
     ORDER BY $orderBy

@@ -36,9 +36,9 @@ function print_filling($db, $from, $event_index, $offset, $msg = "")
     if ($details) {
         // Get RSVP and family
         $query =
-            "SELECT thaali_id as thaali, CONCAT(firstName, ' ', lastName) AS name, " .
-            "adults, kids, rsvps.size, area, here, filled, lessRice AS norice FROM rsvps " .
-            "LEFT JOIN `family` on family.thaali = rsvps.thaali_id " .
+            "SELECT rsvps.thaali, CONCAT(firstName, ' ', lastName) AS name, " .
+            "adults, kids, rsvps.size, area, here, filled, norice FROM rsvps " .
+            "LEFT JOIN `family` on family.thaali = rsvps.thaali " .
             "WHERE `rsvp` = 1 AND `date` = '" . $from . "' AND `event_index` = " . $event_index .
             " ORDER BY thaali;";
         $result = $db->query($query);
@@ -115,11 +115,11 @@ function print_post($db, $from, $event_index, $offset)
 
     if ($save) {
         $stmt = $db->prepare(
-            "UPDATE rsvps SET here = ?, filled = ? WHERE thaali_id = ? AND date = ? AND event_index = ?",
+            "UPDATE rsvps SET here = ?, filled = ? WHERE thaali = ? AND date = ? AND event_index = ?",
         );
         foreach ($data as $i) {
-            $thaali_id = $i->thaali;
-            $stmt->bind_param("iiisi", $i->here, $i->filled, $thaali_id, $from, $event_index);
+            $thaali = $i->thaali;
+            $stmt->bind_param("iiisi", $i->here, $i->filled, $thaali, $from, $event_index);
             $result = $stmt->execute();
             if (!$result) {
                 $msg = $stmt->error;
