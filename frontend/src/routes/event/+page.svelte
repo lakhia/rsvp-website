@@ -45,6 +45,35 @@
   const todayStr = new Date().toLocaleDateString('en-CA');
   const enabledCount = $derived(events.filter((e) => e.enabled).length);
   const niyazCount = $derived(events.filter((e) => e.niyaz).length);
+  const uniqueDateCount = $derived(new Set(events.map((e) => e.date)).size);
+
+  // Returns true if ev is the last event for its date (show "+" button here)
+  const lastForDate = $derived.by(() => {
+    const last = new Map();
+    for (const ev of events) {
+      const cur = last.get(ev.date);
+      if (cur === undefined || (ev.event_index ?? 0) > (cur.event_index ?? 0)) {
+        last.set(ev.date, ev);
+      }
+    }
+    return new Set([...last.values()].map((ev) => `${ev.date}_${ev.event_index ?? 0}`));
+  });
+
+  function addEvent(afterEv) {
+    const date = afterEv.date;
+    const maxIndex = events
+      .filter((ev) => ev.date === date)
+      .reduce((max, ev) => Math.max(max, ev.event_index ?? 0), -1);
+    const idx = events.indexOf(afterEv);
+    events.splice(idx + 1, 0, {
+      date,
+      event_index: maxIndex + 1,
+      details: '',
+      enabled: true,
+      niyaz: false,
+    });
+    dirty = true;
+  }
 
   let csvFileInput = $state(null);
   let csvFileName = $state('');
@@ -75,7 +104,7 @@
       <h1>Week of {getDisplayDate(startDate)}</h1>
       <div class="page-subtitle">
         Set the menu for the week.
-        <b class="text-content">{enabledCount}</b> of {events.length} days enabled ·
+        <b class="text-content">{enabledCount}</b> of {uniqueDateCount} days enabled ·
         <b class="text-content">{niyazCount}</b> niyaz.
       </div>
     </div>
@@ -105,14 +134,21 @@
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 py-5">
     {#each events as ev}
       {@const [dayStr, dateStr] = getDisplayDate(ev.date).split(', ')}
+      {@const isLast = lastForDate.has(`${ev.date}_${ev.event_index ?? 0}`)}
+      {@const isSecondary = (ev.event_index ?? 0) > 0}
       <div
         class="card py-3.5 px-4 {ev.enabled ? '' : 'card-disabled'} {ev.date === todayStr ? 'card-today' : ''}"
       >
         <!-- Card header -->
         <div class="flex justify-between items-start gap-3 mb-3">
           <div class="flex items-baseline gap-2">
-            <span class="eyebrow">{dayStr}</span>
-            <span style="font-size: 13px; font-weight: 500; color: var(--text);">{dateStr}</span>
+            {#if !isSecondary}
+              <span class="eyebrow">{dayStr}</span>
+              <span style="font-size: 13px; font-weight: 500; color: var(--text);">{dateStr}</span>
+            {:else}
+              <span class="eyebrow" style="opacity: 0.4;">{dayStr}</span>
+              <span style="font-size: 11px; color: var(--muted);">event {ev.event_index + 1}</span>
+            {/if}
           </div>
           <div class="flex gap-1.5 shrink-0">
             <button
@@ -124,6 +160,13 @@
               onclick={() => { ev.enabled = !ev.enabled; dirty = true; }}
               class="final-pill {ev.enabled ? 'on-dark' : ''}"
             ><span class="dot"></span>Enabled</button>
+            {#if isLast && (ev.enabled || ev.details)}
+              <button
+                onclick={() => addEvent(ev)}
+                class="final-pill"
+                title="Add another event on this day"
+              >+</button>
+            {/if}
           </div>
         </div>
 

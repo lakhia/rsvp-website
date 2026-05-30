@@ -7,19 +7,20 @@ if (!AuthService::verify_token($db, $email_cookie, $thaali_cookie)) {
     Helper::json_error("Login failed, please logout and login again");
 }
 $offset = Helper::get_param("offset", 0);
+$event_index = (int)Helper::get_param("event_index", 0);
 $from = Helper::get_day($offset);
 // POST or GET?
 if ($method_server == "POST") {
-    print_post($db, $from, $offset);
+    print_post($db, $from, $event_index, $offset);
 } else {
-    print_filling($db, $from, $offset);
+    print_filling($db, $from, $event_index, $offset);
 }
 
 // Get details for filling team
-function print_filling($db, $from, $offset, $msg = "")
+function print_filling($db, $from, $event_index, $offset, $msg = "")
 {
     // Get details for date
-    $details = get_details($db, $from);
+    $details = get_details($db, $from, $event_index);
 
     if ($details) {
         // Get RSVP and family
@@ -27,9 +28,8 @@ function print_filling($db, $from, $offset, $msg = "")
             "SELECT thaali_id as thaali, CONCAT(firstName, ' ', lastName) AS name, " .
             "adults, kids, rsvps.size, area, here, filled, lessRice AS norice FROM rsvps " .
             "LEFT JOIN `family` on family.thaali = rsvps.thaali_id " .
-            "WHERE `rsvp` = 1 AND `date` = '" .
-            $from .
-            "' ORDER BY thaali;";
+            "WHERE `rsvp` = 1 AND `date` = '" . $from . "' AND `event_index` = " . $event_index .
+            " ORDER BY thaali;";
         $result = $db->query($query);
         $totalA = 0;
         $totalK = 0;
@@ -68,10 +68,11 @@ function print_filling($db, $from, $offset, $msg = "")
     Helper::print_to_json($rows, $msg, $from, $other);
 }
 
-function get_details($db, $date)
+function get_details($db, $date, $event_index = 0)
 {
     $query =
-        'SELECT details,niyaz,enabled from events where date="' . $date . '";';
+        'SELECT details,niyaz,enabled from events where date="' .
+        $date . '" AND event_index=' . (int)$event_index . ';';
     $result = $db->query($query);
     if (!$result || $result->num_rows != 1) {
         return "";
@@ -84,7 +85,7 @@ function get_details($db, $date)
 }
 
 // Post update to details
-function print_post($db, $from, $offset)
+function print_post($db, $from, $event_index, $offset)
 {
     $msg = "";
     $data = json_decode(file_get_contents("php://input"), false);
@@ -92,11 +93,11 @@ function print_post($db, $from, $offset)
 
     if ($save) {
         $stmt = $db->prepare(
-            "UPDATE rsvps SET here = ?, filled = ? WHERE thaali_id = ? AND date = ?",
+            "UPDATE rsvps SET here = ?, filled = ? WHERE thaali_id = ? AND date = ? AND event_index = ?",
         );
         foreach ($data as $i) {
             $thaali_id = $i->thaali;
-            $stmt->bind_param("iiis", $i->here, $i->filled, $thaali_id, $from);
+            $stmt->bind_param("iiisi", $i->here, $i->filled, $thaali_id, $from, $event_index);
             $result = $stmt->execute();
             if (!$result) {
                 $msg = $stmt->error;
@@ -109,7 +110,7 @@ function print_post($db, $from, $offset)
 
     if (!$msg) {
         $msg = "Thank you, changes have been saved";
-        return print_filling($db, $from, $offset, $msg);
+        return print_filling($db, $from, $event_index, $offset, $msg);
     } else {
         $msg = "Error: " . $msg;
     }

@@ -14,13 +14,17 @@
 
   let events = $state([]);
   let sizes = $state([]);
-  let dirty = $state({});
+  let dirty = $state(new Set());
   let pendingHref = $state(null);
   let weekSize = $state('');
 
   const offset = $derived(getIntParam(page.url.searchParams, 'offset'));
   const dateParam = $derived(page.url.searchParams.get('date') || '');
-  const hasDirty = $derived(Object.keys(dirty).length > 0);
+  const hasDirty = $derived(dirty.size > 0);
+
+  function evKey(ev) {
+    return `${ev.date}_${ev.event_index ?? 0}`;
+  }
   const todayStr = new Date().toLocaleDateString('en-CA');
   const effectiveOffset = $derived(dateParam ? dateToOffset(dateParam) : offset);
 
@@ -50,7 +54,7 @@
       events = res.data || [];
       sizes = res.other || [];
       ps.msg = res.msg || '';
-      dirty = {};
+      dirty = new Set();
       if (sizes.length && (!weekSize || !sizes.includes(weekSize))) {
         weekSize = sizes[sizes.length - 2] ?? sizes[0];
       }
@@ -58,7 +62,7 @@
   }
 
   function mark(event) {
-    dirty[event.date] = true;
+    dirty = new Set([...dirty, evKey(event)]);
     ps.msg = '';
   }
 
@@ -87,38 +91,41 @@
 
   function applyToWeek() {
     if (!weekSize) return;
+    const next = new Set(dirty);
     for (const ev of events) {
       if (ev.enabled && !ev.readonly && !ev.niyaz) {
         ev.rsvp = 1;
         ev.size = weekSize;
-        dirty[ev.date] = true;
+        next.add(evKey(ev));
       }
     }
+    dirty = next;
     ps.msg = '';
   }
 
   async function handleSave() {
-    const body = {};
-    for (const ev of events) {
-      if (dirty[ev.date]) {
-        const row = {
+    const body = events
+      .filter(ev => dirty.has(evKey(ev)))
+      .map(ev => {
+        const item = {
+          date: ev.date,
+          event_index: ev.event_index ?? 0,
           rsvp: ev.rsvp ? 1 : 0,
           size: ev.size,
           lessRice: ev.lessRice ? 1 : 0,
         };
         if (ev.niyaz) {
-          row.adults = ev.adults ?? 0;
-          row.kids = ev.kids ?? 0;
+          item.adults = ev.adults ?? 0;
+          item.kids = ev.kids ?? 0;
         }
-        body[ev.date] = row;
-      }
-    }
+        return item;
+      });
     await ps.save(async () => {
       const res = await post('rsvp.php', { offset: effectiveOffset }, body);
       events = res.data || [];
       sizes = res.other || [];
       ps.msg = res.msg || 'Saved';
-      dirty = {};
+      dirty = new Set();
     });
   }
 

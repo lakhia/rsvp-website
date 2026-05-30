@@ -30,7 +30,7 @@ $query =
     "family.area, rsvps.size, rsvps.adults, rsvps.kids, rsvps.here, rsvps.filled, rsvps.lessRice AS norice " .
     "FROM rsvps " .
     "LEFT JOIN family ON family.thaali = rsvps.thaali_id " .
-    "LEFT JOIN events ON events.date = rsvps.date " .
+    "LEFT JOIN events ON events.date = rsvps.date AND events.event_index = rsvps.event_index " .
     "WHERE rsvps.rsvp = 1 AND $date_where " .
     "ORDER BY rsvps.date, rsvps.thaali_id;";
 
