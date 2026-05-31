@@ -239,7 +239,7 @@ const sizeSummary = $derived.by(() => {
       {#if !meta.niyaz && rows.length > 0}
         <div class="page-subtitle">
           <b class="text-content">{filledCount}</b> filled ·
-          {rows.length - filledCount} to go ·
+          {rows.length - filledCount} left ·
           {rows.length} RSVPs total
         </div>
       {:else if meta.niyaz}
