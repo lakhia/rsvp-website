@@ -2,6 +2,7 @@
   import { goto, beforeNavigate } from '$app/navigation';
   import { page } from '$app/state';
   import { get, post, navigate } from '$lib/api.js';
+  import { isLoggedIn } from '$lib/auth.js';
   import Loading from '$lib/Loading.svelte';
   import { PageState } from '$lib/PageState.svelte.js';
   import Message from '$lib/Message.svelte';
@@ -29,7 +30,7 @@
   const effectiveOffset = $derived(dateParam ? dateToOffset(dateParam) : offset);
 
   $effect(() => {
-    loadData(effectiveOffset);
+    if (isLoggedIn()) loadData(effectiveOffset);
   });
 
   $effect(() => {

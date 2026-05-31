@@ -30,11 +30,12 @@
 
   const offset = $derived(getIntParam(page.url.searchParams, 'offset'));
   const dateParam = $derived(page.url.searchParams.get('date') || '');
+  const eventIndex = $derived(getIntParam(page.url.searchParams, 'event_index'));
 
   const effectiveOffset = $derived(dateParam ? dateToOffset(dateParam) : offset);
 
   $effect(() => {
-    loadData(effectiveOffset);
+    loadData(effectiveOffset, eventIndex);
   });
 
   let warnedDate = $state('');
@@ -46,14 +47,27 @@
     ps.msg = res.msg || defaultMsg;
   }
 
-  async function loadData(o) {
+  async function loadData(o, ei) {
     dateWarning = '';
     warnedDate = '';
     await ps.load(async () => {
-      const res = await get('print.php', { offset: o });
+      const res = await get('print.php', { offset: o, event_index: ei });
+      // If the requested event_index doesn't exist for this date (e.g. it
+      // was deleted) but another event does, redirect to that one instead
+      // of getting stuck on "No responses available".
+      const events = res.other?.events ?? [];
+      if (events.length > 0 && !events.some((ev) => ev.event_index === ei)) {
+        switchEvent(events[0].event_index);
+        return;
+      }
       applyResponse(res);
       dirty = false;
     });
+  }
+
+  function switchEvent(ei) {
+    const params = new URLSearchParams({ offset: effectiveOffset, event_index: ei });
+    navigate('/print?' + params.toString());
   }
 
   function onCheckboxChange(item) {
@@ -148,7 +162,7 @@
       filled: r.filled ? 1 : 0,
     }));
     await ps.save(async () => {
-      const res = await post('print.php', { offset: effectiveOffset }, body);
+      const res = await post('print.php', { offset: effectiveOffset, event_index: eventIndex }, body);
       applyResponse(res, 'Saved');
       dirty = false;
     });
@@ -167,13 +181,14 @@
   }
 
   function exportCSV() {
-    const params = new URLSearchParams({ offset: effectiveOffset });
+    const params = new URLSearchParams({ offset: effectiveOffset, event_index: eventIndex });
     window.open(__BASE_PATH__ + '/export_rsvps.php?' + params.toString());
   }
 
   function generateLabels() {
     const params = new URLSearchParams({
       offset: effectiveOffset,
+      event_index: eventIndex,
       sort: sortCol,
       filterArea: filters.area,
       filterSize: filters.size,
@@ -226,6 +241,20 @@ const sizeSummary = $derived.by(() => {
     <div style="position: absolute; inset: 0; display: grid; place-items: center; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums;">
       {Math.round(filledPct * 100)}%
     </div>
+  </div>
+{/if}
+
+<!-- Event tabs (shown when multiple events share the same date) -->
+{#if (meta.events ?? []).length > 1}
+  <div class="flex gap-1.5 mb-4 no-print">
+    {#each meta.events as ev}
+      <button
+        onclick={() => switchEvent(ev.event_index)}
+        class="final-pill {ev.event_index === meta.event_index ? 'on-dark' : ''}"
+      >
+        {ev.details || `Event ${ev.event_index + 1}`}
+      </button>
+    {/each}
   </div>
 {/if}
 
