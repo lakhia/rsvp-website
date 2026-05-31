@@ -104,7 +104,7 @@
       <h1>Week of {getDisplayDate(startDate)}</h1>
       <div class="page-subtitle">
         Set the menu for the week.
-        <b class="text-content">{enabledCount}</b> of {uniqueDateCount} days enabled ·
+        <b class="text-content">{enabledCount}</b> events in {uniqueDateCount} days ·
         <b class="text-content">{niyazCount}</b> niyaz.
       </div>
     </div>

@@ -19,9 +19,20 @@ if ($method_server == "POST") {
 // Get details for filling team
 function print_filling($db, $from, $event_index, $offset, $msg = "")
 {
+    // All events on this date (for tab switcher / redirect when the
+    // requested event_index doesn't exist, e.g. it was deleted)
+    $events_result = $db->query(
+        "SELECT event_index, details FROM events WHERE date = '$from' AND enabled = 1 ORDER BY event_index"
+    );
+    $date_events = [];
+    while ($ev = $events_result->fetch_assoc()) {
+        $date_events[] = $ev;
+    }
+
     // Get details for date
     $details = get_details($db, $from, $event_index);
 
+    $rows = [];
     if ($details) {
         // Get RSVP and family
         $query =
@@ -48,22 +59,33 @@ function print_filling($db, $from, $event_index, $offset, $msg = "")
     }
 
     // Create message
-    if (isset($rows)) {
+    if ($details) {
         $save = AuthService::is_save_available($offset) && !$details["niyaz"];
         $other = [
-            "save" => $save,
-            "niyaz" => $details["niyaz"],
-            "adults" => $totalA,
-            "kids" => $totalK,
-            "serving" => EstimationService::get_serving_guidance(
+            "save"        => $save,
+            "niyaz"       => $details["niyaz"],
+            "adults"      => $totalA,
+            "kids"        => $totalK,
+            "event_index" => $event_index,
+            "events"      => $date_events,
+            "serving"     => EstimationService::get_serving_guidance(
                 $db,
                 $details["details"],
             ),
         ];
+        if (!$rows) {
+            $msg = "No responses available for " . $from;
+        }
     } else {
+        // The requested event_index doesn't exist (or is disabled) for this
+        // date. Still report the other events on this date (if any) so the
+        // frontend can redirect to a valid event_index instead of getting stuck.
         $rows = null;
         $msg = "No responses available for " . $from;
-        $other = null;
+        $other = [
+            "event_index" => $event_index,
+            "events"      => $date_events,
+        ];
     }
     Helper::print_to_json($rows, $msg, $from, $other);
 }
