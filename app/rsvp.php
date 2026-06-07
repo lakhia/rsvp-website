@@ -27,7 +27,7 @@ function details_get($db, $service, $thaali, $eligible_sizes, $default_size, $ms
     $to = Helper::get_week("", $offset + 7);
 
     // Make query
-    $query = "SELECT events.date, events.event_index, adults, kids, niyaz, enabled, " .
+    $query = "SELECT events.date, events.event_index, adults, mardo, bairao, kids, niyaz, enabled, " .
         " details, rsvp, size, norice FROM events " .
         "LEFT JOIN rsvps ON rsvps.date = events.date AND rsvps.event_index = events.event_index " .
         " AND rsvps.thaali = " . $thaali .

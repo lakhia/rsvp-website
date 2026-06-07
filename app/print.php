@@ -37,21 +37,27 @@ function print_filling($db, $from, $event_index, $offset, $msg = "")
         // Get RSVP and family
         $query =
             "SELECT rsvps.thaali, CONCAT(firstName, ' ', lastName) AS name, " .
-            "adults, kids, rsvps.size, area, here, filled, norice FROM rsvps " .
+            "adults, mardo, bairao, kids, rsvps.size, area, here, filled, norice FROM rsvps " .
             "LEFT JOIN `family` on family.thaali = rsvps.thaali " .
             "WHERE `rsvp` = 1 AND `date` = '" . $from . "' AND `event_index` = " . $event_index .
             " ORDER BY thaali;";
         $result = $db->query($query);
         $totalA = 0;
+        $totalM = 0;
+        $totalB = 0;
         $totalK = 0;
 
         while ($row = $result->fetch_assoc()) {
             if ($details["niyaz"]) {
                 $totalA += $row["adults"];
+                $totalM += $row["mardo"];
+                $totalB += $row["bairao"];
                 $totalK += $row["kids"];
                 $row["count"] = $row["adults"] + $row["kids"];
-                $row["size"] = $row["adults"] . " / " . $row["kids"];
+                $row["size"] = $row["mardo"] . " / " . $row["bairao"] . " / " . $row["kids"];
                 unset($row["adults"]);
+                unset($row["mardo"]);
+                unset($row["bairao"]);
                 unset($row["kids"]);
             }
             $rows[] = $row;
@@ -65,6 +71,8 @@ function print_filling($db, $from, $event_index, $offset, $msg = "")
             "save"        => $save,
             "niyaz"       => $details["niyaz"],
             "adults"      => $totalA,
+            "mardo"       => $totalM,
+            "bairao"      => $totalB,
             "kids"        => $totalK,
             "event_index" => $event_index,
             "events"      => $date_events,

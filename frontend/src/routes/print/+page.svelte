@@ -144,7 +144,7 @@
   const shownCount = $derived(filteredRows.length);
 
   const niyazSummary = $derived(
-    `Adults: ${meta.adults ?? 0}, Kids: ${meta.kids ?? 0}, Thaals: ${Math.round(((meta.adults ?? 0) / 8 + (meta.kids ?? 0) / 10) * 10) / 10}`
+    `Mardo: ${meta.mardo ?? 0}, Bairao: ${meta.bairao ?? 0}, Bachao: ${meta.kids ?? 0}, Thaals: ${Math.round(((meta.adults ?? 0) / 8 + (meta.kids ?? 0) / 10) * 10) / 10}`
   );
 
   const menuTitle = $derived(

@@ -22,12 +22,12 @@ header('Content-Type: text/csv');
 header('Content-Disposition: attachment; filename=' . $filename);
 
 $output = fopen('php://output', 'w');
-fputcsv($output, ['date', 'menu', 'thaali', 'name', 'area', 'size', 'adults', 'kids', 'here', 'filled', 'norice'], ',', '"', '\\');
+fputcsv($output, ['date', 'menu', 'thaali', 'name', 'area', 'size', 'adults', 'mardo', 'bairao', 'kids', 'here', 'filled', 'norice'], ',', '"', '\\');
 
 $query =
     "SELECT events.date, events.details AS menu, " .
     "rsvps.thaali, CONCAT(family.firstName, ' ', family.lastName) AS name, " .
-    "family.area, rsvps.size, rsvps.adults, rsvps.kids, rsvps.here, rsvps.filled, rsvps.norice " .
+    "family.area, rsvps.size, rsvps.adults, rsvps.mardo, rsvps.bairao, rsvps.kids, rsvps.here, rsvps.filled, rsvps.norice " .
     "FROM rsvps " .
     "LEFT JOIN family ON family.thaali = rsvps.thaali " .
     "LEFT JOIN events ON events.date = rsvps.date AND events.event_index = rsvps.event_index " .

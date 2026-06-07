@@ -68,6 +68,12 @@ class RsvpService
             if ($row['adults'] == 0) {
                 unset($row['adults']);
             }
+            if ($row['mardo'] == 0) {
+                unset($row['mardo']);
+            }
+            if ($row['bairao'] == 0) {
+                unset($row['bairao']);
+            }
             if ($row['kids'] == 0) {
                 unset($row['kids']);
             }
@@ -100,13 +106,19 @@ class RsvpService
             return null;
         }
 
-        if (isset($entry['adults'])) {
-            if ($entry['adults'] < 0) {
-                $entry['adults'] = 0;
+        if (isset($entry['mardo'])) {
+            if ($entry['mardo'] < 0) {
+                $entry['mardo'] = 0;
+            }
+            if ($entry['bairao'] < 0) {
+                $entry['bairao'] = 0;
             }
             if ($entry['kids'] < 0) {
                 $entry['kids'] = 0;
             }
+            // adults is derived from mardo + bairao and kept for compatibility
+            // with consumers that still read the combined adult count.
+            $entry['adults'] = $entry['mardo'] + $entry['bairao'];
             if ($entry['adults'] + $entry['kids'] == 0) {
                 $entry['rsvp'] = 0;
             }

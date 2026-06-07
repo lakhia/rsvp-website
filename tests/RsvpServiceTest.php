@@ -92,6 +92,8 @@ class RsvpServiceTest extends TestCase
             "enabled" => 1,
             "rsvp" => 1,
             "adults" => 2,
+            "mardo" => 1,
+            "bairao" => 1,
             "kids" => 1,
             "size" => "MD",
             "norice" => 0,
@@ -149,12 +151,16 @@ class RsvpServiceTest extends TestCase
         $row = $this->baseRow();
         $row["rsvp"] = 0;
         $row["adults"] = 0;
+        $row["mardo"] = 0;
+        $row["bairao"] = 0;
         $row["kids"] = 0;
 
         $result = (new RsvpService($db))->normalizeRow($row, "2026-03-15", "MD");
 
         $this->assertArrayNotHasKey("rsvp", $result);
         $this->assertArrayNotHasKey("adults", $result);
+        $this->assertArrayNotHasKey("mardo", $result);
+        $this->assertArrayNotHasKey("bairao", $result);
         $this->assertArrayNotHasKey("kids", $result);
     }
 
@@ -218,10 +224,10 @@ class RsvpServiceTest extends TestCase
         $this->assertNotNull($result);
     }
 
-    public function test_validate_entry_clamps_negative_adults_and_kids(): void
+    public function test_validate_entry_clamps_negative_mardo_bairao_and_kids(): void
     {
         $db = $this->createMock(DB::class);
-        $entry = ["adults" => -3, "kids" => -1, "rsvp" => true, "size" => "MD"];
+        $entry = ["mardo" => -3, "bairao" => -2, "kids" => -1, "rsvp" => true, "size" => "MD"];
 
         $result = (new RsvpService($db))->validateEntry(
             "2026-03-20",
@@ -231,14 +237,31 @@ class RsvpServiceTest extends TestCase
             "MD",
         );
 
-        $this->assertSame(0, $result["adults"]);
+        $this->assertSame(0, $result["mardo"]);
+        $this->assertSame(0, $result["bairao"]);
         $this->assertSame(0, $result["kids"]);
     }
 
-    public function test_validate_entry_sets_rsvp_false_when_adults_and_kids_zero(): void
+    public function test_validate_entry_derives_adults_from_mardo_and_bairao(): void
     {
         $db = $this->createMock(DB::class);
-        $entry = ["adults" => 0, "kids" => 0, "rsvp" => true, "size" => "MD"];
+        $entry = ["mardo" => 2, "bairao" => 3, "kids" => 1, "rsvp" => true, "size" => "MD"];
+
+        $result = (new RsvpService($db))->validateEntry(
+            "2026-03-20",
+            "2026-03-15",
+            $entry,
+            ["XS", "SM", "MD"],
+            "MD",
+        );
+
+        $this->assertSame(5, $result["adults"]);
+    }
+
+    public function test_validate_entry_sets_rsvp_false_when_mardo_bairao_and_kids_zero(): void
+    {
+        $db = $this->createMock(DB::class);
+        $entry = ["mardo" => 0, "bairao" => 0, "kids" => 0, "rsvp" => true, "size" => "MD"];
 
         $result = (new RsvpService($db))->validateEntry(
             "2026-03-20",

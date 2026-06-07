@@ -76,17 +76,19 @@
     ev.rsvp = ev.rsvp ? 0 : 1;
     if (ev.niyaz) {
       if (ev.rsvp) {
-        ev.adults = parseInt(localStorage.getItem('adults')) || 0;
+        ev.mardo = parseInt(localStorage.getItem('mardo')) || 0;
+        ev.bairao = parseInt(localStorage.getItem('bairao')) || 0;
         ev.kids = parseInt(localStorage.getItem('kids')) || 0;
       } else {
-        ev.adults = ev.kids = null;
+        ev.mardo = ev.bairao = ev.kids = null;
       }
     }
     mark(ev);
   }
 
   function onCountChange(ev) {
-    localStorage.setItem('adults', ev.adults ?? 0);
+    localStorage.setItem('mardo', ev.mardo ?? 0);
+    localStorage.setItem('bairao', ev.bairao ?? 0);
     localStorage.setItem('kids', ev.kids ?? 0);
     mark(ev);
   }
@@ -117,7 +119,8 @@
           norice: ev.norice ? 1 : 0,
         };
         if (ev.niyaz) {
-          item.adults = ev.adults ?? 0;
+          item.mardo = ev.mardo ?? 0;
+          item.bairao = ev.bairao ?? 0;
           item.kids = ev.kids ?? 0;
         }
         return item;
@@ -224,20 +227,34 @@
           <div class="card-footer">
             {#if ev.niyaz}
               <!-- Count stepper for niyaz events -->
-              <div class="flex gap-4 justify-end w-full">
+              <div class="flex flex-wrap gap-x-4 gap-y-1.5 justify-end w-full">
                 <div class="flex items-center gap-1.5">
                   <button
-                    onclick={() => { ev.adults = Math.max(0, (ev.adults ?? 0) - 1); onCountChange(ev); }}
+                    onclick={() => { ev.mardo = Math.max(0, (ev.mardo ?? 0) - 1); onCountChange(ev); }}
                     disabled={ev.readonly}
                     class="stepper-btn"
                   >−</button>
-                  <span class="stepper-count">{ev.adults ?? 0}</span>
+                  <span class="stepper-count">{ev.mardo ?? 0}</span>
                   <button
-                    onclick={() => { ev.adults = (ev.adults ?? 0) + 1; onCountChange(ev); }}
+                    onclick={() => { ev.mardo = (ev.mardo ?? 0) + 1; onCountChange(ev); }}
                     disabled={ev.readonly}
                     class="stepper-btn"
                   >+</button>
-                  <span class="text-xs text-muted">adults</span>
+                  <span class="text-xs text-muted">mardo</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <button
+                    onclick={() => { ev.bairao = Math.max(0, (ev.bairao ?? 0) - 1); onCountChange(ev); }}
+                    disabled={ev.readonly}
+                    class="stepper-btn"
+                  >−</button>
+                  <span class="stepper-count">{ev.bairao ?? 0}</span>
+                  <button
+                    onclick={() => { ev.bairao = (ev.bairao ?? 0) + 1; onCountChange(ev); }}
+                    disabled={ev.readonly}
+                    class="stepper-btn"
+                  >+</button>
+                  <span class="text-xs text-muted">bairao</span>
                 </div>
                 <div class="flex items-center gap-1.5">
                   <button
@@ -251,7 +268,7 @@
                     disabled={ev.readonly}
                     class="stepper-btn"
                   >+</button>
-                  <span class="text-xs text-muted">kids</span>
+                  <span class="text-xs text-muted">bachao</span>
                 </div>
               </div>
             {:else}
