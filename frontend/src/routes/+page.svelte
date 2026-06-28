@@ -228,7 +228,7 @@
             {#if ev.niyaz}
               <!-- Count stepper for niyaz events -->
               <div class="flex flex-wrap gap-x-4 gap-y-1.5 justify-end w-full">
-                <div class="flex items-center gap-1.5">
+                <div class="flex items-center gap-1.5" title="15+ years old">
                   <button
                     onclick={() => { ev.mardo = Math.max(0, (ev.mardo ?? 0) - 1); onCountChange(ev); }}
                     disabled={ev.readonly}
@@ -242,7 +242,7 @@
                   >+</button>
                   <span class="text-xs text-muted">mardo</span>
                 </div>
-                <div class="flex items-center gap-1.5">
+                <div class="flex items-center gap-1.5" title="15+ years old">
                   <button
                     onclick={() => { ev.bairao = Math.max(0, (ev.bairao ?? 0) - 1); onCountChange(ev); }}
                     disabled={ev.readonly}
@@ -256,7 +256,7 @@
                   >+</button>
                   <span class="text-xs text-muted">bairao</span>
                 </div>
-                <div class="flex items-center gap-1.5">
+                <div class="flex items-center gap-1.5" title="5-14 years old">
                   <button
                     onclick={() => { ev.kids = Math.max(0, (ev.kids ?? 0) - 1); onCountChange(ev); }}
                     disabled={ev.readonly}
