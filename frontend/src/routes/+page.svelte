@@ -240,7 +240,7 @@
             {#if ev.niyaz}
               <!-- Count stepper for niyaz events -->
               <div class="flex gap-4 justify-end w-full">
-                <div class="flex items-center gap-1.5">
+                <div class="flex items-center gap-1.5" title="15+ years old">
                   <button
                     onclick={() => { ev.adults = Math.max(0, (ev.adults ?? 0) - 1); onCountChange(ev); }}
                     disabled={ev.readonly}
@@ -254,7 +254,7 @@
                   >+</button>
                   <span class="text-xs text-muted">adults</span>
                 </div>
-                <div class="flex items-center gap-1.5">
+                <div class="flex items-center gap-1.5" title="5-14 years old">
                   <button
                     onclick={() => { ev.kids = Math.max(0, (ev.kids ?? 0) - 1); onCountChange(ev); }}
                     disabled={ev.readonly}
