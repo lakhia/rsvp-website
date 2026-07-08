@@ -25,6 +25,7 @@ export default defineConfig(({ mode }) => {
 			__EMAIL_CONTACT__:  JSON.stringify(env.EMAIL_CONTACT   || ''),
 			__EMAIL_SECRETARY__: JSON.stringify(env.EMAIL_SECRETARY || ''),
 			__SECRETARY_TITLE__: JSON.stringify(env.SECRETARY_TITLE || 'Secretary'),
+			__WELCOME_MESSAGE__: JSON.stringify(env.WELCOME_MESSAGE || '#'),
 		}
 	};
 });

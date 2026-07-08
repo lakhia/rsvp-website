@@ -2,13 +2,14 @@
   import { post, navigate } from '$lib/api.js';
   import Message from '$lib/Message.svelte';
 
-  let firstName = $state('');
-  let lastName  = $state('');
-  let email     = $state('');
-  let phone     = $state('');
-  let its       = $state('');
-  let area      = $state('');
-  let msg       = $state('');
+  let firstName     = $state('');
+  let lastName      = $state('');
+  let email         = $state('');
+  let phone         = $state('');
+  let its           = $state('');
+  let area          = $state('');
+  let householdSize = $state('');
+  let msg           = $state('');
   let loading   = $state(false);
   let thaaliNumber = $state(null);
   let greet = $state('');
@@ -20,9 +21,18 @@
       msg = 'ITS number must be exactly 8 digits';
       return;
     }
+    if (phone.trim() === '') {
+      msg = 'A WhatsApp phone number is required';
+      return;
+    }
+    const phoneDigits = phone.replace(/[\s\-().+]/g, '');
+    if (!/^\d{7,15}$/.test(phoneDigits)) {
+      msg = 'Please enter a valid phone number (7–15 digits)';
+      return;
+    }
     loading = true;
     try {
-      const res = await post('register.php', {}, { firstName, lastName, email, phone, its, area });
+      const res = await post('register.php', {}, { firstName, lastName, email, phone, its, area, householdSize });
       if (res.data && !res.msg) {
         localStorage.setItem('greet', res.data.greet);
         greet = res.data.greet;
@@ -49,9 +59,7 @@
       <h2 class="text-xl mb-4">Registration Successful</h2>
       <p class="text-sm mb-2">Your thaali number is:</p>
       <p class="text-5xl font-bold mb-4" style="color: var(--brand);">{thaaliNumber}</p>
-      <p class="text-sm mb-6" style="color: var(--text-muted);">
-        Save this number — you will need it as your password to log in.
-      </p>
+      {@html __WELCOME_MESSAGE__}
       <div class="flex flex-col gap-2">
         <button
           onclick={() => navigate('/')}
@@ -122,12 +130,25 @@
         </div>
 
         <div class="flex flex-col gap-1">
-          <label for="phone">Whatsapp Phone</label>
+          <label for="phone">WhatsApp Phone *</label>
           <input
             id="phone"
             type="tel"
             bind:value={phone}
-            placeholder="Enter phone number"
+            placeholder="e.g. +1 555 123 4567"
+            required
+            class="border border-line rounded px-3 py-2 text-sm focus:outline-none focus:border-brand transition-colors"
+          />
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="householdSize">Number of people in your household</label>
+          <input
+            id="householdSize"
+            type="number"
+            min="1"
+            bind:value={householdSize}
+            placeholder="Optional"
             class="border border-line rounded px-3 py-2 text-sm focus:outline-none focus:border-brand transition-colors"
           />
         </div>
