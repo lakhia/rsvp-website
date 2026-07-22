@@ -11,6 +11,11 @@ if ($data) {
   $email = '';
 }
 
+// Thaali must be a non-empty integer string
+if (!ctype_digit($thaali) || $thaali === '') {
+    Helper::json_error("Login failed");
+}
+
 // Get name from credentials
 $name = AuthService::get_name($db, $email, $thaali);
 if ($name == "") {
@@ -24,6 +29,8 @@ setcookie("thaali", $thaali, $expires);
 setcookie("email", $email, $expires);
 if (AuthService::is_admin($email)) {
     setcookie("adv", "1", $expires);
+} else {
+    setcookie("adv", "0", $expires);
 }
 $greet = $name . ", #" . $thaali;
 

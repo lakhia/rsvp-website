@@ -2,8 +2,19 @@ node_modules/
 vendor/
 .phpunit.result.cache
 build/
+build-svelte/
+config/
 .DS_Store
+Thumbs.db
 rsvp.sublime-project
 rsvp.sublime-workspace
 .env
+.env.*
+!.env.example
 production_dump.sql
+frontend/static/.htaccess
+
+# SvelteKit / Vite
+frontend/.svelte-kit
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*

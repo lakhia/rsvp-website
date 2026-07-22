@@ -8,31 +8,40 @@ if (!AuthService::verify_token($db, $email_cookie, $thaali_cookie)) {
 }
 
 // Parameter handling
-$filterDate  = preg_replace("/[^_a-zA-Z0-9-]+/", "", $_GET["date"] ?? date('Y-m-d'));
-$filterArea  = $_GET['filterArea'] ?? '';
-$filterSize  = $_GET['filterSize'] ?? '';
-$filterHere  = $_GET['filterHere'] ?? '';
-$sort        = $_GET['sort'] ?? '';
+$offset       = (int) Helper::get_param('offset', 0);
+$filterArea   = $_GET['filterArea'] ?? '';
+$filterSize   = $_GET['filterSize'] ?? '';
+$filterHere   = $_GET['filterHere'] ?? '';
+$filterFilled = $_GET['filterFilled'] ?? '';
+$filterNorice = $_GET['filterNorice'] ?? '';
+$sort         = $_GET['sort'] ?? '';
 
-// Event details
-$event_query = 'SELECT details, enabled from events where date="' . $filterDate . '";';
-$result = $db->query($event_query);
-if (!$result || $result->num_rows != 1) {
-    die("Error: Seems like there is no event on the day selected.");
+if (Config::DOWNLOAD_WEEK_RANGE) {
+    $from    = Helper::get_week("", $offset);
+    $to      = Helper::get_week("", $offset + 7);
+    $where   = ["`rsvp` = 1", "rsvps.date >= ?", "rsvps.date < ?", "events.enabled = 1"];
+    $params  = [$from, $to];
+    $types   = "ss";
+} else {
+    $date = Helper::get_day($offset);
+
+    // Validate event exists and is enabled
+    $event_query = 'SELECT details, enabled from events where date="' . $date . '";';
+    $result = $db->query($event_query);
+    if (!$result || $result->num_rows != 1) {
+        die("Error: Seems like there is no event on the day selected.");
+    }
+    $row = $result->fetch_assoc();
+    if (!$row["enabled"]) {
+        die("Error: Seems like the event is not enabled.");
+    }
+
+    $where  = ["`rsvp` = 1", "rsvps.date = ?"];
+    $params = [$date];
+    $types  = "s";
 }
-$row = $result->fetch_assoc();
-if (!$row["enabled"]) {
-    die("Error: Seems like the event is not enabled.");
-}
-$dish = $row["details"];
 
-// Binding for prepare statement
-$where[] = "`rsvp` = 1";
-$where[] = "`date` = ?";
-$params[] = $filterDate;
-$types    = "s";
-
-// Optional params
+// Optional filters
 if ($filterArea !== '') {
     $where[] = "area = ?";
     $params[] = $filterArea;
@@ -45,21 +54,34 @@ if ($filterSize !== '') {
 }
 if ($filterHere !== '') {
     $where[] = "here = ?";
-    $params[] = $filterHere;
-    $types   .= "s";
+    $params[] = $filterHere === 'Y' ? 1 : 0;
+    $types   .= "i";
 }
+if ($filterFilled !== '') {
+    $where[] = "filled = ?";
+    $params[] = $filterFilled === 'Y' ? 1 : 0;
+    $types   .= "i";
+}
+if ($filterNorice !== '') {
+    $where[] = "lessRice = ?";
+    $params[] = $filterNorice === 'N' ? 0 : 1;
+    $types   .= "i";
+}
+
 $allowedSorts = [
     'thaali' => 'thaali_id',
     'size'   => 'rsvps.size',
-    'area'   => 'area'
+    'area'   => 'area',
 ];
-$orderBy = $allowedSorts[$sort] ?? 'rsvps.size, area';
+$rowOrder = $allowedSorts[$sort] ?? 'rsvps.size, area';
+$orderBy  = Config::DOWNLOAD_WEEK_RANGE ? "rsvps.date, $rowOrder" : $rowOrder;
 
 // Run query
 $sql = "
-    SELECT thaali_id AS id, rsvps.size, area
+    SELECT thaali_id AS id, rsvps.size, area, rsvps.date, events.details AS dish
     FROM rsvps
-    LEFT JOIN `family` on family.thaali = rsvps.thaali_id
+    LEFT JOIN `family` ON family.thaali = rsvps.thaali_id
+    LEFT JOIN `events` ON events.date = rsvps.date
     WHERE " . implode(" AND ", $where) . "
     ORDER BY $orderBy
 ";
@@ -93,7 +115,7 @@ $row = 0;
 
 while ($r = $result->fetch_assoc()) {
 
-    drawLabel($pdf, $x, $y, $r, $dish, $filterDate, $labelWidth, $labelHeight, 0.12);
+    drawLabel($pdf, $x, $y, $r, $r['dish'], $r['date'], $labelWidth, $labelHeight, 0.12);
 
     /* ---- Advance grid ---- */
     $col++;
@@ -154,4 +176,3 @@ function drawLabel($pdf, $x, $y, $data, $dish, $date, $labelWidth, $labelHeight,
     $pdf->SetXY($x + $pad, $yDate);
     $pdf->Cell($innerW, 0.15, $date, 0, 0, "C");
 }
-

@@ -2,15 +2,14 @@
 
 require_once "bootstrap.php";
 
-$table = $_GET['table'];
-
-// If token is invalid, return an empty response
-if (!AuthService::verify_token($db, $email_cookie, $thaali_cookie)) {
+// Requires admin account
+if (!AuthService::is_admin($email_cookie) ||
+    !AuthService::verify_token($db, $email_cookie, $thaali_cookie)) {
     Helper::json_error("Login failed, please logout and login again");
 }
 
 // Sanitize string
-$table = preg_replace("/[^_a-zA-Z0-9]+/", "", $table);
+$table = preg_replace("/[^_a-zA-Z0-9]+/", "", $_GET['table']);
 
 // Get column names for header
 $result = $db->query("SHOW COLUMNS FROM " . $table);
@@ -35,7 +34,7 @@ function dump_get($db, $table, $cols) {
 
     // Open output file
     $output = fopen('php://output', 'w');
-    fputcsv($output, $cols);
+    fputcsv($output, $cols, ',', '"', '\\');
 
     // Make query
     $where = "";
@@ -55,7 +54,7 @@ function dump_get($db, $table, $cols) {
 
     // Output rows
     while ($row = $result->fetch_assoc()) {
-        fputcsv($output, $row);
+        fputcsv($output, $row, ',', '"', '\\');
     }
 }
 
@@ -70,10 +69,10 @@ function dump_post($db, $table, $types) {
     // Process each line
     while (($buf = fgets($input, 4096)) !== false) {
 
-        $data = str_getcsv($buf);
+        $data = str_getcsv(trim($buf), ',', '"', '');
 
         // Figure out column names and types
-        if (count($cols) == 0) {
+        if (empty($cols)) {
             $cols = implode(",", $data);
             foreach ($data as $val) {
                 $integers[] = strpos($types[$val], "int");
@@ -84,7 +83,7 @@ function dump_post($db, $table, $types) {
         // If column is string, enclose in quotes
         for ($i=0; $i < count($data); $i++) {
             if ($integers[$i] === false) {
-                $data[$i] = '"' . $data[$i] . '"';
+                $data[$i] = '"' . $db->escape($data[$i]) . '"';
             }
         }
         $data = implode(",", $data);

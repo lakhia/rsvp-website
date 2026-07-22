@@ -6,7 +6,7 @@ This project is an RSVP website for collecting meal responses so that cooking an
 
 * PHP 8.2+
 * MySQL 5.7+
-* Node.js (for build process)
+* Bun (for build process)
 * Docker and Docker Compose (for containerized development)
 
 # Development
@@ -16,22 +16,24 @@ This project is an RSVP website for collecting meal responses so that cooking an
 *Prerequisites*
 1. Install [mysql](https://dev.mysql.com/downloads/mysql/) and run `mysql -v -u root < migration/*.sql` to bootstrap the database. For subsequent iterative migrations, add `sffaiz` as last parameter to specify the database.
 2. Install php - MacOS (Homebrew) - `brew install php`
-3. Install [node](https://nodejs.org/en/download/package-manager/)
-4. Install [npm](https://docs.npmjs.com/getting-started/installing-node)
+3. Install [bun](https://bun.sh)
 
 ### Setup
 ```bash
-npm install                  # Install dependencies
+bun install                  # Install dependencies
 cp .env.example .env         # Create local configuration
 # Edit .env with your settings
 ```
 
 ### Commands
 ```bash
-npm run dev                  # Start dev server at http://127.0.0.1:3000
-npm run build                # Build production files to build/ directory
-npm run serve-prod           # Build and serve production version
+bun run dev                  # Start dev server at http://localhost:5173
+bun run build                # Build production files to build/ directory
+bun run build:prod           # Build minified single-file output for production (build/index.html)
+bun run serve-prod           # Build and serve production version
 ```
+
+**Note:** Use the Vite URL (`http://localhost:5173`) during development — it proxies PHP requests to the backend automatically and provides hot module replacement (HMR) for instant CSS/JS updates. PHP file changes are also watched and automatically copied to `build/`.
 
 ## Docker Development (Recommended)
 
@@ -46,10 +48,10 @@ npm run serve-prod           # Build and serve production version
    docker compose up -d --build
    ```
 
-The application will be available at [http://localhost:3000](http://localhost:3000) with live reload.
+The application will be available at [http://localhost:5173](http://localhost:5173) with live reload.
 
 ### Development Mode (Default)
-The default setup runs in development mode with auto-rebuild and live reload:
+The default setup runs in development mode with Vite HMR and PHP file watching:
 
 ```bash
 docker compose up -d --build      # Start with live reload
@@ -59,10 +61,10 @@ docker compose down -v            # Stop and remove volumes (resets database)
 ```
 
 **Features:**
-- Auto-rebuilds on source file changes (JS, CSS, HTML, PHP)
-- Browser auto-reloads after rebuild completes
+- Vite HMR for instant Svelte/JS/CSS updates
+- PHP file changes automatically copied to `build/`
 - Template variable substitution from `.env` via `deploy.pl`
-- Access at [http://localhost:3000](http://localhost:3000)
+- Access at [http://localhost:5173](http://localhost:5173)
 
 ### Production Mode (Test Production Builds)
 To test the full production build locally:
@@ -110,16 +112,33 @@ Tests also run automatically on every push and pull request via GitHub Actions.
 ## Pre-requisites
 Complete Local Development Prerequisites.
 
-1. Build the production files:
+1. Create `.env.prod` with production overrides (e.g. `BASE_PATH=/myapp`), then build:
    ```bash
-   npm run build
+   bun run build:prod
    ```
 
 2. Run the deployment script to substitute environment variables:
    ```bash
-   perl deploy.pl .env
+   perl deploy.pl .env.prod
    ```
 
 3. Deploy all files from the `build/` directory to your web server
+
+## Apache Configuration
+
+The app uses SvelteKit client-side routing, so Apache must serve `index.html` for any path that isn't a real file. Create a `.htaccess` file in `frontend/static/` (copied to `build/` on build) handles this based on this example (deploying under a subdirectory `/rsvp/`):
+
+```apache
+RewriteEngine On
+RewriteBase /rsvp/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ /rsvp/index.html [L]
+```
+
+Place the `.htaccess` file in the deployment subdirectory (e.g. `rsvp/`), not the server root.
+
+**Requirements:**
+- Apache must have `AllowOverride All` (or at minimum `AllowOverride FileInfo`) set for the deployment directory
+- If a parent directory has a `Satisfy any` directive, add `Satisfy all` or `Require all granted` (Apache 2.4) at the top of your `.htaccess` to override it
 
 For detailed architecture and development information, see [CLAUDE.md](CLAUDE.md).

@@ -35,14 +35,16 @@ class AuthService
 
     public static function get_name($db, string $email, string $thaali): string
     {
-        $sql = "SELECT * FROM `family` WHERE `thaali` = '$thaali'";
-
-        if (!self::is_admin($email)) {
-            $sql .= " AND `email` = '$email'";
+        if (self::is_admin($email)) {
+            $stmt = $db->prepare("SELECT * FROM `family` WHERE `thaali` = ? LIMIT 1");
+            $stmt->bind_param("s", $thaali);
+        } else {
+            $stmt = $db->prepare("SELECT * FROM `family` WHERE `thaali` = ? AND `email` = ? LIMIT 1");
+            $stmt->bind_param("ss", $thaali, $email);
         }
-        $sql .= " LIMIT 1;";
 
-        ($result = $db->query($sql)) or die("{ msg: 'DB query failed.' }");
+        $stmt->execute();
+        $result = $stmt->get_result();
         if (!$result || $result->num_rows != 1) {
             return "";
         }

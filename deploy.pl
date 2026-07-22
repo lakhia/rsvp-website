@@ -21,8 +21,12 @@ sub wanted {
         db_config($_);
     } elsif (m/AuthService/) {
         php_helper($_);
+    } elsif (m/config\.php/) {
+        php_config($_);
     } elsif (m/index\.html/) {
         html($_);
+    } elsif (m/\.htaccess/) {
+        htaccess_config($_);
     }
 }
 
@@ -91,65 +95,69 @@ sub php_helper {
     rename "$_.backup", $_;
 }
 
+sub php_config {
+    my $line;
+    $_ = shift;
+    my $php_sizes  = '["' . join('","', split(/,/, $config{THAALI_SIZES}))  . '"]';
+    my $php_ratios = '[' . $config{THAALI_RATIOS} . ']';
+    open IN, $_ or die "Cannot open $!";
+    open OUT, ">$_.backup" or die "Cannot open $!";
+    while ($line = <IN>) {
+        $line =~ s/THAALI_SIZES = \[.*?\]/THAALI_SIZES = $php_sizes/;
+        $line =~ s/THAALI_RATIOS = \[.*?\]/THAALI_RATIOS = $php_ratios/;
+        print OUT $line;
+    }
+    close OUT;
+    close IN;
+    rename "$_.backup", $_;
+}
+
+sub htaccess_config {
+    my $base = $config{BASE_PATH} || '';
+    my $line;
+    $_ = shift;
+    open IN, $_ or die "Cannot open $!";
+    open OUT, ">$_.backup" or die "Cannot open $!";
+    while ($line = <IN>) {
+        $line =~ s|BASE_PATH|$base|g;
+        print OUT $line;
+    }
+    close OUT;
+    close IN;
+    rename "$_.backup", $_;
+}
+
 sub html {
     my $line;
     $_ = shift;
     open IN, $_ or die "Cannot open $!";
     open OUT, ">$_.backup" or die "Cannot open $!";
     while ($line = <IN>) {
-        # Template values
-        $line =~ s/APP_NAME/$config{APP_NAME}/;
-        $line =~ s/FEEDBACK_URL/$config{LINK_FEEDBACK}/;
-        $line =~ s/PLANNING_URL/$config{LINK_PLANNING}/;
-        $line =~ s/ADMIN_EMAIL/$config{EMAIL_ADMIN}/;
-        $line =~ s/CONTACT_EMAIL/$config{EMAIL_CONTACT}/;
-        $line =~ s/SECRETARY_EMAIL/$config{EMAIL_SECRETARY}/;
-        $line =~ s/SECRETARY_TITLE/$config{SECRETARY_TITLE}/;
-
-        # Javascript methods
-        $line =~ s/getClass/gC/g;
-        $line =~ s/on(..)[a-zA-Z]*Change/o$1/g;
-        $line =~ s/onChange/oC/g;
-        $line =~ s/onSizeChange/oSC/g;
-        $line =~ s/onCheckboxClick/oCC/g;
-        $line =~ s/onFilterChange/oFC/g;
-        $line =~ s/getDisplayDate/gD/g;
-        $line =~ s/generateLabels/gLB/g;
-        $line =~ s/getRawDate/gR/g;
-        $line =~ s/getSizes/gSz/g;
-        $line =~ s/changed/cg/g;
-        $line =~ s/rsvpLabel/rL/g;
-        $line =~ s/....Line//g;
-        $line =~ s/raw/r/g;
-        $line =~ s/next/n/g;
-        $line =~ s/submit/sb/g;
         # CSS names
-        $line =~ s/sidebar/s/g;
-        $line =~ s/nofoc/n/g;
-        $line =~ s/noPrnt/p/g;
-        $line =~ s/rsvpRow/r/g;
-        $line =~ s/rsvpBtn/b/g;
-        $line =~ s/;-o-[^;]+//g;
-        $line =~ s/;-moz-[^;]+//g;
-        $line =~ s/-webkit-[^;]+;//g;
-        $line =~ s/;-ms-[^;]+//g;
+        $line =~ s/-brand-dark/-b-dk/g;
+        $line =~ s/-gray-(\d)00/-g-$1/g;
+        $line =~ s/-no-dark/-n-dk/g;
+        $line =~ s/-yes-dark/-y-dk/g;
+        $line =~ s/badge/bdg/g;
+        $line =~ s/btn-danger/bt-dg/g;
+        $line =~ s/btn-primary/bt-pr/g;
+        $line =~ s/btn-secondary/bt-sc/g;
+        $line =~ s/font-medium/f-med/g;
+        $line =~ s/input-inline/i-in/g;
+        $line =~ s/input-sm/i-sm/g;
+        $line =~ s/select-filter/s-ft/g;
+        $line =~ s/text-center/t-cnr/g;
+        $line =~ s/transition-colors/t-col/g;
+        $line =~ s/whitespace-nowrap/ws-nw/g;
+        $line =~ s/eyebrow/eyb/g;
+
+        # Comments
+        $line =~ s|/\*[^*]+\*/||;
+
         # Misc
-        $line =~ s/(\w\w)\w+Controller/$1C/g;
-        $line =~ s/\w\w\.html//g;
-        $line =~ s/loading-bar/lb/g;
-        $line =~ s/[Ll]oadingBar/lB/g;
-        $line =~ s/&nbsp;/ /g;
         $line =~ s/menuBig/mB/g;
-        $line =~ s/gone/gn/ig;
-        $line =~ s/hideRow/hR/g;
-        $line =~ s/menuToggle/mT/g;
-        $line =~ s/minWidth/m/g;
-        $line =~ s/filterNames/fN/g;
-        $line =~ s/filterFunc/fF/g;
-        $line =~ s/sortColumn/sC/g;
-        $line =~ s/sorterFunc/sF/g;
-        $line =~ s/ }}/}}/g;
-        $line =~ s/\{\{ /{{/g;
+        $line =~ s|https://svelte.dev/e/|sdev|g;
+
         print OUT $line;
     }
     close OUT;
