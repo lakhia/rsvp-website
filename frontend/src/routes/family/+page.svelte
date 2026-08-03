@@ -292,7 +292,6 @@
     font-size: 11px;
     font-weight: 600;
     color: var(--text);
-    text-transform: uppercase;
   }
 
   .separator { color: var(--border-strong); }
