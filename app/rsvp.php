@@ -27,11 +27,13 @@ function details_get($db, $service, $thaali, $eligible_sizes, $default_size, $ms
     $to = Helper::get_week("", $offset + 7);
 
     // Make query
-    $query = "SELECT events.date, adults, kids, niyaz, enabled, " .
-        " details, rsvp, size, lessRice FROM events " .
-        "LEFT JOIN rsvps ON rsvps.date = events.date AND rsvps.thaali_id = " .
-        $thaali . " WHERE details > '' AND events.date >= '" .
-        $from . "' AND events.date < '" . $to . "' order by date;";
+    $query = "SELECT events.date, events.event_index, adults, kids, niyaz, enabled, " .
+        " details, rsvp, size, norice FROM events " .
+        "LEFT JOIN rsvps ON rsvps.date = events.date AND rsvps.event_index = events.event_index " .
+        " AND rsvps.thaali = " . $thaali .
+        " WHERE details > '' AND events.date >= '" .
+        $from . "' AND events.date < '" . $to .
+        "' ORDER BY events.date, events.event_index;";
 
     $result = $db->query($query);
 
@@ -49,16 +51,21 @@ function details_get($db, $service, $thaali, $eligible_sizes, $default_size, $ms
     }
 }
 
-// Post update to details
+// Post update to details — body is an array of event objects with date, event_index, and RSVP fields
 function details_post($db, $service, $thaali, $eligible_sizes, $default_size)
 {
     // Get cutoff time for disabling entry
     $cutoff = AuthService::get_cutoff_time(1);
     $data = json_decode(file_get_contents('php://input'), true);
+    $msg = "";
 
-    foreach ($data as $date => $v) {
+    foreach ($data as $item) {
+        $date = $item['date'];
+        $event_index = (int)($item['event_index'] ?? 0);
+        $entry_data = array_diff_key($item, array_flip(['date', 'event_index']));
+
         try {
-            $entry = $service->validateEntry($date, $cutoff, $v, $eligible_sizes, $default_size);
+            $entry = $service->validateEntry($date, $cutoff, $entry_data, $eligible_sizes, $default_size);
         } catch (\InvalidArgumentException $e) {
             $msg = $e->getMessage();
             break;
@@ -70,10 +77,10 @@ function details_post($db, $service, $thaali, $eligible_sizes, $default_size)
 
         [$cols, $placeholders, $updates, $types, $values] = Helper::dict_to_upsert_parts($entry);
 
-        $stmt = $db->prepare("INSERT INTO rsvps (date, thaali_id, $cols) " .
-                             "VALUES (?, ?, $placeholders) " .
+        $stmt = $db->prepare("INSERT INTO rsvps (date, event_index, thaali, $cols) " .
+                             "VALUES (?, ?, ?, $placeholders) " .
                              "ON DUPLICATE KEY UPDATE $updates");
-        $stmt->bind_param("si$types", $date, $thaali, ...$values);
+        $stmt->bind_param("sii$types", $date, $event_index, $thaali, ...$values);
         if ($stmt->execute()) {
             $msg = "Thank you, changes have been saved!";
         } else {

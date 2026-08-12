@@ -11,6 +11,15 @@ class AuthService
         return hash("md4", $thaali . $_SERVER["SERVER_NAME"] . $email);
     }
 
+    public static function set_session_cookies(string $email, string $thaali): void
+    {
+        $expires = time() + (86400 * 60);
+        setcookie("token", self::create_token($email, $thaali), $expires);
+        setcookie("thaali", $thaali, $expires);
+        setcookie("email", $email, $expires);
+        setcookie("adv", self::is_admin($email) ? "1" : "0", $expires);
+    }
+
     public static function get_responsibility(): string
     {
         return self::$resp;

@@ -13,10 +13,11 @@ if ($date == 0) {
    $offset = Helper::get_param('offset', 0);
    $date = Helper::get_day($offset);
 }
-dump_get($db, $date);
+$event_index = (int)Helper::get_param('event_index', 0);
+dump_get($db, $date, $event_index);
 
 // Get dump in CSV format
-function dump_get($db, $date) {
+function dump_get($db, $date, $event_index) {
     header('Content-Type: text/csv');
     header('Content-Disposition: attachment; filename=ohbat.csv');
 
@@ -30,7 +31,7 @@ function dump_get($db, $date) {
                 CASE WHEN rsvp = 1 THEN 'Yes' ELSE 'No' END AS rsvp
               FROM family
               LEFT JOIN rsvps
-              ON thaali_id=thaali AND date=\"" . $date . "\"
+              ON rsvps.thaali=family.thaali AND date=\"" . $date . "\" AND event_index=" . $event_index . "
               WHERE thaali < 400";
     $result = $db->query($query);
 

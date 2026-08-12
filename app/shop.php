@@ -19,14 +19,20 @@ function shopping_get($db)
     $from = Helper::get_week($date, $offset);
     $to = Helper::get_week($date, $offset + $len);
 
-    // Make query
+    // Make query — fetch all events including multiple per date
     $query =
         "SELECT * FROM events WHERE date >= '" .
         $from .
         "' AND date < '" .
         $to .
-        "' order by date;";
+        "' ORDER BY date, event_index;";
     $result = $db->query($query);
+
+    // Fetch all events into memory and group by date
+    $events_by_date = [];
+    while ($row = $result->fetch_assoc()) {
+        $events_by_date[$row['date']][] = $row;
+    }
 
     // Get all dates between range
     $period = new DatePeriod(
@@ -35,17 +41,34 @@ function shopping_get($db)
         new DateTime($to),
     );
 
-    // Save rows, add place holder dates when needed
+    // Process each date — aggregate all events on the same date
     $total = [];
+    $rows = [];
     foreach ($period as $date) {
         $d = $date->format("Y-m-d");
-        if (!isset($row)) {
-            $row = $result->fetch_assoc();
+        if (!isset($events_by_date[$d])) {
+            continue;
         }
-        if (isset($row["date"]) && $d == $row["date"]) {
-            $shop = ingredients_for_date($db, $row, $total);
-            $rows[$d] = $shop;
-            unset($row);
+        $day_count = null;
+        $day_ingred = [];
+        foreach ($events_by_date[$d] as $ev) {
+            $shop = ingredients_for_event($db, $ev, $total);
+            if (!$shop) {
+                continue;
+            }
+            if ($day_count === null) {
+                $day_count = $shop['count'];
+            } else {
+                foreach ($shop['count'] as $k => $v) {
+                    $day_count[$k] = ($day_count[$k] ?? 0) + $v;
+                }
+            }
+            foreach ($shop['ingred'] ?? [] as $dish => $items) {
+                $day_ingred[$dish] = $items;
+            }
+        }
+        if ($day_count !== null) {
+            $rows[$d] = ['count' => $day_count, 'ingred' => $day_ingred];
         }
     }
 
@@ -55,12 +78,12 @@ function shopping_get($db)
     Helper::print_to_json($rows, "", $from);
 }
 
-/* Calculate ingredients for a single date */
-function ingredients_for_date($db, &$data, &$total)
+/* Calculate ingredients for a single event */
+function ingredients_for_event($db, &$data, &$total)
 {
     $result = [];
     if ($data["enabled"] && !$data["niyaz"]) {
-        $count = total_rsvp_for_date($db, $data["date"]);
+        $count = total_rsvp_for_event($db, $data["date"], (int)$data["event_index"]);
         $ingredients = EstimationService::get_ingredients(
             $db,
             $data["details"],
@@ -76,15 +99,13 @@ function ingredients_for_date($db, &$data, &$total)
 /* Compute total RSVP in 3 different ways:
        Count, normalized for size, and adjusted for less rice
 */
-function total_rsvp_for_date($db, $date)
+function total_rsvp_for_event($db, $date, $event_index)
 {
-    // Get total RSVP for given date
+    // Get total RSVP for given event
     $query =
-        "SELECT rsvps.size, lessRice FROM `rsvps` " .
-        "LEFT JOIN `family` on family.thaali = rsvps.thaali_id " .
-        "WHERE `rsvp` = 1 AND `date` = '" .
-        $date .
-        "';";
+        "SELECT rsvps.size, norice FROM `rsvps` " .
+        "LEFT JOIN `family` on family.thaali = rsvps.thaali " .
+        "WHERE `rsvp` = 1 AND `date` = '" . $date . "' AND `event_index` = " . $event_index . ";";
     $result = $db->query($query);
 
     $count = ["count" => 0];
@@ -101,7 +122,7 @@ function total_rsvp_for_date($db, $date)
         }
 
         // Count rice
-        if ($row["lessRice"]) {
+        if ($row["norice"]) {
             $size = 0;
         }
         if (!isset($count["rice+bread"])) {

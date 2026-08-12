@@ -24,29 +24,31 @@ function event_get($db, $msg)
     $from = Helper::get_week($date, $offset);
     $to = Helper::get_week($date, $offset + 7);
 
-    // Make query
     $query = "SELECT * FROM events WHERE date >= '" .
-        $from . "' AND date < '" . $to . "' order by date;";
+        $from . "' AND date < '" . $to . "' ORDER BY date, event_index;";
 
     $result = $db->query($query);
 
-    // Get all dates between range
+    // Group DB rows by date
+    $events_by_date = [];
+    while ($row = $result->fetch_assoc()) {
+        $events_by_date[$row['date']][] = $row;
+    }
+
+    // Build output: one placeholder per date that has no events
     $period = new DatePeriod(
                   new DateTime($from),
                   new DateInterval('P1D'),
                   new DateTime($to));
 
-    // Save rows, add place holder dates when needed
-    foreach($period as $date) {
-        $d = $date->format('Y-m-d');
-        if (!isset($row)) {
-            $row = $result->fetch_assoc();
-        }
-        if (!isset($row["date"]) || $d != $row["date"]) {
-            $rows[] = array("date" => $d);
+    foreach ($period as $d) {
+        $ds = $d->format('Y-m-d');
+        if (isset($events_by_date[$ds])) {
+            foreach ($events_by_date[$ds] as $ev) {
+                $rows[] = $ev;
+            }
         } else {
-            $rows[] = $row;
-            unset($row);
+            $rows[] = ['date' => $ds, 'event_index' => 0];
         }
     }
 
@@ -75,13 +77,14 @@ function event_post($db)
 {
     $msg = "";
     $data = json_decode(file_get_contents('php://input'), false);
-    $stmt = $db->prepare("INSERT INTO events (date, details, enabled, niyaz) " .
-                         "VALUES (?, ?, ?, ?) " .
+    $stmt = $db->prepare("INSERT INTO events (date, event_index, details, enabled, niyaz) " .
+                         "VALUES (?, ?, ?, ?, ?) " .
                          "ON DUPLICATE KEY UPDATE " .
                          "details = ?, enabled = ?, niyaz = ?");
 
     foreach ($data as $i) {
         $date = $i->date;
+        $event_index = isset($i->event_index) ? (int)$i->event_index : 0;
 
         // Take care of uninit variables
         $enabled = 0;
@@ -94,15 +97,15 @@ function event_post($db)
         }
         $details = Helper::get_if_defined($i->details, "");
         if ($details == "") {
-            $query = "DELETE FROM events WHERE date = '$date';";
+            $query = "DELETE FROM events WHERE date = '$date' AND event_index = $event_index;";
             if (!$db->query($query)) {
-                $msg =  $db->error;
+                $msg = $db->error;
                 break;
             }
         } else {
             $details = fix_details($details);
-            $stmt->bind_param("ssiisii",
-                              $date, $details, $enabled, $niyaz, 
+            $stmt->bind_param("sisiisii",
+                              $date, $event_index, $details, $enabled, $niyaz,
                               $details, $enabled, $niyaz);
             if (!$stmt->execute()) {
                 $msg = $stmt->error;
