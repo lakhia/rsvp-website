@@ -22,9 +22,10 @@ if ($method_server == "POST") {
 // Get details for specific dates
 function details_get($db, $service, $thaali, $eligible_sizes, $default_size, $msg)
 {
+    $date = Helper::get_param('date', '');
     $offset = Helper::get_param('offset', 0);
-    $from = Helper::get_week("", $offset);
-    $to = Helper::get_week("", $offset + 7);
+    $from = Helper::get_week($date, $offset);
+    $to = Helper::get_week($date, $offset + 7);
 
     // Make query
     $query = "SELECT events.date, adults, kids, niyaz, enabled, " .

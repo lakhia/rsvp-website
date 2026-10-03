@@ -82,6 +82,7 @@
     if (f.here === 'N' && r.here) return false;
     if (f.filled === 'Y' && !r.filled) return false;
     if (f.filled === 'N' && r.filled) return false;
+    if (f.norice === 'Y' && !r.norice) return false;
     if (f.norice === 'N' && r.norice) return false;
     return true;
   }
@@ -334,9 +335,11 @@ const sizeSummary = $derived.by(() => {
           <button class="{filters.filled === 'N' ? 'active' : ''}" onclick={() => { filters.filled = filters.filled === 'N' ? '' : 'N'; }}>Unfilled</button>
         </div>
 
-        <!-- With Rice toggle -->
+        <!-- Rice segmented control: keys are norice values, so labels are inverted -->
         <div class="segmented">
-          <button class="{filters.norice === 'N' ? 'active' : ''}" onclick={() => { filters.norice = filters.norice === 'N' ? '' : 'N'; }}>With Rice</button>
+          {#each [['','All Rice'],['N','Y'],['Y','N']] as [key, label]}
+            <button class="{filters.norice === key ? 'active' : ''}" onclick={() => filters.norice = key}>{label}</button>
+          {/each}
         </div>
 
         <!-- Tiffin segmented control -->
@@ -393,15 +396,17 @@ const sizeSummary = $derived.by(() => {
         <div style="text-align: center;">{item.thaali}</div>
         <div style="min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{item.name ?? ''}</div>
         <!-- Row 2: area | adult/child count (niyaz) or size+buttons -->
-        <div style="text-align: center;">{item.area ?? ''}</div>
-        <div style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
+        <div class="filling-area" title={item.area || undefined}>{item.area ?? ''}</div>
+        <div class="filling-controls">
           {#if meta.niyaz}
             <span class="text-sm">{item.size}</span>
           {:else}
-            <span class="sz sz-{item.size}">{item.size ?? ''}</span>
-            {#if item.norice}
-              <span class="tag tag-accent">no rice</span>
-            {/if}
+            <span>
+              <span class="sz sz-{item.size}">{item.size ?? ''}</span>
+              {#if item.norice}
+                <span class="tag tag-accent">no rice</span>
+              {/if}
+            </span>
             <button
               onclick={() => { item.here = item.here ? 0 : 1; onCheckboxChange(item); }}
               disabled={!meta.save}
@@ -453,6 +458,19 @@ const sizeSummary = $derived.by(() => {
 </PageNav>
 
 <style>
+  .filling-row {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .filling-area {
+    min-width: 28px;
+    max-width: 65px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .filling-controls {
+    display: flex;
+    gap: 4px;
+  }
   .progress-ring {
     width: 68px;
     height: 68px;

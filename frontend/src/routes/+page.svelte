@@ -7,7 +7,7 @@
   import Message from '$lib/Message.svelte';
   import Dialog from '$lib/Dialog.svelte';
   import PageNav from '$lib/PageNav.svelte';
-  import { getIntParam, paginateUrl, dateToOffset } from '$lib/utils.js';
+  import { getIntParam, paginateUrl } from '$lib/utils.js';
   import { parseYMD, fmtWeekday, fmtMonthDay } from '$lib/dates.js';
 
   const ps = new PageState();
@@ -22,10 +22,9 @@
   const dateParam = $derived(page.url.searchParams.get('date') || '');
   const hasDirty = $derived(Object.keys(dirty).length > 0);
   const todayStr = new Date().toLocaleDateString('en-CA');
-  const effectiveOffset = $derived(dateParam ? dateToOffset(dateParam) : offset);
 
   $effect(() => {
-    loadData(effectiveOffset);
+    loadData(offset, dateParam);
   });
 
   $effect(() => {
@@ -44,9 +43,10 @@
     if (hasDirty) e.preventDefault();
   }
 
-  async function loadData(o) {
+  async function loadData(o, date = '') {
     await ps.load(async () => {
-      const res = await get('rsvp.php', { offset: o });
+      const params = date ? { date } : { offset: o };
+      const res = await get('rsvp.php', params);
       events = res.data || [];
       sizes = res.other || [];
       ps.msg = res.msg || '';
@@ -114,7 +114,8 @@
       }
     }
     await ps.save(async () => {
-      const res = await post('rsvp.php', { offset: effectiveOffset }, body);
+      const params = dateParam ? { date: dateParam } : { offset: offset };
+      const res = await post('rsvp.php', params, body);
       events = res.data || [];
       sizes = res.other || [];
       ps.msg = res.msg || 'Saved';
@@ -232,7 +233,7 @@
             {#if ev.niyaz}
               <!-- Count stepper for niyaz events -->
               <div class="flex gap-4 justify-end w-full">
-                <div class="flex items-center gap-1.5">
+                <div class="flex items-center gap-1.5" title="15+ years old">
                   <button
                     onclick={() => { ev.adults = Math.max(0, (ev.adults ?? 0) - 1); onCountChange(ev); }}
                     disabled={ev.readonly}
@@ -246,7 +247,7 @@
                   >+</button>
                   <span class="text-xs text-muted">adults</span>
                 </div>
-                <div class="flex items-center gap-1.5">
+                <div class="flex items-center gap-1.5" title="5-14 years old">
                   <button
                     onclick={() => { ev.kids = Math.max(0, (ev.kids ?? 0) - 1); onCountChange(ev); }}
                     disabled={ev.readonly}
