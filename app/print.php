@@ -24,12 +24,12 @@ function print_filling($db, $from, $offset, $msg = "")
     if ($details) {
         // Get RSVP and family
         $query =
-            "SELECT thaali_id as thaali, CONCAT(firstName, ' ', lastName) AS name, " .
-            "adults, kids, rsvps.size, area, here, filled, lessRice AS norice FROM rsvps " .
-            "LEFT JOIN `family` on family.thaali = rsvps.thaali_id " .
+            "SELECT rsvps.thaali, CONCAT(firstName, ' ', lastName) AS name, " .
+            "adults, kids, rsvps.size, area, here, filled, norice FROM rsvps " .
+            "LEFT JOIN `family` on family.thaali = rsvps.thaali " .
             "WHERE `rsvp` = 1 AND `date` = '" .
             $from .
-            "' ORDER BY thaali;";
+            "' ORDER BY rsvps.thaali;";
         $result = $db->query($query);
         $totalA = 0;
         $totalK = 0;
@@ -92,11 +92,11 @@ function print_post($db, $from, $offset)
 
     if ($save) {
         $stmt = $db->prepare(
-            "UPDATE rsvps SET here = ?, filled = ? WHERE thaali_id = ? AND date = ?",
+            "UPDATE rsvps SET here = ?, filled = ? WHERE thaali = ? AND date = ?",
         );
         foreach ($data as $i) {
-            $thaali_id = $i->thaali;
-            $stmt->bind_param("iiis", $i->here, $i->filled, $thaali_id, $from);
+            $thaali = $i->thaali;
+            $stmt->bind_param("iiis", $i->here, $i->filled, $thaali, $from);
             $result = $stmt->execute();
             if (!$result) {
                 $msg = $stmt->error;

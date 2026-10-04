@@ -94,7 +94,7 @@ class RsvpServiceTest extends TestCase
             "adults" => 2,
             "kids" => 1,
             "size" => "MD",
-            "lessRice" => 0,
+            "norice" => 0,
         ];
     }
 
@@ -178,7 +178,7 @@ class RsvpServiceTest extends TestCase
             "MD",
         );
 
-        $this->assertArrayNotHasKey("lessRice", $result);
+        $this->assertArrayNotHasKey("norice", $result);
     }
 
     // -----------------------------------------------------------------------
