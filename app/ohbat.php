@@ -25,13 +25,13 @@ function dump_get($db, $date) {
     fputcsv($output, ["Thaali","Name","Email","Phone","Area","POC","RSVP"]);
 
     // Make query
-    $query = "SELECT thaali,
+    $query = "SELECT family.thaali,
                 CONCAT(firstName, ' ', lastName) AS name, email, phone, area, poc,
                 CASE WHEN rsvp = 1 THEN 'Yes' ELSE 'No' END AS rsvp
               FROM family
               LEFT JOIN rsvps
-              ON thaali_id=thaali AND date=\"" . $date . "\"
-              WHERE thaali < 400";
+              ON rsvps.thaali=family.thaali AND rsvps.date=\"" . $date . "\"
+              WHERE family.thaali < 400";
     $result = $db->query($query);
 
     // Output rows

@@ -80,8 +80,8 @@ function total_rsvp_for_date($db, $date)
 {
     // Get total RSVP for given date
     $query =
-        "SELECT rsvps.size, lessRice FROM `rsvps` " .
-        "LEFT JOIN `family` on family.thaali = rsvps.thaali_id " .
+        "SELECT rsvps.size, norice FROM `rsvps` " .
+        "LEFT JOIN `family` on family.thaali = rsvps.thaali " .
         "WHERE `rsvp` = 1 AND `date` = '" .
         $date .
         "';";
@@ -101,7 +101,7 @@ function total_rsvp_for_date($db, $date)
         }
 
         // Count rice
-        if ($row["lessRice"]) {
+        if ($row["norice"]) {
             $size = 0;
         }
         if (!isset($count["rice+bread"])) {

@@ -48,7 +48,7 @@ class RsvpService
     /**
      * Normalises a raw DB row for the RSVP view:
      * - Sets readonly if the date is before the cutoff
-     * - Removes falsy fields (niyaz, enabled, lessRice)
+     * - Removes falsy fields (niyaz, enabled, norice)
      * - Removes adults/kids when there is no RSVP
      * - Fills in defaultSize when size is absent
      */
@@ -75,8 +75,8 @@ class RsvpService
         if (!$row['size']) {
             $row['size'] = $defaultSize;
         }
-        if (!$row["lessRice"]) {
-            unset($row['lessRice']);
+        if (!$row["norice"]) {
+            unset($row['norice']);
         }
         return $row;
     }
